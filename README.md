@@ -15,39 +15,30 @@ Analysing the following interface:
     @Consumes("application/json")
     @Produces("application/json")
     public static class BookStoreInterface {
-    
         @GET
         @Path("/books")
         public void list() {
         }
-        
         @POST
         @Path("/books")
         @Consumes({ "application/json", "application/xml" })
         @Produces({ "application/json", "application/xml" })
         public void add(Book book) {
         }
-
         @PUT
         @Path("/books")
         @Consumes({ "application/json", "application/xml" })
         @Produces({ "application/json", "application/xml" })
         public void update(Book book) {
-
         }
-
         @GET
         @Path("/books/{bookId}")
         public void findById(@PathParam("bookId") Long bookId) {
-
         }
-
         @DELETE
         @Path("/books/{bookId}")
         public void delete(@DefaultValue("1") @PathParam("bookId") Long bookId) {
-
         }
-
         @POST
         @Path("/books/minimal")
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -56,16 +47,15 @@ Analysing the following interface:
             return null;
         }
     }
-
+```
+```java
     public static class Book {
         @JsonProperty private String author;
         private String name;
-
         @JsonProperty("name")
         public String getName() {
             return name;
         }
-
         @JsonProperty
         public void setName(String name) {
             this.name = name;
