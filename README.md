@@ -10,8 +10,7 @@ Currently the library support introspection for JSR-311 and Jackson annotation p
 ## Example
 Analysing the following interface:
 
-<code language="java">
-
+```java
     @Path("/store")
     @Consumes("application/json")
     @Produces("application/json")
@@ -72,73 +71,73 @@ Analysing the following interface:
             this.name = name;
         }
     }
-<code>
+```
 
 will produce:
 
-<code language="json">
-  [{
-    "httpMethod": "POST",
-    "path": "/store/books/minimal",
-    "consumes": ["application/x-www-form-urlencoded"],
-    "produces": ["application/json"],
-    "formParameters": [{
-        "type": "java.lang.String",
-        "name": "name"
-    }],
-    "queryParameters": [{
-        "type": "java.lang.Long",
-        "name": "collection"
-    }]
-}, {
-    "httpMethod": "GET",
-    "path": "/store/books/{bookId}",
-    "produces": ["application/json"],
-    "pathParameters": [{
-        "type": "java.lang.Long",
-        "name": "bookId"
-    }]
-}, {
-    "httpMethod": "POST",
-    "path": "/store/books",
-    "consumes": ["application/json", "application/xml"],
-    "produces": ["application/json", "application/xml"],
-    "payload": {
-        "parameters": [{
+```json
+    [{
+        "httpMethod": "POST",
+        "path": "/store/books/minimal",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "formParameters": [{
             "type": "java.lang.String",
             "name": "name"
-        }, {
-            "type": "java.lang.String",
-            "name": "author"
+        }],
+        "queryParameters": [{
+            "type": "java.lang.Long",
+            "name": "collection"
         }]
-    }
-}, {
-    "httpMethod": "GET",
-    "path": "/store/books",
-    "produces": ["application/json"]
-}, {
-    "httpMethod": "DELETE",
-    "path": "/store/books/{bookId}",
-    "consumes": ["application/json"],
-    "produces": ["application/json"],
-    "pathParameters": [{
-        "type": "java.lang.Long",
-        "name": "bookId",
-        "defaultValue": "1"
+    }, {
+        "httpMethod": "GET",
+        "path": "/store/books/{bookId}",
+        "produces": ["application/json"],
+        "pathParameters": [{
+            "type": "java.lang.Long",
+            "name": "bookId"
+        }]
+    }, {
+        "httpMethod": "POST",
+        "path": "/store/books",
+        "consumes": ["application/json", "application/xml"],
+        "produces": ["application/json", "application/xml"],
+        "payload": {
+            "parameters": [{
+                "type": "java.lang.String",
+                "name": "name"
+            }, {
+                "type": "java.lang.String",
+                "name": "author"
+            }]
+        }
+    }, {
+        "httpMethod": "GET",
+        "path": "/store/books",
+        "produces": ["application/json"]
+    }, {
+        "httpMethod": "DELETE",
+        "path": "/store/books/{bookId}",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "pathParameters": [{
+            "type": "java.lang.Long",
+            "name": "bookId",
+            "defaultValue": "1"
+        }]
+    }, {
+        "httpMethod": "PUT",
+        "path": "/store/books",
+        "consumes": ["application/json", "application/xml"],
+        "produces": ["application/json", "application/xml"],
+        "payload": {
+            "parameters": [{
+                "type": "java.lang.String",
+                "name": "name"
+            }, {
+                "type": "java.lang.String",
+                "name": "author"
+            }]
+        }
     }]
-}, {
-    "httpMethod": "PUT",
-    "path": "/store/books",
-    "consumes": ["application/json", "application/xml"],
-    "produces": ["application/json", "application/xml"],
-    "payload": {
-        "parameters": [{
-            "type": "java.lang.String",
-            "name": "name"
-        }, {
-            "type": "java.lang.String",
-            "name": "author"
-        }]
-    }
-}]
-<code>
+```
