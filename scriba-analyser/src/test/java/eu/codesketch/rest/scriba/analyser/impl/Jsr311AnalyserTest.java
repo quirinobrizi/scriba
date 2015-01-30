@@ -25,6 +25,8 @@ import org.junit.Test;
 
 import eu.codesketch.rest.scriba.analyser.model.Document;
 import eu.codesketch.rest.scriba.analyser.model.HttpMethods;
+import eu.codesketch.rest.scriba.annotations.ApiDescription;
+import eu.codesketch.rest.scriba.annotations.ApiName;
 
 public class Jsr311AnalyserTest {
 
@@ -50,12 +52,16 @@ public class Jsr311AnalyserTest {
 
         @GET
         @Path("/books")
+        @ApiName("List books")
+        @ApiDescription("Retrieves all books")
         public void list() {
 
         }
 
         @POST
         @Path("/books")
+        @ApiName("Store book")
+        @ApiDescription("Allows add a new book to the collection")
         @Consumes({ "application/json", "application/xml" })
         @Produces({ "application/json", "application/xml" })
         public void add(Book book) {
@@ -63,27 +69,35 @@ public class Jsr311AnalyserTest {
         }
 
         @PUT
-        @Path("/books")
+        @Path("/books/{bookId}")
+        @ApiName("Update book")
+        @ApiDescription("Allows update a book already part of the collection")
         @Consumes({ "application/json", "application/xml" })
         @Produces({ "application/json", "application/xml" })
-        public void update(Book book) {
+        public void update(@PathParam("bookId") Long bookId, Book book) {
 
         }
 
         @GET
         @Path("/books/{bookId}")
+        @ApiName("Get book")
+        @ApiDescription("Allows retrieve information about a book")
         public void findById(@PathParam("bookId") Long bookId) {
 
         }
 
         @DELETE
         @Path("/books/{bookId}")
+        @ApiName("Delete book")
+        @ApiDescription("Allows delete a book from the collection")
         public void delete(@DefaultValue("1") @PathParam("bookId") Long bookId) {
 
         }
 
         @POST
         @Path("/books/minimal")
+        @ApiName("Create minimal book")
+        @ApiDescription("Allows create a new book with only its name")
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response addForm(@FormParam("name") String name,
                         @QueryParam("collection") Long collection) {

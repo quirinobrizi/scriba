@@ -27,7 +27,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import eu.codesketch.rest.scriba.analyser.model.Description;
 import eu.codesketch.rest.scriba.analyser.model.Document;
+import eu.codesketch.rest.scriba.analyser.model.Name;
 import eu.codesketch.rest.scriba.analyser.model.Parameter;
 import eu.codesketch.rest.scriba.analyser.model.Path;
 import eu.codesketch.rest.scriba.analyser.model.Payload;
@@ -49,6 +51,8 @@ public class DocumentBuilder implements Cloneable {
     private List<String> consumables;
     private List<String> producible;
     private Payload payload;
+    private Name name;
+    private Description description;
 
     public DocumentBuilder() {
         this.pathSegments = new LinkedList<>();
@@ -57,6 +61,16 @@ public class DocumentBuilder implements Cloneable {
         this.queryParameters = new ArrayList<>();
         this.consumables = new ArrayList<>();
         this.producible = new ArrayList<>();
+    }
+
+    public DocumentBuilder setName(Name name) {
+        this.name = name;
+        return this;
+    }
+
+    public DocumentBuilder setDescription(Description description) {
+        this.description = description;
+        return this;
     }
 
     public DocumentBuilder addPathSegment(String value, int level) {
@@ -135,9 +149,9 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public Document build() {
-        return createNewDocument(this.httpMethod).withPath(new Path(buildPath()))
-                        .withConsumes(this.consumables).withProduces(this.producible)
-                        .withPathParameters(this.pathParameters)
+        return createNewDocument(this.httpMethod).withName(this.name).withDescription(description)
+                        .withPath(new Path(buildPath())).withConsumes(this.consumables)
+                        .withProduces(this.producible).withPathParameters(this.pathParameters)
                         .withFormParameters(this.formParameters)
                         .withQueryParameters(this.queryParameters).withPayload(this.payload);
     }

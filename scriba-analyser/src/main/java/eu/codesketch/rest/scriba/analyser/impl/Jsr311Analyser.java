@@ -34,6 +34,8 @@ import eu.codesketch.rest.scriba.analyser.Analyser;
 import eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.introspector.Introspector;
 import eu.codesketch.rest.scriba.analyser.introspector.IntrospectorManager;
+import eu.codesketch.rest.scriba.analyser.introspector.impl.ApiDescriptionAnnotationIntrospector;
+import eu.codesketch.rest.scriba.analyser.introspector.impl.ApiNameAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.introspector.impl.BodyTypeAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.introspector.impl.ConsumesAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.introspector.impl.DeleteAnnotationIntrospector;
@@ -74,7 +76,8 @@ public class Jsr311Analyser implements Analyser {
             new OptionsAnnotationIntrospector(), new ConsumesAnnotationIntrospector(),
             new ProducesAnnotationIntrospector(), new PathParamAnnotationIntrospector(),
             new FormParamAnnotationIntrospector(), new QueryParamAnnotationIntrospector(),
-            new BodyTypeAnnotationIntrospector() };
+            new BodyTypeAnnotationIntrospector(), new ApiDescriptionAnnotationIntrospector(), 
+            new ApiNameAnnotationIntrospector() };
     // @formatter:on
 
     private IntrospectorManager introspectorManager;

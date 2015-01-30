@@ -51,7 +51,8 @@ public class Decorator {
      *            a flag that indicates if the onnotation is place on method or
      *            not.
      */
-    public Decorator(int level, java.lang.annotation.Annotation annotation, AnnotatedElement annotatedElement) {
+    public Decorator(int level, java.lang.annotation.Annotation annotation,
+                    AnnotatedElement annotatedElement) {
         this.level = level;
         this.annotation = annotation;
         this.annotatedElement = annotatedElement;
@@ -97,5 +98,14 @@ public class Decorator {
             return type.cast(annotation);
         }
         throw new ClassCastException(String.format("unable cast %s to %s", annotationType(), type));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Decorator [level=").append(level).append(", annotation=")
+                        .append(annotation).append(", annotatedElement=").append(annotatedElement)
+                        .append("]");
+        return builder.toString();
     }
 }
