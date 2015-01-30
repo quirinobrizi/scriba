@@ -39,8 +39,8 @@ public class Document {
 
     private HttpMethods httpMethod;
     private Name name;
-    private Description description;
     private Path path;
+    private Description description;
     @JsonProperty private List<String> consumes;
     @JsonProperty private List<String> produces;
     @JsonProperty private List<Parameter> pathParameters;
