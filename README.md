@@ -5,7 +5,7 @@ The library parses the interfaces that define the REST APIs and read the defined
 
 Goal is to have the analysis run at build time so that changes operated during development will be reflected readilly reflected on the documentation.
 
-Currently the library support introspection for JSR-311, Jackson and custom @ApiName and @ApiDescription annotations parsed following the Apache CXF engine logic. A JSON is provided as output that describes the analysed APIs.
+Currently the library support introspection for JSR-311, Jackson and custom @ApiName and @ApiDescription annotations. A JSON is provided as output that describes the analysed APIs.
 
 The custom annotation are not needed and can be avoided with the pitfall that the API name and description will not be present on the response. 
 
