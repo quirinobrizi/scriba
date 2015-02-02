@@ -97,6 +97,23 @@ public abstract class ReflectionHelper {
         return decorators;
     }
 
+    public static List<Decorator> getAllDeclaredDecorators(Class<?> clazz) {
+        List<Decorator> decorators = new ArrayList<>();
+        List<Class<?>> targets = getClassChain(clazz);
+        int levels = targets.size() - 1;
+        for (int i = levels; i >= 0; i--) {
+            Class<?> target = targets.get(i);
+            decorators.addAll(toDecorators(target.getDeclaredAnnotations(), i, target));
+            for (Method method : target.getDeclaredMethods()) {
+                decorators.addAll(toDecorators(method.getDeclaredAnnotations(), i + 1, method));
+            }
+            for (Field field : target.getDeclaredFields()) {
+                decorators.addAll(toDecorators(field.getDeclaredAnnotations(), i + 1, field));
+            }
+        }
+        return decorators;
+    }
+
     /**
      * Retrieve all the decorators for the requested annotation defined on the
      * declared class

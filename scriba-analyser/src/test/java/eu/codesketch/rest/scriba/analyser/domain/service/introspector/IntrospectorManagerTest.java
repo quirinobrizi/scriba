@@ -3,24 +3,21 @@ package eu.codesketch.rest.scriba.analyser.domain.service.introspector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import javax.ws.rs.Path;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManager;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.impl.IntrospectorManagerImpl;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.PathAnnotationIntrospector;
 
 public class IntrospectorManagerTest {
 
     private static final PathAnnotationIntrospector INTROSPECTOR = new PathAnnotationIntrospector();
-    private IntrospectorManager testObj = new IntrospectorManager();
-
-    @Before
-    public void before() {
-        testObj.register(INTROSPECTOR);
-    }
+    private IntrospectorManager testObj = new IntrospectorManagerImpl(new HashSet<Introspector>(
+                    Arrays.asList(INTROSPECTOR)));
 
     @Test
     public void testIntrospector() {

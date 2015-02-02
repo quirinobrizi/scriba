@@ -22,6 +22,7 @@ package eu.codesketch.rest.scriba.analyser.domain.model.decorator;
 import java.lang.annotation.Annotation;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -38,8 +39,8 @@ import javax.validation.constraints.Size;
  */
 public enum Order {
 
-    NOT_NULL(NotNull.class, Integer.MAX_VALUE), SIZE(Size.class, Integer.MAX_VALUE), PTTERN(
-                    Pattern.class, Integer.MAX_VALUE);
+    NOT_NULL(NotNull.class, Integer.MAX_VALUE), SIZE(Size.class, Integer.MAX_VALUE), PATTERN(
+                    Pattern.class, Integer.MAX_VALUE), PAST(Past.class, Integer.MAX_VALUE);
 
     private Class<? extends Annotation> annotation;
     private Integer order;

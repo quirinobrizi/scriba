@@ -19,9 +19,13 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.model;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -33,17 +37,18 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class Payload {
 
-    @JsonProperty private List<Parameter> parameters = new ArrayList<>();
+    private Map<AnnotatedElement, Parameter> parameters = new HashMap<>();
 
-    public Payload addParameter(Parameter parameter) {
-        if (!this.parameters.contains(parameter)) {
-            this.parameters.add(parameter);
+    public Payload addParameter(AnnotatedElement annotatedElement, Parameter parameter) {
+        if (!this.parameters.containsValue(parameter)) {
+            this.parameters.put(annotatedElement, parameter);
         }
         return this;
     }
 
+    @JsonProperty
     public List<Parameter> getParameters() {
-        return parameters;
+        return new ArrayList<>(parameters.values());
     }
 
     @Override
@@ -51,5 +56,15 @@ public class Payload {
         StringBuilder builder = new StringBuilder();
         builder.append("Payload [parameters=").append(parameters).append("]");
         return builder.toString();
+    }
+
+    @JsonIgnore
+    public Boolean hasParameter(AnnotatedElement annotatedElement) {
+        return this.parameters.containsKey(annotatedElement);
+    }
+
+    @JsonIgnore
+    public Parameter getParameter(AnnotatedElement annotatedElement) {
+        return this.parameters.get(annotatedElement);
     }
 }

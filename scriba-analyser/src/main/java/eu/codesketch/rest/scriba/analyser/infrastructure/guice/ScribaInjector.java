@@ -30,6 +30,9 @@ import com.google.inject.multibindings.Multibinder;
 import eu.codesketch.rest.scriba.analyser.application.AnalyserService;
 import eu.codesketch.rest.scriba.analyser.application.impl.AnalyserServiceImpl;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManager;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.impl.IntrospectorManagerImpl;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jackson.JsonPropertyAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.ConsumesAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.DeleteAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.FormParamAnnotationIntrospector;
@@ -77,13 +80,16 @@ public class ScribaInjector extends AbstractModule {
             ApiDescriptionAnnotationIntrospector.class, ApiNameAnnotationIntrospector.class, 
             // JSR 349
             SizeAnnotationIntrospector.class, PatternAnnotationIntrospector.class, 
-            PastAnnotationIntrospector.class, NotNullAnnotationIntrospector.class
+            PastAnnotationIntrospector.class, NotNullAnnotationIntrospector.class,
+            // Jackson
+            JsonPropertyAnnotationIntrospector.class
         );
     // @formatter:on
 
     @Override
     protected void configure() {
         bind(AnalyserService.class).to(AnalyserServiceImpl.class);
+        bind(IntrospectorManager.class).to(IntrospectorManagerImpl.class);
         configureIntrospectors();
     }
 

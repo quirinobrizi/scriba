@@ -112,7 +112,8 @@ public class DocumentBuilder implements Cloneable {
     public Boolean hasParameterForAnnotatedElement(AnnotatedElement annotatedElement) {
         return this.pathParameters.containsKey(annotatedElement)
                         || this.formParameters.containsKey(annotatedElement)
-                        || this.queryParameters.containsKey(annotatedElement);
+                        || this.queryParameters.containsKey(annotatedElement)
+                        || this.payload.hasParameter(annotatedElement);
     }
 
     public Parameter getParameter(AnnotatedElement annotatedElement) {
@@ -125,7 +126,11 @@ public class DocumentBuilder implements Cloneable {
             if (null != answer) {
                 return answer;
             }
-            return this.queryParameters.get(annotatedElement);
+            answer = this.queryParameters.get(annotatedElement);
+            if (null != answer) {
+                return answer;
+            }
+            return this.payload.getParameter(annotatedElement);
         }
         throw new IllegalStateException(
                         String.format("requested annotated element %s has not been processed as a parameter, is the order for the Decorator correct??",
@@ -180,6 +185,13 @@ public class DocumentBuilder implements Cloneable {
     public DocumentBuilder addPayload(Payload payload) {
         this.payload = payload;
         return this;
+    }
+
+    public Payload getOrCreatePayload() {
+        if (null == this.payload) {
+            this.payload = new Payload();
+        }
+        return this.payload;
     }
 
     public Document build() {

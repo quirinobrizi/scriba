@@ -64,15 +64,7 @@ public class AnalyserServiceImpl implements AnalyserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyserServiceImpl.class);
 
-    private IntrospectorManager introspectorManager;
-
-    @Inject
-    public AnalyserServiceImpl(Set<Introspector> introspectors) {
-        this.introspectorManager = new IntrospectorManager();
-        for (Introspector introspector : introspectors) {
-            this.introspectorManager.register(introspector);
-        }
-    }
+    @Inject private IntrospectorManager introspectorManager;
 
     /**
      * Analyse the provided class for annotation that describe the REST APIs
