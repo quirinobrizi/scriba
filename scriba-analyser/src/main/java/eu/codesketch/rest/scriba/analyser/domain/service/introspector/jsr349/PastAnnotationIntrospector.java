@@ -53,7 +53,7 @@ public class PastAnnotationIntrospector implements Introspector {
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Decorator decorator) {
         Parameter parameter = documentBuilder.getParameter(decorator.annotatedElement());
-        parameter.constraints("date must be in the past consodering calendar based on the current timezone and the current locale.");
+        parameter.constraints("date must be in the past considering calendar based on the current timezone and the current locale.");
     }
 
     /*
