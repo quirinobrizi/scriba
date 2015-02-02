@@ -5,7 +5,7 @@ The library parses the interfaces that define the REST APIs and read the defined
 
 Goal is to have the analysis run at build time so that changes operated during development will be reflected readilly reflected on the documentation.
 
-Currently the library support introspection for JSR-311, Jackson and custom @ApiName and @ApiDescription annotations. A JSON is provided as output that describes the analysed APIs.
+Currently the library support introspection for JSR-311, JSR-349, Jackson and custom @ApiName and @ApiDescription annotations. A JSON is provided as output that describes the analysed APIs.
 
 The custom annotation are not needed and can be avoided with the pitfall that the API name and description will not be present on the response. 
 
@@ -14,104 +14,75 @@ Analysing the following interface:
 
 ```java
 @Path("/store")
-    @Consumes("application/json")
-    @Produces("application/json")
-    public static class BookStoreInterface {
-
-        @GET
-        @Path("/books")
-        @ApiName("List books")
-        @ApiDescription("Retrieves all books")
-        public void list() {
-
-        }
-
-        @POST
-        @Path("/books")
-        @ApiName("Store book")
-        @ApiDescription("Allows add a new book to the collection")
-        @Consumes({ "application/json", "application/xml" })
-        @Produces({ "application/json", "application/xml" })
-        public void add(Book book) {
-
-        }
-
-        @PUT
-        @Path("/books/{bookId}")
-        @ApiName("Update book")
-        @ApiDescription("Allows update a book already part of the collection")
-        @Consumes({ "application/json", "application/xml" })
-        @Produces({ "application/json", "application/xml" })
-        public void update(@NotNull @PathParam("bookId") Long bookId, Book book) {
-
-        }
-
-        @GET
-        @Path("/books/{bookId}")
-        @ApiName("Get book")
-        @ApiDescription("Allows retrieve information about a book")
-        public void findById(@PathParam("bookId") Long bookId) {
-
-        }
-
-        @DELETE
-        @Path("/books/{bookId}")
-        @ApiName("Delete book")
-        @ApiDescription("Allows delete a book from the collection")
-        public void delete(@DefaultValue("1") @PathParam("bookId") Long bookId) {
-
-        }
-
-        @POST
-        @Path("/books/minimal")
-        @ApiName("Create minimal book")
-        @ApiDescription("Allows create a new book with only its name")
-        @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-        public Response addForm(
-                        @Size(min = 1, max = 40) @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
-                        @QueryParam("collection") Long collection) {
-            return null;
-        }
+@Consumes("application/json")
+@Produces("application/json")
+public static class BookStoreInterface {
+    @GET
+    @Path("/books")
+    @ApiName("List books")
+    @ApiDescription("Retrieves all books")
+    public void list() {
     }
-
-    public static class Book {
-        @JsonProperty private String author;
-        private String name;
-        @Past @JsonProperty private Date publicationDate;
-
-        @JsonProperty("name")
-        public String getName() {
-            return name;
-        }
-
-        @JsonProperty
-        public void setName(String name) {
-            this.name = name;
-        }
+    @POST
+    @Path("/books")
+    @ApiName("Store book")
+    @ApiDescription("Allows add a new book to the collection")
+    @Consumes({ "application/json", "application/xml" })
+    @Produces({ "application/json", "application/xml" })
+    public void add(Book book) {
     }
+    @PUT
+    @Path("/books/{bookId}")
+    @ApiName("Update book")
+    @ApiDescription("Allows update a book already part of the collection")
+    @Consumes({ "application/json", "application/xml" })
+    @Produces({ "application/json", "application/xml" })
+    public void update(@NotNull @PathParam("bookId") Long bookId, Book book) {
+    }
+    @GET
+    @Path("/books/{bookId}")
+    @ApiName("Get book")
+    @ApiDescription("Allows retrieve information about a book")
+    public void findById(@PathParam("bookId") Long bookId) {
+    }
+    @DELETE
+    @Path("/books/{bookId}")
+    @ApiName("Delete book")
+    @ApiDescription("Allows delete a book from the collection")
+    public void delete(@DefaultValue("1") @PathParam("bookId") Long bookId) {
+    }
+    @POST
+    @Path("/books/minimal")
+    @ApiName("Create minimal book")
+    @ApiDescription("Allows create a new book with only its name")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addForm(
+                    @Size(min = 1, max = 40) @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
+                    @QueryParam("collection") Long collection) {
+        return null;
+    }
+}
 ```
 ```java
 public static class Book {
-        @JsonProperty private String author;
-        private String name;
-        @Past @JsonProperty private Date publicationDate;
-
-        @JsonProperty("name")
-        public String getName() {
-            return name;
-        }
-
-        @JsonProperty
-        public void setName(String name) {
-            this.name = name;
-        }
+    @JsonProperty private String author;
+    private String name;
+    @Past @JsonProperty private Date publicationDate;
+    @JsonProperty("name")
+    public String getName() {
+        return name;
     }
+    @JsonProperty
+    public void setName(String name) {
+        this.name = name;
+    }
+}
 ```
 
 will produce:
 
 ```json
-    [{
+[{
     "httpMethod": "DELETE",
     "name": "Delete book",
     "path": "/store/books/{bookId}",
