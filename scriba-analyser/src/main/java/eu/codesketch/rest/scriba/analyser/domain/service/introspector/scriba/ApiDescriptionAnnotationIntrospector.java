@@ -19,6 +19,7 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba;
 
+import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.Description;
@@ -38,6 +39,7 @@ import eu.codesketch.rest.scriba.annotations.ApiDescription;
  * @since 29 Jan 2015
  *
  */
+@Singleton
 public class ApiDescriptionAnnotationIntrospector implements Introspector {
 
     /*

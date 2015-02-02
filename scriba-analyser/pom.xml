@@ -10,7 +10,22 @@
 	<name>Scriba Analyser</name>
 	<description>Nest into JUnit in order to allow collect information about REST API in a test like fashion.</description>
 
+	<properties>
+		<guice.version>3.0</guice.version>
+	</properties>
+
 	<dependencies>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>${guice.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-multibindings</artifactId>
+			<version>${guice.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>eu.codesketch.rest.scriba</groupId>
 			<artifactId>scriba-annotations</artifactId>

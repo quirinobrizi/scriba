@@ -19,6 +19,7 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311;
 
+import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
@@ -36,6 +37,7 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspect
  * @since 29 Jan 2015
  *
  */
+@Singleton
 public class ConsumesAnnotationIntrospector implements Introspector {
 
     /*

@@ -26,7 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * A manager for introspectors, allows to retrieve introspectors via the
+ * declared type.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015

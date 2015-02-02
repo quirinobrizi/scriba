@@ -25,22 +25,31 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.junit.Before;
 import org.junit.Test;
+
+import com.google.inject.Guice;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.HttpMethods;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.Document;
+import eu.codesketch.rest.scriba.analyser.infrastructure.guice.ScribaInjector;
 import eu.codesketch.rest.scriba.annotations.ApiDescription;
 import eu.codesketch.rest.scriba.annotations.ApiName;
 
 public class AnalyserServiceImplTest {
 
-    private AnalyserServiceImpl testObj = new AnalyserServiceImpl();
+    private AnalyserServiceImpl testObj;
+
+    @Before
+    public void setUp() {
+        testObj = Guice.createInjector(new ScribaInjector()).getInstance(AnalyserServiceImpl.class);
+    }
 
     @Test
     public void testAnalise() {
         List<Document> documents = testObj.analyse(BookStoreInterface.class);
         // assert
-        assertEquals(5, documents.size());
+        assertEquals(6, documents.size());
         for (Document document : documents) {
             if (HttpMethods.GET.getMethod().equals(document.getHttpMethod())) {
                 assertTrue(asList("/store/books", "/store/books/{bookId}").contains(
