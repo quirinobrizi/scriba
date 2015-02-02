@@ -19,6 +19,7 @@
 		<jsr311.version>1.1.1</jsr311.version>
 		<jackson.mapper.asl.version>1.9.13</jackson.mapper.asl.version>
 		<commons.lang.version>3.3.2</commons.lang.version>
+		<javax.validation.version>1.1.0.Final</javax.validation.version>
 	</properties>
 
 	<dependencyManagement>
@@ -49,9 +50,15 @@
 				<version>${jsr311.version}</version>
 			</dependency>
 			<dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation.version}</version>
+            </dependency>
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

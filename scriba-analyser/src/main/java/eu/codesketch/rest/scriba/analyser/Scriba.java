@@ -27,8 +27,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.codesketch.rest.scriba.analyser.impl.Jsr311Analyser;
-import eu.codesketch.rest.scriba.analyser.model.Document;
+import eu.codesketch.rest.scriba.analyser.application.AnalyserService;
+import eu.codesketch.rest.scriba.analyser.application.impl.AnalyserServiceImpl;
+import eu.codesketch.rest.scriba.analyser.domain.model.document.Document;
 
 /**
  * entry point for analysing and generate documentation for RESTfull API.
@@ -41,11 +42,11 @@ public class Scriba {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scriba.class);
 
-    private Analyser analyser;
+    private AnalyserService analyser;
     private ObjectMapper mapper;
 
     public Scriba() {
-        this.analyser = new Jsr311Analyser();
+        this.analyser = new AnalyserServiceImpl();
         this.mapper = new ObjectMapper();
     }
 
