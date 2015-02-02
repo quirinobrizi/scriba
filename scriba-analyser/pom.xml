@@ -9,7 +9,7 @@
 	<artifactId>scriba-analyser</artifactId>
 	<name>Scriba Analyser</name>
 	<description>Nest into JUnit in order to allow collect information about REST API in a test like fashion.</description>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.codesketch.rest.scriba</groupId>
@@ -19,6 +19,10 @@
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
