@@ -19,6 +19,7 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349;
 
+import javax.inject.Singleton;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 
@@ -38,6 +39,7 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspect
  * @since 29 Jan 2015
  *
  */
+@Singleton
 public class SizeAnnotationIntrospector implements Introspector {
 
     /*

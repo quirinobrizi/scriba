@@ -27,9 +27,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Guice;
+
 import eu.codesketch.rest.scriba.analyser.application.AnalyserService;
-import eu.codesketch.rest.scriba.analyser.application.impl.AnalyserServiceImpl;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.Document;
+import eu.codesketch.rest.scriba.analyser.infrastructure.guice.ScribaInjector;
 
 /**
  * entry point for analysing and generate documentation for RESTfull API.
@@ -42,15 +44,17 @@ public class Scriba {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scriba.class);
 
-    private AnalyserService analyser;
+    // private AnalyserService analyser;
     private ObjectMapper mapper;
 
     public Scriba() {
-        this.analyser = new AnalyserServiceImpl();
+        // this.analyser = new AnalyserServiceImpl();
         this.mapper = new ObjectMapper();
     }
 
     public String document(List<Class<?>> interfaces) {
+        AnalyserService analyser = Guice.createInjector(new ScribaInjector()).getInstance(
+                        AnalyserService.class);
         List<Document> documents = new ArrayList<>();
         for (Class<?> target : interfaces) {
             LOGGER.info("analysing class {}", target);

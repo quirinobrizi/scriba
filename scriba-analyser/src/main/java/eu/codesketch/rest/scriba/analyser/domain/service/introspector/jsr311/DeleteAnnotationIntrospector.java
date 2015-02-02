@@ -19,6 +19,7 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311;
 
+import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HttpMethod;
@@ -35,6 +36,7 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspect
  * @since 29 Jan 2015
  *
  */
+@Singleton
 public class DeleteAnnotationIntrospector implements Introspector {
 
     /*

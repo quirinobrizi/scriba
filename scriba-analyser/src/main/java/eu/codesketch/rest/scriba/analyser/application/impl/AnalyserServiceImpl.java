@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,24 +41,6 @@ import eu.codesketch.rest.scriba.analyser.domain.model.document.Document;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManager;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.ConsumesAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.DeleteAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.FormParamAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.GetAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.HeadAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.OptionsAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.PathAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.PathParamAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.PostAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.ProducesAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.PutAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311.QueryParamAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349.NotNullAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349.PatternAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349.SizeAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.ApiDescriptionAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.ApiNameAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.BodyTypeAnnotationIntrospector;
 import eu.codesketch.rest.scriba.annotations.ApiDescription;
 import eu.codesketch.rest.scriba.annotations.ApiName;
 
@@ -74,31 +59,17 @@ import eu.codesketch.rest.scriba.annotations.ApiName;
  * @since 28 Jan 2015
  *
  */
+@Singleton
 public class AnalyserServiceImpl implements AnalyserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyserServiceImpl.class);
 
-    /**
-     * The introspectors used by this {@link AnalyserService} implementation.
-     */
-    // @formatter:off
-    private static final Introspector[] INTROSPECTORS = new Introspector[] { 
-            new PathAnnotationIntrospector(),new GetAnnotationIntrospector(), 
-            new PostAnnotationIntrospector(), new PutAnnotationIntrospector(),
-            new DeleteAnnotationIntrospector(), new HeadAnnotationIntrospector(),
-            new OptionsAnnotationIntrospector(), new ConsumesAnnotationIntrospector(),
-            new ProducesAnnotationIntrospector(), new PathParamAnnotationIntrospector(),
-            new FormParamAnnotationIntrospector(), new QueryParamAnnotationIntrospector(),
-            new BodyTypeAnnotationIntrospector(), new ApiDescriptionAnnotationIntrospector(), 
-            new ApiNameAnnotationIntrospector(), new NotNullAnnotationIntrospector(), 
-            new SizeAnnotationIntrospector(), new PatternAnnotationIntrospector() };
-    // @formatter:on
-
     private IntrospectorManager introspectorManager;
 
-    public AnalyserServiceImpl() {
+    @Inject
+    public AnalyserServiceImpl(Set<Introspector> introspectors) {
         this.introspectorManager = new IntrospectorManager();
-        for (Introspector introspector : INTROSPECTORS) {
+        for (Introspector introspector : introspectors) {
             this.introspectorManager.register(introspector);
         }
     }

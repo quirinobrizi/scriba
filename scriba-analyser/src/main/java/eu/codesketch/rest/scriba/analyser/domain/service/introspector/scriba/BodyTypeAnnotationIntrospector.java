@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +53,7 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspect
  * @since 29 Jan 2015
  *
  */
+@Singleton
 public class BodyTypeAnnotationIntrospector implements Introspector {
 
     private static final Logger LOGGER = LoggerFactory

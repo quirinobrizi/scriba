@@ -21,6 +21,7 @@ package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
+import javax.inject.Singleton;
 import javax.validation.constraints.Pattern;
 import javax.ws.rs.Consumes;
 
@@ -40,6 +41,7 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspect
  * @since 29 Jan 2015
  *
  */
+@Singleton
 public class PatternAnnotationIntrospector implements Introspector {
 
     /*
