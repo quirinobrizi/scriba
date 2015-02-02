@@ -57,7 +57,7 @@ public class Parameter {
     }
 
     public Parameter(String type, String name, String defaultValue) {
-        this.type = type;
+        this.type = normalizeParameterType(type);
         this.name = name;
         this.defaultValue = defaultValue;
         this.nullable = Boolean.TRUE;
@@ -101,5 +101,13 @@ public class Parameter {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.type).append(this.name).build();
+    }
+
+    private String normalizeParameterType(String parameterType) {
+        if (null == parameterType) {
+            return null;
+        }
+        return parameterType.substring(parameterType.lastIndexOf('.') + 1, parameterType.length())
+                        .toLowerCase();
     }
 }
