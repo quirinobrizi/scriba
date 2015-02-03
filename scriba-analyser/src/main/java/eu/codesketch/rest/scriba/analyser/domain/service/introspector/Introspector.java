@@ -37,10 +37,10 @@ public interface Introspector {
      * 
      * @param documentBuilder
      *            the builder to populate
-     * @param annotation
-     *            the annotation to introspect
+     * @param descriptor
+     *            the introspect context
      */
-    void instrospect(DocumentBuilder documentBuilder, Descriptor annotation);
+    void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor);
 
     /**
      * Declare the type this introspector is made for.
