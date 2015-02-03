@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.Parameter;
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 
@@ -51,7 +51,7 @@ public class NotNullAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator decorator) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         Parameter parameter = documentBuilder.getParameter(decorator.annotatedElement());
         parameter.nullable(Boolean.FALSE).constraints("element must not be null");
     }

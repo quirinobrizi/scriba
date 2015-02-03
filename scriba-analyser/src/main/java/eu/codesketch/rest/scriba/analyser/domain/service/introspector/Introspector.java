@@ -19,7 +19,7 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.service.introspector;
 
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 
 /**
@@ -40,7 +40,7 @@ public interface Introspector {
      * @param annotation
      *            the annotation to introspect
      */
-    void instrospect(DocumentBuilder documentBuilder, Decorator annotation);
+    void instrospect(DocumentBuilder documentBuilder, Descriptor annotation);
 
     /**
      * Declare the type this introspector is made for.

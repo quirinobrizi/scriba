@@ -23,7 +23,7 @@ import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.Name;
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 import eu.codesketch.rest.scriba.annotations.ApiName;
@@ -51,7 +51,7 @@ public class ApiNameAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator decorator) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         ApiName apiName = decorator.getWrappedAnnotationAs(ApiName.class);
         documentBuilder.setName(new Name(apiName.value()));
     }

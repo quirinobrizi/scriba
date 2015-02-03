@@ -17,26 +17,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jackson;
+package eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba;
 
-import static eu.codesketch.rest.scriba.analyser.infrastructure.helper.ReflectionHelper.isSetter;
+import static eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
+import static eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorHelper.introspect;
+import static eu.codesketch.rest.scriba.analyser.infrastructure.helper.ReflectionHelper.extractAllDescriptors;
+import static eu.codesketch.rest.scriba.analyser.infrastructure.helper.ReflectionHelper.getFields;
+import static java.lang.Boolean.TRUE;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.Parameter;
-import eu.codesketch.rest.scriba.analyser.domain.model.Payload;
 import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManager;
+import eu.codesketch.rest.scriba.annotations.ApiResponse;
 
 /**
  * Introspect {@link Consumes} annotation and populate the provided
@@ -46,14 +51,16 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspect
  * account that method level annotations will override the class level one.
  *
  * @author quirino.brizi
- * @since 29 Jan 2015
+ * @since 03 Feb 2015
  *
  */
 @Singleton
-public class JsonPropertyAnnotationIntrospector implements Introspector {
+public class ApiResponseAnnotationIntrospector implements Introspector {
 
     private static final Logger LOGGER = LoggerFactory
-                    .getLogger(JsonPropertyAnnotationIntrospector.class);
+                    .getLogger(ApiResponseAnnotationIntrospector.class);
+
+    @Inject private IntrospectorManager introspectorManager;
 
     /*
      * (non-Javadoc)
@@ -65,28 +72,16 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
-        JsonProperty jsonProperty = descriptor.getWrappedAnnotationAs(JsonProperty.class);
-        String propertyName = jsonProperty.value();
-        String parameterTypeName;
-        Field field = descriptor.annotatedElementAs(Field.class);
-        if (null != field) {
-            parameterTypeName = field.getType().getTypeName();
-            propertyName = "".equals(propertyName) ? field.getName() : propertyName;
-        } else {
-            Method method = descriptor.annotatedElementAs(Method.class);
-            if (isSetter(method)) {
-                parameterTypeName = method.getParameterTypes()[0].getTypeName();
-            } else {
-                parameterTypeName = method.getReturnType().getTypeName();
+        ApiResponse apiResponse = descriptor.getWrappedAnnotationAs(ApiResponse.class);
+        doInspectBody(documentBuilder, apiResponse.type());
+        if (documentBuilder.getOrCreateRequestPayload().getParameters().isEmpty()) {
+            LOGGER.debug("no decorators has been found inspect fields");
+            for (Field field : getFields(apiResponse.type())) {
+                documentBuilder.getOrCreateResponsePayload().addParameter(
+                                descriptor.annotatedElement(),
+                                new Parameter(field.getType().getTypeName(), field.getName()));
             }
-            propertyName = "".equals(propertyName) ? getPropertyNamefromSetterOrGetter(method
-                            .getName()) : propertyName;
         }
-        LOGGER.debug("JsonProperty annotation has defined property name {}", propertyName);
-        Payload payload = descriptor.isResponseInspected() ? documentBuilder
-                        .getOrCreateResponsePayload() : documentBuilder.getOrCreateRequestPayload();
-        payload.addParameter(descriptor.annotatedElement(), new Parameter(parameterTypeName,
-                        propertyName));
     }
 
     /*
@@ -95,12 +90,16 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
      * @see eu.codesketch.rest.scriba.analyser.introspector.Introspector#type()
      */
     @Override
-    public Class<JsonProperty> type() {
-        return JsonProperty.class;
+    public Class<ApiResponse> type() {
+        return ApiResponse.class;
     }
 
-    private String getPropertyNamefromSetterOrGetter(String input) {
-        return StringUtils.replaceEach(input, new String[] { "get", "set" },
-                        new String[] { "", "" }).toLowerCase();
+    private void doInspectBody(DocumentBuilder documentBuilder, Class<?> body) {
+        List<Descriptor> descriptors = extractAllDescriptors(body);
+        Collections.sort(descriptors, descriptorsOrderComparator());
+        for (Descriptor descriptor : descriptors) {
+            descriptor.setResponseInspected(TRUE);
+            introspect(this.introspectorManager, documentBuilder, descriptor);
+        }
     }
 }

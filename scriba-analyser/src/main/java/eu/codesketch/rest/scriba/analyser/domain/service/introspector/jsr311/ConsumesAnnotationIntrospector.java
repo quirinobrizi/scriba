@@ -22,7 +22,7 @@ package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 
@@ -49,7 +49,7 @@ public class ConsumesAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator annotation) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor annotation) {
         Consumes consumes = annotation.getWrappedAnnotationAs(Consumes.class);
         documentBuilder.setOrReplaceConsumableTypes(consumes.value(), annotation.isOnMethod());
     }

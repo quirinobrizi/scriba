@@ -20,6 +20,7 @@
 package eu.codesketch.rest.scriba.analyser.domain.model.decorator;
 
 import static eu.codesketch.rest.scriba.analyser.domain.model.decorator.Order.lookupOrder;
+import static java.lang.Boolean.FALSE;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -27,19 +28,19 @@ import java.lang.reflect.Parameter;
 import java.util.Comparator;
 
 /**
- * Represent an annotation with and level that identifies where the annotation
- * is defined in the sub-class chain.
+ * Describes the context on which the introspection is executed.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015
  *
  */
-public class Decorator {
+public class Descriptor {
 
     private int order;
     private int level;
     private java.lang.annotation.Annotation annotation;
     private AnnotatedElement annotatedElement;
+    private Boolean response;
 
     /**
      * Create a new wrapper for {@link java.lang.annotation.Annotation} setting
@@ -55,12 +56,13 @@ public class Decorator {
      *            a flag that indicates if the onnotation is place on method or
      *            not.
      */
-    public Decorator(int level, java.lang.annotation.Annotation annotation,
+    public Descriptor(int level, java.lang.annotation.Annotation annotation,
                     AnnotatedElement annotatedElement) {
         this.level = level;
         this.annotation = annotation;
         this.annotatedElement = annotatedElement;
         this.order = lookupOrder(annotation.annotationType());
+        this.response = FALSE;
     }
 
     public int level() {
@@ -69,6 +71,14 @@ public class Decorator {
 
     public int order() {
         return order;
+    }
+
+    public void setResponseInspected(Boolean response) {
+        this.response = response;
+    }
+
+    public Boolean isResponseInspected() {
+        return response;
     }
 
     public Boolean isOnMethod() {
@@ -118,11 +128,11 @@ public class Decorator {
         return builder.toString();
     }
 
-    public static Comparator<Decorator> decoratorOrderComparator() {
-        return new Comparator<Decorator>() {
+    public static Comparator<Descriptor> descriptorsOrderComparator() {
+        return new Comparator<Descriptor>() {
 
             @Override
-            public int compare(Decorator o1, Decorator o2) {
+            public int compare(Descriptor o1, Descriptor o2) {
                 return o2.order() - o1.order();
             }
         };

@@ -53,7 +53,8 @@ public class Document {
     @JsonProperty private List<Parameter> pathParameters;
     @JsonProperty private List<Parameter> formParameters;
     @JsonProperty private List<Parameter> queryParameters;
-    @JsonProperty private Payload payload;
+    @JsonProperty private Payload requestPayload;
+    @JsonProperty private Payload responsePayload;
 
     private Document(String httpMethod) {
         this.httpMethod = lookupHttpMethod(httpMethod);
@@ -121,8 +122,13 @@ public class Document {
         return this;
     }
 
-    public Document withPayload(Payload payload) {
-        this.payload = payload;
+    public Document withRequestPayload(Payload payload) {
+        this.requestPayload = payload;
+        return this;
+    }
+
+    public Document withResponsePayload(Payload responsePayload) {
+        this.responsePayload = responsePayload;
         return this;
     }
 
@@ -137,7 +143,7 @@ public class Document {
                         .append(", description=").append(description).append(", path=")
                         .append(path).append(", consumes=").append(consumes).append(", produces=")
                         .append(produces).append(", pathParameters=").append(pathParameters)
-                        .append(", payload=").append(payload).append("]");
+                        .append(", payload=").append(requestPayload).append("]");
         return builder.toString();
     }
 }

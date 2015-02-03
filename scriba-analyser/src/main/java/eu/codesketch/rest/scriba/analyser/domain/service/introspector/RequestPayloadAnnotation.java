@@ -28,7 +28,7 @@ import java.lang.annotation.Annotation;
  * @since 29 Jan 2015
  *
  */
-public class BodyTypeAnnotation implements Annotation {
+public class RequestPayloadAnnotation implements Annotation {
 
     /*
      * (non-Javadoc)

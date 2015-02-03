@@ -37,6 +37,7 @@ import eu.codesketch.rest.scriba.analyser.domain.model.document.Document;
 import eu.codesketch.rest.scriba.analyser.infrastructure.guice.ScribaInjector;
 import eu.codesketch.rest.scriba.annotations.ApiDescription;
 import eu.codesketch.rest.scriba.annotations.ApiName;
+import eu.codesketch.rest.scriba.annotations.ApiResponse;
 
 public class AnalyserServiceImplTest {
 
@@ -69,8 +70,9 @@ public class AnalyserServiceImplTest {
         @Path("/books")
         @ApiName("List books")
         @ApiDescription("Retrieves all books")
-        public void list() {
-
+        @ApiResponse(type = BookMessage.class)
+        public Response list() {
+            return null;
         }
 
         @POST
@@ -97,8 +99,9 @@ public class AnalyserServiceImplTest {
         @Path("/books/{bookId}")
         @ApiName("Get book")
         @ApiDescription("Allows retrieve information about a book")
-        public void findById(@PathParam("bookId") Long bookId) {
-
+        @ApiResponse(type = BookMessage.class)
+        public Response findById(@PathParam("bookId") Long bookId) {
+            return null;
         }
 
         @DELETE
@@ -113,6 +116,7 @@ public class AnalyserServiceImplTest {
         @Path("/books/minimal")
         @ApiName("Create minimal book")
         @ApiDescription("Allows create a new book with only its name")
+        @ApiResponse(type = BookMessage.class)
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response addForm(
                         @Size(min = 1, max = 40) @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
@@ -123,17 +127,28 @@ public class AnalyserServiceImplTest {
 
     public static class Book {
         @JsonProperty private String author;
-        private String name;
+        private String title;
         @Past @JsonProperty private Date publicationDate;
 
-        @JsonProperty("name")
-        public String getName() {
-            return name;
+        @JsonProperty("title")
+        public String getTitle() {
+            return title;
         }
 
         @JsonProperty
-        public void setName(String name) {
-            this.name = name;
+        public void setTitle(String title) {
+            this.title = title;
+        }
+    }
+
+    public static class BookMessage {
+        @JsonProperty private String isbn;
+        @JsonProperty private String title;
+        @JsonProperty private String author;
+        @JsonProperty private Date publicationDate;
+
+        public String getIsbn() {
+            return isbn;
         }
     }
 }

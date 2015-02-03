@@ -51,7 +51,8 @@ import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349.Pat
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr349.SizeAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.ApiDescriptionAnnotationIntrospector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.ApiNameAnnotationIntrospector;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.BodyTypeAnnotationIntrospector;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.ApiResponseAnnotationIntrospector;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.scriba.RequestPayloadAnnotationIntrospector;
 
 /**
  * Injector configuration.
@@ -75,9 +76,10 @@ public class ScribaInjector extends AbstractModule {
             ProducesAnnotationIntrospector.class, PathParamAnnotationIntrospector.class,
             FormParamAnnotationIntrospector.class, QueryParamAnnotationIntrospector.class,
             // Internal
-            BodyTypeAnnotationIntrospector.class, 
+            RequestPayloadAnnotationIntrospector.class, 
             // Custom
             ApiDescriptionAnnotationIntrospector.class, ApiNameAnnotationIntrospector.class, 
+            ApiResponseAnnotationIntrospector.class,
             // JSR 349
             SizeAnnotationIntrospector.class, PatternAnnotationIntrospector.class, 
             PastAnnotationIntrospector.class, NotNullAnnotationIntrospector.class,

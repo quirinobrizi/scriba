@@ -22,7 +22,7 @@ package eu.codesketch.rest.scriba.analyser.domain.service.introspector.jsr311;
 import javax.inject.Singleton;
 import javax.ws.rs.Path;
 
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 
@@ -46,7 +46,7 @@ public class PathAnnotationIntrospector implements Introspector {
      * java.lang.Object)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator annotation) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor annotation) {
         Path path = annotation.getWrappedAnnotationAs(Path.class);
         documentBuilder.addPathSegment(path.value(), annotation.level());
     }

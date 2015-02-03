@@ -24,7 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.OPTIONS;
 
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 
@@ -48,7 +48,7 @@ public class OptionsAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator annotation) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor annotation) {
         documentBuilder.setHttpMethod(HttpMethod.OPTIONS);
     }
 

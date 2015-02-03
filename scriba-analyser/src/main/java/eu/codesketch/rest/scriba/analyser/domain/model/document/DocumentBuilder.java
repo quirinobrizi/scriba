@@ -52,7 +52,8 @@ public class DocumentBuilder implements Cloneable {
     private Map<AnnotatedElement, Parameter> queryParameters;
     private List<String> consumables;
     private List<String> producible;
-    private Payload payload;
+    private Payload requestPayload;
+    private Payload responsePayload;
     private Name name;
     private Description description;
 
@@ -113,7 +114,7 @@ public class DocumentBuilder implements Cloneable {
         return this.pathParameters.containsKey(annotatedElement)
                         || this.formParameters.containsKey(annotatedElement)
                         || this.queryParameters.containsKey(annotatedElement)
-                        || this.payload.hasParameter(annotatedElement);
+                        || this.requestPayload.hasParameter(annotatedElement);
     }
 
     public Parameter getParameter(AnnotatedElement annotatedElement) {
@@ -130,7 +131,7 @@ public class DocumentBuilder implements Cloneable {
             if (null != answer) {
                 return answer;
             }
-            return this.payload.getParameter(annotatedElement);
+            return this.requestPayload.getParameter(annotatedElement);
         }
         throw new IllegalStateException(
                         String.format("requested annotated element %s has not been processed as a parameter, is the order for the Decorator correct??",
@@ -183,15 +184,22 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public DocumentBuilder addPayload(Payload payload) {
-        this.payload = payload;
+        this.requestPayload = payload;
         return this;
     }
 
-    public Payload getOrCreatePayload() {
-        if (null == this.payload) {
-            this.payload = new Payload();
+    public Payload getOrCreateRequestPayload() {
+        if (null == this.requestPayload) {
+            this.requestPayload = new Payload();
         }
-        return this.payload;
+        return this.requestPayload;
+    }
+
+    public Payload getOrCreateResponsePayload() {
+        if (null == this.responsePayload) {
+            this.responsePayload = new Payload();
+        }
+        return this.responsePayload;
     }
 
     public Document build() {
@@ -201,7 +209,8 @@ public class DocumentBuilder implements Cloneable {
                         .withPathParameters(new ArrayList<>(this.pathParameters.values()))
                         .withFormParameters(new ArrayList<>(this.formParameters.values()))
                         .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
-                        .withPayload(this.payload);
+                        .withRequestPayload(this.requestPayload)
+                        .withResponsePayload(this.responsePayload);
     }
 
     @Override
@@ -218,7 +227,7 @@ public class DocumentBuilder implements Cloneable {
     public String toString() {
         return "DocumentBuilder [httpMethod=" + httpMethod + ", pathSegments=" + pathSegments
                         + ", pathParameters=" + pathParameters + ", consumables=" + consumables
-                        + ", producible=" + producible + ", payload=" + payload + "]";
+                        + ", producible=" + producible + ", payload=" + requestPayload + "]";
     }
 
     private void setPathSegments(List<String> pathSegments) {
