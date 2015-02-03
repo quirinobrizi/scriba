@@ -142,7 +142,7 @@ public class AnalyserServiceImplTest {
     }
 
     public static class BookMessage {
-        @JsonProperty private String isbn;
+        @NotNull @JsonProperty private String isbn;
         @JsonProperty private String title;
         @JsonProperty private String author;
         @JsonProperty private Date publicationDate;

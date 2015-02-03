@@ -14,14 +14,16 @@ Analysing the following interface:
 
 ```java
 @Path("/store")
-@Consumes("application/json")
-@Produces("application/json")
-public static class BookStoreInterface {
+    @Consumes("application/json")
+    @Produces("application/json")
+    public static class BookStoreInterface {
     @GET
     @Path("/books")
     @ApiName("List books")
     @ApiDescription("Retrieves all books")
-    public void list() {
+    @ApiResponse(type = BookMessage.class)
+    public Response list() {
+        return null;
     }
     @POST
     @Path("/books")
@@ -43,7 +45,9 @@ public static class BookStoreInterface {
     @Path("/books/{bookId}")
     @ApiName("Get book")
     @ApiDescription("Allows retrieve information about a book")
-    public void findById(@PathParam("bookId") Long bookId) {
+    @ApiResponse(type = BookMessage.class)
+    public Response findById(@PathParam("bookId") Long bookId) {
+        return null;
     }
     @DELETE
     @Path("/books/{bookId}")
@@ -55,6 +59,7 @@ public static class BookStoreInterface {
     @Path("/books/minimal")
     @ApiName("Create minimal book")
     @ApiDescription("Allows create a new book with only its name")
+    @ApiResponse(type = BookMessage.class)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response addForm(
                     @Size(min = 1, max = 40) @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
@@ -79,6 +84,19 @@ public static class Book {
 }
 ```
 
+```java
+public static class BookMessage {
+    @NotNull @JsonProperty private String isbn;
+    @JsonProperty private String title;
+    @JsonProperty private String author;
+    @JsonProperty private Date publicationDate;
+          
+   public String getIsbn() {
+        return isbn;
+   }
+}
+```
+
 will produce:
 
 ```json
@@ -95,13 +113,45 @@ will produce:
         "defaultValue": "1",
         "nullable": true,
         "constraints": []
-    }]
+    }],
+    "requestPayload": {
+        "parameters": []
+    },
+    "responsePayload": {
+        "parameters": []
+    }
 }, {
     "httpMethod": "GET",
     "name": "List books",
     "path": "/store/books",
     "description": "Retrieves all books",
-    "produces": ["application/json"]
+    "produces": ["application/json"],
+    "requestPayload": {
+        "parameters": []
+    },
+    "responsePayload": {
+        "parameters": [{
+            "type": "string",
+            "name": "title",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "date",
+            "name": "publicationDate",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "string",
+            "name": "author",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "string",
+            "name": "isbn",
+            "nullable": false,
+            "constraints": ["element must not be null"]
+        }]
+    }
 }, {
     "httpMethod": "PUT",
     "name": "Update book",
@@ -115,10 +165,10 @@ will produce:
         "nullable": false,
         "constraints": ["element must not be null"]
     }],
-    "payload": {
+    "requestPayload": {
         "parameters": [{
             "type": "string",
-            "name": "name",
+            "name": "title",
             "nullable": true,
             "constraints": []
         }, {
@@ -130,8 +180,11 @@ will produce:
             "type": "date",
             "name": "publicationDate",
             "nullable": true,
-            "constraints": ["date must be in the past consodering calendar based on the current timezone and the current locale."]
+            "constraints": ["date must be in the past considering calendar based on the current timezone and the current locale."]
         }]
+    },
+    "responsePayload": {
+        "parameters": []
     }
 }, {
     "httpMethod": "GET",
@@ -144,7 +197,33 @@ will produce:
         "name": "bookId",
         "nullable": true,
         "constraints": []
-    }]
+    }],
+    "requestPayload": {
+        "parameters": []
+    },
+    "responsePayload": {
+        "parameters": [{
+            "type": "string",
+            "name": "title",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "date",
+            "name": "publicationDate",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "string",
+            "name": "author",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "string",
+            "name": "isbn",
+            "nullable": false,
+            "constraints": ["element must not be null"]
+        }]
+    }
 }, {
     "httpMethod": "POST",
     "name": "Create minimal book",
@@ -163,7 +242,33 @@ will produce:
         "name": "collection",
         "nullable": true,
         "constraints": []
-    }]
+    }],
+    "requestPayload": {
+        "parameters": []
+    },
+    "responsePayload": {
+        "parameters": [{
+            "type": "string",
+            "name": "title",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "date",
+            "name": "publicationDate",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "string",
+            "name": "author",
+            "nullable": true,
+            "constraints": []
+        }, {
+            "type": "string",
+            "name": "isbn",
+            "nullable": false,
+            "constraints": ["element must not be null"]
+        }]
+    }
 }, {
     "httpMethod": "POST",
     "name": "Store book",
@@ -171,10 +276,10 @@ will produce:
     "description": "Allows add a new book to the collection",
     "consumes": ["application/json", "application/xml"],
     "produces": ["application/json", "application/xml"],
-    "payload": {
+    "requestPayload": {
         "parameters": [{
             "type": "string",
-            "name": "name",
+            "name": "title",
             "nullable": true,
             "constraints": []
         }, {
@@ -186,8 +291,11 @@ will produce:
             "type": "date",
             "name": "publicationDate",
             "nullable": true,
-            "constraints": ["date must be in the past consodering calendar based on the current timezone and the current locale."]
+            "constraints": ["date must be in the past considering calendar based on the current timezone and the current locale."]
         }]
+    },
+    "responsePayload": {
+        "parameters": []
     }
 }]
 ```

@@ -64,6 +64,8 @@ public class DocumentBuilder implements Cloneable {
         this.queryParameters = new HashMap<>();
         this.consumables = new ArrayList<>();
         this.producible = new ArrayList<>();
+        this.requestPayload = new Payload();
+        this.responsePayload = new Payload();
     }
 
     public DocumentBuilder setName(Name name) {
@@ -114,7 +116,8 @@ public class DocumentBuilder implements Cloneable {
         return this.pathParameters.containsKey(annotatedElement)
                         || this.formParameters.containsKey(annotatedElement)
                         || this.queryParameters.containsKey(annotatedElement)
-                        || this.requestPayload.hasParameter(annotatedElement);
+                        || this.requestPayload.hasParameter(annotatedElement)
+                        || this.responsePayload.hasParameter(annotatedElement);
     }
 
     public Parameter getParameter(AnnotatedElement annotatedElement) {
@@ -131,7 +134,11 @@ public class DocumentBuilder implements Cloneable {
             if (null != answer) {
                 return answer;
             }
-            return this.requestPayload.getParameter(annotatedElement);
+            answer = this.requestPayload.getParameter(annotatedElement);
+            if (null != answer) {
+                return answer;
+            }
+            return this.responsePayload.getParameter(annotatedElement);
         }
         throw new IllegalStateException(
                         String.format("requested annotated element %s has not been processed as a parameter, is the order for the Decorator correct??",
