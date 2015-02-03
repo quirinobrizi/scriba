@@ -20,10 +20,10 @@ public class ReflectionHelperTest {
     @Test
     public void testGetAnnotations_annotatedBaseClass() {
         // act
-        List<eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator> annotations = getDecorators(AnnotatedBaseClass.class);
+        List<eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDecorators(AnnotatedBaseClass.class);
         // assert
         assertEquals(1, annotations.size());
-        eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator annotation = annotations.iterator().next();
+        eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor annotation = annotations.iterator().next();
         assertEquals(Path.class, annotation.annotationType());
         assertEquals(0, annotation.level());
     }
@@ -31,11 +31,11 @@ public class ReflectionHelperTest {
     @Test
     public void testGetAnnotations_annotatedClass() {
         // act
-        List<eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator> annotations = getDecorators(AnnotatedClass.class);
+        List<eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDecorators(AnnotatedClass.class);
         // assert
         assertEquals(2, annotations.size());
         int level = annotations.size() - 1;
-        for (eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator annotation : annotations) {
+        for (eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor annotation : annotations) {
             assertEquals(Path.class, annotation.annotationType());
             assertEquals(level--, annotation.level());
             Path path = annotation.getWrappedAnnotationAs(Path.class);

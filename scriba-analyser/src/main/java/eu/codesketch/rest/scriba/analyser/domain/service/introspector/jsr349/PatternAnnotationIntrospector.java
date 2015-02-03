@@ -26,7 +26,7 @@ import javax.validation.constraints.Pattern;
 import javax.ws.rs.Consumes;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.Parameter;
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 
@@ -53,7 +53,7 @@ public class PatternAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator decorator) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         Pattern pattern = decorator.getWrappedAnnotationAs(Pattern.class);
         Parameter parameter = documentBuilder.getParameter(decorator.annotatedElement());
         if (hasFlags(pattern)) {

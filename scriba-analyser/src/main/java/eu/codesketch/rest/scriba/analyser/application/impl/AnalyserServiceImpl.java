@@ -19,7 +19,8 @@
  */
 package eu.codesketch.rest.scriba.analyser.application.impl;
 
-import static eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator.decoratorOrderComparator;
+import static eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
+import static eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorHelper.introspect;
 import static eu.codesketch.rest.scriba.analyser.infrastructure.helper.ReflectionHelper.getAnnotatedMethods;
 import static eu.codesketch.rest.scriba.analyser.infrastructure.helper.ReflectionHelper.getDecorators;
 
@@ -36,10 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.codesketch.rest.scriba.analyser.application.AnalyserService;
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.Document;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManager;
 import eu.codesketch.rest.scriba.annotations.ApiDescription;
 import eu.codesketch.rest.scriba.annotations.ApiName;
@@ -93,12 +93,12 @@ public class AnalyserServiceImpl implements AnalyserService {
     private List<DocumentBuilder> collectAlldeclaredAnnotations(Class<?> clazz) {
         List<DocumentBuilder> builders = new ArrayList<>();
 
-        List<Decorator> typeDecorators = getDecorators(clazz);
+        List<Descriptor> typeDecorators = getDecorators(clazz);
         LOGGER.debug("retrieved type annotations {}", typeDecorators);
         DocumentBuilder documentBuilder = new DocumentBuilder();
         int level = 0;
-        for (Decorator decorator : typeDecorators) {
-            introspect(documentBuilder, decorator);
+        for (Descriptor decorator : typeDecorators) {
+            introspect(this.introspectorManager, documentBuilder, decorator);
             level = decorator.level();
         }
 
@@ -106,26 +106,16 @@ public class AnalyserServiceImpl implements AnalyserService {
         LOGGER.debug("retrieved methods {}", methods);
         level += 1;
         for (Method method : methods) {
-            List<Decorator> decorators = getDecorators(method, level);
-            Collections.sort(decorators, decoratorOrderComparator());
+            List<Descriptor> decorators = getDecorators(method, level);
+            Collections.sort(decorators, descriptorsOrderComparator());
             DocumentBuilder documentBuilderClone = documentBuilder.clone();
-            for (Decorator annotation : decorators) {
-                introspect(documentBuilderClone, annotation);
+            for (Descriptor annotation : decorators) {
+                introspect(this.introspectorManager, documentBuilderClone, annotation);
             }
             builders.add(documentBuilderClone);
         }
 
         LOGGER.debug("available document builders {}", builders);
         return builders;
-    }
-
-    private void introspect(DocumentBuilder documentBuilder, Decorator annotation) {
-        Introspector introspector = this.introspectorManager.introspector(annotation
-                        .annotationType());
-        if (null != introspector) {
-            introspector.instrospect(documentBuilder, annotation);
-        } else {
-            LOGGER.warn("unable instrospect {} as no valid introspector has been found", annotation);
-        }
     }
 }

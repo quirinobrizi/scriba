@@ -19,33 +19,45 @@
  */
 package eu.codesketch.rest.scriba.analyser.domain.service.introspector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 
 /**
- * Archetype for data introspection services.
+ * A simple helper class that allow to reduce introspector related code
+ * duplication.
  *
  * @author quirino.brizi
- * @since 29 Jan 2015
+ * @since 3 Feb 2015
  *
  */
-public interface Introspector {
+public abstract class IntrospectorHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntrospectorHelper.class);
+
+    private IntrospectorHelper() {
+    }
 
     /**
-     * introspect the provided value and populate accordingly the provided
-     * {@link DocumentBuilder}.
+     * Execute introspection based on the provided descriptor.
      * 
+     * @param introspectorManager
+     *            the introspector manager
      * @param documentBuilder
-     *            the builder to populate
+     *            the document builder to pass to the target
+     *            {@link Introspector}
      * @param descriptor
-     *            the introspect context
+     *            the introspection descriptor.
      */
-    void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor);
-
-    /**
-     * Declare the type this introspector is made for.
-     * 
-     * @return the type the introspector is made for.
-     */
-    Class<?> type();
+    public static void introspect(IntrospectorManager introspectorManager,
+                    DocumentBuilder documentBuilder, Descriptor descriptor) {
+        Introspector introspector = introspectorManager.introspector(descriptor.annotationType());
+        if (null != introspector) {
+            introspector.instrospect(documentBuilder, descriptor);
+        } else {
+            LOGGER.warn("unable instrospect {} as no valid introspector has been found", descriptor);
+        }
+    }
 }

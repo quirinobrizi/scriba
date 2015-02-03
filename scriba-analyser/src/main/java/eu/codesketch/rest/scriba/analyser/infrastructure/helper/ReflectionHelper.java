@@ -34,8 +34,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
-import eu.codesketch.rest.scriba.analyser.domain.service.introspector.BodyTypeAnnotation;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
+import eu.codesketch.rest.scriba.analyser.domain.service.introspector.RequestPayloadAnnotation;
 
 /**
  * Simple utility class for working with the reflection API and handling
@@ -57,11 +57,11 @@ public abstract class ReflectionHelper {
      * 
      * @param clazz
      *            the class to introspect
-     * @return a list containing all the declare {@link Decorator} or an empty
+     * @return a list containing all the declare {@link Descriptor} or an empty
      *         list if none are found.
      */
-    public static List<Decorator> getDecorators(Class<?> clazz) {
-        List<Decorator> decorators = new ArrayList<>();
+    public static List<Descriptor> getDecorators(Class<?> clazz) {
+        List<Descriptor> decorators = new ArrayList<>();
         List<Class<?>> targets = getClassChain(clazz);
         int levels = targets.size() - 1;
         for (int i = levels; i >= 0; i--) {
@@ -72,18 +72,18 @@ public abstract class ReflectionHelper {
     }
 
     /**
-     * Collect all the {@link Decorator}s declared on the provided method.
+     * Collect all the {@link Descriptor}s declared on the provided method.
      * 
      * @param method
      *            the method to inspect
      * @param level
      *            the level that the method has on the chain of path
      *            inheritance.
-     * @return a list containing all the declare {@link Decorator} or an empty
+     * @return a list containing all the declare {@link Descriptor} or an empty
      *         list if none are found.
      */
-    public static final List<Decorator> getDecorators(Method method, int level) {
-        List<Decorator> decorators = new ArrayList<>();
+    public static final List<Descriptor> getDecorators(Method method, int level) {
+        List<Descriptor> decorators = new ArrayList<>();
         decorators.addAll(toDecorators(method.getDeclaredAnnotations(), level, method));
         for (Parameter parameter : method.getParameters()) {
             Annotation[] annotations = parameter.getAnnotations();
@@ -91,14 +91,14 @@ public abstract class ReflectionHelper {
                 decorators.addAll(toDecorators(annotations, level, parameter));
             } else {
                 LOGGER.debug("found not annotated parameter fallback to custom BodyTypeAnnotation");
-                decorators.add(new Decorator(level, new BodyTypeAnnotation(), parameter));
+                decorators.add(new Descriptor(level, new RequestPayloadAnnotation(), parameter));
             }
         }
         return decorators;
     }
 
-    public static List<Decorator> getAllDeclaredDecorators(Class<?> clazz) {
-        List<Decorator> decorators = new ArrayList<>();
+    public static List<Descriptor> extractAllDescriptors(Class<?> clazz) {
+        List<Descriptor> decorators = new ArrayList<>();
         List<Class<?>> targets = getClassChain(clazz);
         int levels = targets.size() - 1;
         for (int i = levels; i >= 0; i--) {
@@ -122,40 +122,40 @@ public abstract class ReflectionHelper {
      *            the target class
      * @param annotation
      *            the target annotation
-     * @return a list containing all the declare {@link Decorator} or an empty
+     * @return a list containing all the declare {@link Descriptor} or an empty
      *         list if none are found.
      */
-    public static <A extends Annotation> List<Decorator> getDecoratorsForAnnotation(Class<?> clazz,
+    public static <A extends Annotation> List<Descriptor> getDecoratorsForAnnotation(Class<?> clazz,
                     Class<A> annotation) {
-        List<Decorator> decorators = new ArrayList<>();
+        List<Descriptor> decorators = new ArrayList<>();
         List<Class<?>> targets = getClassChain(clazz);
         int levels = targets.size() - 1;
         for (int i = levels; i >= 0; i--) {
             Class<?> target = targets.get(i);
             A typeAnnotation = target.getDeclaredAnnotation(annotation);
             if (null != typeAnnotation) {
-                decorators.add(new Decorator(i, typeAnnotation, target));
+                decorators.add(new Descriptor(i, typeAnnotation, target));
             }
             for (Method method : target.getDeclaredMethods()) {
                 A methodAnnotation = method.getDeclaredAnnotation(annotation);
                 if (null != methodAnnotation) {
-                    decorators.add(new Decorator(i + 1, methodAnnotation, method));
+                    decorators.add(new Descriptor(i + 1, methodAnnotation, method));
                 }
             }
             for (Field field : target.getDeclaredFields()) {
                 A fieldAnnotation = field.getDeclaredAnnotation(annotation);
                 if (null != fieldAnnotation) {
-                    decorators.add(new Decorator(i + 1, fieldAnnotation, field));
+                    decorators.add(new Descriptor(i + 1, fieldAnnotation, field));
                 }
             }
         }
         return decorators;
     }
 
-    public static final <A extends Annotation> Decorator getDecoratorsForAnnotation(
+    public static final <A extends Annotation> Descriptor getDecoratorsForAnnotation(
                     AccessibleObject accessibleObject, Class<A> annotation) {
         A declaredAnnotation = accessibleObject.getDeclaredAnnotation(annotation);
-        return new Decorator(0, declaredAnnotation, accessibleObject);
+        return new Descriptor(0, declaredAnnotation, accessibleObject);
 
     }
 
@@ -221,11 +221,11 @@ public abstract class ReflectionHelper {
         // && method.getName().matches("^set[A-Z].*");
     }
 
-    private static List<Decorator> toDecorators(Annotation[] annotations, int level,
+    private static List<Descriptor> toDecorators(Annotation[] annotations, int level,
                     AnnotatedElement annotatedElement) {
-        List<Decorator> decorators = new ArrayList<>();
+        List<Descriptor> decorators = new ArrayList<>();
         for (Annotation annotation : annotations) {
-            decorators.add(new Decorator(level, annotation, annotatedElement));
+            decorators.add(new Descriptor(level, annotation, annotatedElement));
         }
         return decorators;
     }

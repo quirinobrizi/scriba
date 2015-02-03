@@ -25,7 +25,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 
 import eu.codesketch.rest.scriba.analyser.domain.model.Parameter;
-import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Decorator;
+import eu.codesketch.rest.scriba.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.rest.scriba.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector;
 
@@ -52,7 +52,7 @@ public class QueryParamAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Decorator decorator) {
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         QueryParam queryParam = decorator.getWrappedAnnotationAs(QueryParam.class);
         java.lang.reflect.Parameter parameter = decorator
                         .annotatedElementAs(java.lang.reflect.Parameter.class);
