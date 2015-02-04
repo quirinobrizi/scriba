@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.codesketch.rest.scriba</groupId>
+		<artifactId>scriba</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>scriba-test</artifactId>
+	<name>Scriba Test</name>
+	<description>A simple project for testing out scriba-maven-plugin</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.codesketch.rest.scriba</groupId>
+			<artifactId>scriba-annotations</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>eu.codesketch.rest.scriba</groupId>
+				<artifactId>scriba-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>document</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<interfaces>
+						<interface>eu.codesketch.scriba.test.BookInterface</interface>
+					</interfaces>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
