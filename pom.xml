@@ -10,6 +10,8 @@
 	<modules>
 		<module>scriba-analyser</module>
 		<module>scriba-annotations</module>
+		<module>scriba-maven-plugin</module>
+		<module>scriba-test</module>
 	</modules>
 
 	<properties>
