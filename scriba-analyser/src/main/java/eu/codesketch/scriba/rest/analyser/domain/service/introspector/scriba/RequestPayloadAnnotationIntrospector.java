@@ -72,13 +72,13 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
-        java.lang.reflect.Parameter parameter = descriptor
-                        .annotatedElementAs(java.lang.reflect.Parameter.class);
+        eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter parameter = descriptor
+                        .annotatedElementAs(eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter.class);
         LOGGER.debug("processing annotated element of type {}", parameter.getClass());
         Class<?> parameterType = descriptor.getParameterType();
         if (parameterType.isPrimitive() || String.class.equals(parameterType)) {
             documentBuilder.getOrCreateRequestPayload().addParameter(descriptor.annotatedElement(),
-                            new Parameter(parameterType.getTypeName(), null));
+                            new Parameter(parameterType.getName(), null));
         } else {
             doInspectBody(documentBuilder, parameterType);
             if (documentBuilder.getOrCreateRequestPayload().getParameters().isEmpty()) {
@@ -86,7 +86,7 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
                 for (Field field : getFields(parameterType)) {
                     documentBuilder.getOrCreateRequestPayload().addParameter(
                                     descriptor.annotatedElement(),
-                                    new Parameter(field.getType().getTypeName(), field.getName()));
+                                    new Parameter(field.getType().getName(), field.getName()));
                 }
             }
         }

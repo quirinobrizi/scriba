@@ -54,12 +54,12 @@ public class FormParamAnnotationIntrospector implements Introspector {
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         FormParam pathParam = decorator.getWrappedAnnotationAs(FormParam.class);
-        java.lang.reflect.Parameter parameter = decorator
-                        .annotatedElementAs(java.lang.reflect.Parameter.class);
+        eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter parameter = decorator
+                        .annotatedElementAs(eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter.class);
         DefaultValue defaultValueAnnotation = parameter.getAnnotation(DefaultValue.class);
         String defaultValue = null != defaultValueAnnotation ? defaultValueAnnotation.value()
                         : null;
-        String parameterType = decorator.getParameterType().getTypeName();
+        String parameterType = decorator.getParameterType().getName();
         documentBuilder.putFormParameter(decorator.annotatedElement(), new Parameter(parameterType,
                         pathParam.value(), defaultValue));
     }

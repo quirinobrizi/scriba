@@ -25,7 +25,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.RequestPayloadAnnotation;
+import eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter;
 
 /**
  * Simple utility class for working with the reflection API and handling
@@ -85,8 +85,12 @@ public abstract class ReflectionHelper {
     public static final List<Descriptor> getDecorators(Method method, int level) {
         List<Descriptor> decorators = new ArrayList<>();
         decorators.addAll(toDecorators(method.getDeclaredAnnotations(), level, method));
-        for (Parameter parameter : method.getParameters()) {
-            Annotation[] annotations = parameter.getAnnotations();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+		for (int i=0; i<parameterTypes.length;i++) {
+			Class<?> parameterType = parameterTypes[i];
+			Annotation[] annotations = parameterAnnotations[i];
+        	Parameter parameter = new Parameter(i, parameterType, annotations);
             if (annotations.length > 0) {
                 decorators.addAll(toDecorators(annotations, level, parameter));
             } else {
@@ -132,18 +136,18 @@ public abstract class ReflectionHelper {
         int levels = targets.size() - 1;
         for (int i = levels; i >= 0; i--) {
             Class<?> target = targets.get(i);
-            A typeAnnotation = target.getDeclaredAnnotation(annotation);
+            A typeAnnotation = target.getAnnotation(annotation);
             if (null != typeAnnotation) {
                 decorators.add(new Descriptor(i, typeAnnotation, target));
             }
             for (Method method : target.getDeclaredMethods()) {
-                A methodAnnotation = method.getDeclaredAnnotation(annotation);
+                A methodAnnotation = method.getAnnotation(annotation);
                 if (null != methodAnnotation) {
                     decorators.add(new Descriptor(i + 1, methodAnnotation, method));
                 }
             }
             for (Field field : target.getDeclaredFields()) {
-                A fieldAnnotation = field.getDeclaredAnnotation(annotation);
+                A fieldAnnotation = field.getAnnotation(annotation);
                 if (null != fieldAnnotation) {
                     decorators.add(new Descriptor(i + 1, fieldAnnotation, field));
                 }
@@ -154,7 +158,7 @@ public abstract class ReflectionHelper {
 
     public static final <A extends Annotation> Descriptor getDecoratorsForAnnotation(
                     AccessibleObject accessibleObject, Class<A> annotation) {
-        A declaredAnnotation = accessibleObject.getDeclaredAnnotation(annotation);
+        A declaredAnnotation = accessibleObject.getAnnotation(annotation);
         return new Descriptor(0, declaredAnnotation, accessibleObject);
 
     }

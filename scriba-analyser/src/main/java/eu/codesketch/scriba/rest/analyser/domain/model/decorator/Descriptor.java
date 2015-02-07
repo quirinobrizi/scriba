@@ -24,7 +24,6 @@ import static java.lang.Boolean.FALSE;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Comparator;
 
 /**
@@ -97,8 +96,8 @@ public class Descriptor {
     }
 
     public Class<?> getParameterType() {
-        if (Parameter.class.isAssignableFrom(this.annotatedElement.getClass())) {
-            return Parameter.class.cast(this.annotatedElement).getType();
+        if (eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter.class.isAssignableFrom(this.annotatedElement.getClass())) {
+            return eu.codesketch.scriba.rest.analyser.infrastructure.reflect.Parameter.class.cast(this.annotatedElement).getType();
         }
         return null;
     }

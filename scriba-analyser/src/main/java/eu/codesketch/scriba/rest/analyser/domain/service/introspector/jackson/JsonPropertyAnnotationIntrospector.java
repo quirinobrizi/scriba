@@ -70,14 +70,14 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
         String parameterTypeName;
         Field field = descriptor.annotatedElementAs(Field.class);
         if (null != field) {
-            parameterTypeName = field.getType().getTypeName();
+            parameterTypeName = field.getType().getName();
             propertyName = "".equals(propertyName) ? field.getName() : propertyName;
         } else {
             Method method = descriptor.annotatedElementAs(Method.class);
             if (isSetter(method)) {
-                parameterTypeName = method.getParameterTypes()[0].getTypeName();
+                parameterTypeName = method.getParameterTypes()[0].getName();
             } else {
-                parameterTypeName = method.getReturnType().getTypeName();
+                parameterTypeName = method.getReturnType().getName();
             }
             propertyName = "".equals(propertyName) ? getPropertyNamefromSetterOrGetter(method
                             .getName()) : propertyName;

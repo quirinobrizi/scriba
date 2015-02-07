@@ -79,7 +79,7 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
             for (Field field : getFields(apiResponse.type())) {
                 documentBuilder.getOrCreateResponsePayload().addParameter(
                                 descriptor.annotatedElement(),
-                                new Parameter(field.getType().getTypeName(), field.getName()));
+                                new Parameter(field.getType().getName(), field.getName()));
             }
         }
     }
