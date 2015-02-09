@@ -129,7 +129,7 @@ public abstract class ReflectionHelper {
      * @return a list containing all the declare {@link Descriptor} or an empty
      *         list if none are found.
      */
-    public static <A extends Annotation> List<Descriptor> getDecoratorsForAnnotation(Class<?> clazz,
+    public static <A extends Annotation> List<Descriptor> getDescriptorsForAnnotation(Class<?> clazz,
                     Class<A> annotation) {
         List<Descriptor> decorators = new ArrayList<>();
         List<Class<?>> targets = getClassChain(clazz);

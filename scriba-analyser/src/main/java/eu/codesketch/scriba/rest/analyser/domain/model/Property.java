@@ -35,14 +35,15 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  * @since 29 Jan 2015
  *
  */
-@JsonSerialize(include = Inclusion.NON_NULL)
-public class Parameter {
+@JsonSerialize(include = Inclusion.NON_EMPTY)
+public class Property {
 
     @JsonProperty private String type;
     @JsonProperty private String name;
     @JsonProperty private String defaultValue;
     @JsonProperty private Boolean nullable;
     @JsonProperty private List<String> constraints;
+    @JsonProperty private List<Property> properties;
 
     /**
      * Create a new parameter setting its type and name;
@@ -52,26 +53,31 @@ public class Parameter {
      * @param name
      *            the parameter name
      */
-    public Parameter(String type, String name) {
+    public Property(String type, String name) {
         this(type, name, null);
     }
 
-    public Parameter(String type, String name, String defaultValue) {
+    public Property(String type, String name, String defaultValue) {
         this.type = normalizeParameterType(type);
         this.name = name;
         this.defaultValue = defaultValue;
         this.nullable = Boolean.TRUE;
         this.constraints = new ArrayList<>();
+        this.properties = new ArrayList<>();
     }
 
-    public Parameter nullable(Boolean nullable) {
+    public Property nullable(Boolean nullable) {
         this.nullable = nullable;
         return this;
     }
 
-    public Parameter constraints(String constraints) {
+    public Property constraints(String constraints) {
         this.constraints.add(constraints);
         return this;
+    }
+
+    public void addProperty(Property property) {
+        this.properties.add(property);
     }
 
     @Override
@@ -93,7 +99,7 @@ public class Parameter {
         if (!getClass().equals(obj.getClass())) {
             return false;
         }
-        Parameter other = (Parameter) obj;
+        Property other = (Property) obj;
         return new EqualsBuilder().append(this.type, other.type).append(this.name, other.name)
                         .build();
     }

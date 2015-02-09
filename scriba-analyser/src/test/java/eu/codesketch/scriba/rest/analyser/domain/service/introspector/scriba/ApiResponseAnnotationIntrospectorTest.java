@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.Payload;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
@@ -37,7 +37,7 @@ public class ApiResponseAnnotationIntrospectorTest {
     @Mock private ApiResponse apiResponse;
     @Mock private Introspector introspector;
     @Mock private Payload payload;
-    @Mock private List<Parameter> parameterList;
+    @Mock private List<Property> parameterList;
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -51,7 +51,7 @@ public class ApiResponseAnnotationIntrospectorTest {
         when(apiResponse.type()).thenReturn(clazz);
         when(introspectorManager.introspector(fieldAnnotationType)).thenReturn(introspector);
         when(documentBuilder.getOrCreateRequestPayload()).thenReturn(payload);
-        when(payload.getParameters()).thenReturn(parameterList);
+        when(payload.getProperties()).thenReturn(parameterList);
         when(parameterList.isEmpty()).thenReturn(FALSE);
         // act
         testObj.instrospect(documentBuilder, descriptor);

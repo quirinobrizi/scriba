@@ -23,7 +23,7 @@ import javax.inject.Singleton;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
@@ -53,7 +53,7 @@ public class SizeAnnotationIntrospector implements Introspector {
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         Size size = decorator.getWrappedAnnotationAs(Size.class);
-        Parameter parameter = documentBuilder.getParameter(decorator.annotatedElement());
+        Property parameter = documentBuilder.getParameter(decorator.annotatedElement());
         parameter.constraints(String.format(
                         "element size must be higher or equal to %d and lower or equal to %d",
                         size.min(), size.max()));

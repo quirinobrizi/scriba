@@ -37,34 +37,34 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class Payload {
 
-    private Map<AnnotatedElement, Parameter> parameters = new HashMap<>();
+    private Map<AnnotatedElement, Property> properties = new HashMap<>();
 
-    public Payload addParameter(AnnotatedElement annotatedElement, Parameter parameter) {
-        if (!this.parameters.containsValue(parameter)) {
-            this.parameters.put(annotatedElement, parameter);
+    public Payload addParameter(AnnotatedElement annotatedElement, Property parameter) {
+        if (!this.properties.containsValue(parameter)) {
+            this.properties.put(annotatedElement, parameter);
         }
         return this;
     }
 
     @JsonProperty
-    public List<Parameter> getParameters() {
-        return new ArrayList<>(parameters.values());
+    public List<Property> getProperties() {
+        return new ArrayList<>(properties.values());
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Payload [parameters=").append(parameters).append("]");
+        builder.append("Payload [properties=").append(properties).append("]");
         return builder.toString();
     }
 
     @JsonIgnore
-    public Boolean hasParameter(AnnotatedElement annotatedElement) {
-        return this.parameters.containsKey(annotatedElement);
+    public Boolean hasProperty(AnnotatedElement annotatedElement) {
+        return this.properties.containsKey(annotatedElement);
     }
 
     @JsonIgnore
-    public Parameter getParameter(AnnotatedElement annotatedElement) {
-        return this.parameters.get(annotatedElement);
+    public Property getProperty(AnnotatedElement annotatedElement) {
+        return this.properties.get(annotatedElement);
     }
 }

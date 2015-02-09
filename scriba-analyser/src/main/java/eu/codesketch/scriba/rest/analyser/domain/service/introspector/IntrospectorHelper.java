@@ -19,9 +19,19 @@
  */
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector;
 
+import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.getFields;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Currency;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 
@@ -36,6 +46,11 @@ import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 public abstract class IntrospectorHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntrospectorHelper.class);
+
+    private static final List<Class<?>> PRIMITIVE_WRAPPER = Arrays.asList(String.class,
+                    Boolean.class, Byte.class, Character.class, Short.class, Integer.class,
+                    Long.class, Double.class, Float.class, Void.class, Date.class, Currency.class,
+                    List.class, Map.class);
 
     private IntrospectorHelper() {
     }
@@ -58,6 +73,19 @@ public abstract class IntrospectorHelper {
             introspector.instrospect(documentBuilder, descriptor);
         } else {
             LOGGER.warn("unable instrospect {} as no valid introspector has been found", descriptor);
+        }
+    }
+
+    public static Property extractProperty(Field field) {
+        Class<?> type = field.getType();
+        if (type.isPrimitive() || PRIMITIVE_WRAPPER.contains(type)) {
+            return new Property(type.getName(), field.getName());
+        } else {
+            Property property = new Property(null, field.getName());
+            for (Field innerField : getFields(type)) {
+                property.addProperty(extractProperty(innerField));
+            }
+            return property;
         }
     }
 }

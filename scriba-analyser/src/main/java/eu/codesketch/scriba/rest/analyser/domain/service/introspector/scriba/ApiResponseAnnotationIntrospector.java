@@ -20,6 +20,7 @@
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.scriba;
 
 import static eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
+import static eu.codesketch.scriba.rest.analyser.domain.service.introspector.IntrospectorHelper.extractProperty;
 import static eu.codesketch.scriba.rest.analyser.domain.service.introspector.IntrospectorHelper.introspect;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.extractAllDescriptors;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.getFields;
@@ -36,7 +37,6 @@ import javax.ws.rs.Consumes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
@@ -74,12 +74,11 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         ApiResponse apiResponse = descriptor.getWrappedAnnotationAs(ApiResponse.class);
         doInspectBody(documentBuilder, apiResponse.type());
-        if (documentBuilder.getOrCreateRequestPayload().getParameters().isEmpty()) {
+        if (documentBuilder.getOrCreateRequestPayload().getProperties().isEmpty()) {
             LOGGER.debug("no decorators has been found inspect fields");
             for (Field field : getFields(apiResponse.type())) {
                 documentBuilder.getOrCreateResponsePayload().addParameter(
-                                descriptor.annotatedElement(),
-                                new Parameter(field.getType().getName(), field.getName()));
+                                descriptor.annotatedElement(), extractProperty(field));
             }
         }
     }

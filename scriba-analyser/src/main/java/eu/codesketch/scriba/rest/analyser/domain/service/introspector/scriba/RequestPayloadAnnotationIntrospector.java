@@ -20,6 +20,7 @@
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.scriba;
 
 import static eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
+import static eu.codesketch.scriba.rest.analyser.domain.service.introspector.IntrospectorHelper.extractProperty;
 import static eu.codesketch.scriba.rest.analyser.domain.service.introspector.IntrospectorHelper.introspect;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.extractAllDescriptors;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.getFields;
@@ -36,7 +37,7 @@ import javax.ws.rs.Consumes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
@@ -78,15 +79,14 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
         Class<?> parameterType = descriptor.getParameterType();
         if (parameterType.isPrimitive() || String.class.equals(parameterType)) {
             documentBuilder.getOrCreateRequestPayload().addParameter(descriptor.annotatedElement(),
-                            new Parameter(parameterType.getName(), null));
+                            new Property(parameterType.getName(), null));
         } else {
             doInspectBody(documentBuilder, parameterType);
-            if (documentBuilder.getOrCreateRequestPayload().getParameters().isEmpty()) {
+            if (documentBuilder.getOrCreateRequestPayload().getProperties().isEmpty()) {
                 LOGGER.debug("no decorators has been found inspect fields");
                 for (Field field : getFields(parameterType)) {
                     documentBuilder.getOrCreateRequestPayload().addParameter(
-                                    descriptor.annotatedElement(),
-                                    new Parameter(field.getType().getName(), field.getName()));
+                                    descriptor.annotatedElement(), extractProperty(field));
                 }
             }
         }
@@ -110,5 +110,4 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
             introspect(this.introspectorManager, documentBuilder, descriptor);
         }
     }
-
 }

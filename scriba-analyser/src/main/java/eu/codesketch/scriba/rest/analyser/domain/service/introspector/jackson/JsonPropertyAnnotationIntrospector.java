@@ -19,6 +19,7 @@
  */
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.jackson;
 
+import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.getDescriptorsForAnnotation;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.isSetter;
 
 import java.lang.reflect.Field;
@@ -27,13 +28,14 @@ import java.lang.reflect.Method;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
 import eu.codesketch.scriba.rest.analyser.domain.model.Payload;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
@@ -65,28 +67,9 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
-        JsonProperty jsonProperty = descriptor.getWrappedAnnotationAs(JsonProperty.class);
-        String propertyName = jsonProperty.value();
-        String parameterTypeName;
-        Field field = descriptor.annotatedElementAs(Field.class);
-        if (null != field) {
-            parameterTypeName = field.getType().getName();
-            propertyName = "".equals(propertyName) ? field.getName() : propertyName;
-        } else {
-            Method method = descriptor.annotatedElementAs(Method.class);
-            if (isSetter(method)) {
-                parameterTypeName = method.getParameterTypes()[0].getName();
-            } else {
-                parameterTypeName = method.getReturnType().getName();
-            }
-            propertyName = "".equals(propertyName) ? getPropertyNamefromSetterOrGetter(method
-                            .getName()) : propertyName;
-        }
-        LOGGER.debug("JsonProperty annotation has defined property name {}", propertyName);
         Payload payload = descriptor.isResponseInspected() ? documentBuilder
                         .getOrCreateResponsePayload() : documentBuilder.getOrCreateRequestPayload();
-        payload.addParameter(descriptor.annotatedElement(), new Parameter(parameterTypeName,
-                        propertyName));
+        payload.addParameter(descriptor.annotatedElement(), extractProperty(descriptor));
     }
 
     /*
@@ -97,6 +80,37 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
     @Override
     public Class<JsonProperty> type() {
         return JsonProperty.class;
+    }
+
+    private Property extractProperty(Descriptor descriptor) {
+        JsonProperty jsonProperty = descriptor.getWrappedAnnotationAs(JsonProperty.class);
+        String propertyName = jsonProperty.value();
+        Class<?> parameterType;
+        Field field = descriptor.annotatedElementAs(Field.class);
+        if (null != field) {
+            parameterType = field.getType();
+            propertyName = "".equals(propertyName) ? field.getName() : propertyName;
+        } else {
+            Method method = descriptor.annotatedElementAs(Method.class);
+            if (isSetter(method)) {
+                parameterType = method.getParameterTypes()[0];
+            } else {
+                parameterType = method.getReturnType();
+            }
+            propertyName = "".equals(propertyName) ? getPropertyNamefromSetterOrGetter(method
+                            .getName()) : propertyName;
+        }
+        LOGGER.debug("JsonProperty annotation has defined property name {}", propertyName);
+        if (!ClassUtils.isPrimitiveOrWrapper(parameterType)) {
+            Property property = new Property(null, propertyName);
+            for (Descriptor innerDescriptor : getDescriptorsForAnnotation(parameterType,
+                            JsonProperty.class)) {
+                property.addProperty(extractProperty(innerDescriptor));
+            }
+            return property;
+        } else {
+            return new Property(parameterType.getName(), propertyName);
+        }
     }
 
     private String getPropertyNamefromSetterOrGetter(String input) {

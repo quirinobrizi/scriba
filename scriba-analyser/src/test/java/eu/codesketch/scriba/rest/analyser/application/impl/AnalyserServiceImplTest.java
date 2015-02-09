@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import com.google.inject.Guice;
 
-import eu.codesketch.scriba.rest.analyser.application.impl.AnalyserServiceImpl;
 import eu.codesketch.scriba.rest.analyser.domain.model.HttpMethods;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.Document;
 import eu.codesketch.scriba.rest.analyser.infrastructure.guice.ScribaInjector;
@@ -128,28 +127,32 @@ public class AnalyserServiceImplTest {
 
     public static class Book {
         @JsonProperty private String author;
-        private String title;
+        private Title title;
         @Past @JsonProperty private Date publicationDate;
 
         @JsonProperty("title")
-        public String getTitle() {
+        public Title getTitle() {
             return title;
         }
 
         @JsonProperty
-        public void setTitle(String title) {
+        public void setTitle(Title title) {
             this.title = title;
         }
     }
 
     public static class BookMessage {
         @NotNull @JsonProperty private String isbn;
-        @JsonProperty private String title;
+        @JsonProperty private Title title;
         @JsonProperty private String author;
         @JsonProperty private Date publicationDate;
 
         public String getIsbn() {
             return isbn;
         }
+    }
+
+    public static class Title {
+        @JsonProperty String title;
     }
 }

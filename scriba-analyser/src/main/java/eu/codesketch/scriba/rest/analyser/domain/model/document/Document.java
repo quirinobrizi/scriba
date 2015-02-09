@@ -30,7 +30,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import eu.codesketch.scriba.rest.analyser.domain.model.Description;
 import eu.codesketch.scriba.rest.analyser.domain.model.HttpMethods;
 import eu.codesketch.scriba.rest.analyser.domain.model.Name;
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.Path;
 import eu.codesketch.scriba.rest.analyser.domain.model.Payload;
 
@@ -50,9 +50,9 @@ public class Document {
     private Description description;
     @JsonProperty private List<String> consumes;
     @JsonProperty private List<String> produces;
-    @JsonProperty private List<Parameter> pathParameters;
-    @JsonProperty private List<Parameter> formParameters;
-    @JsonProperty private List<Parameter> queryParameters;
+    @JsonProperty private List<Property> pathParameters;
+    @JsonProperty private List<Property> formParameters;
+    @JsonProperty private List<Property> queryParameters;
     @JsonProperty private Payload requestPayload;
     @JsonProperty private Payload responsePayload;
 
@@ -107,17 +107,17 @@ public class Document {
         return this;
     }
 
-    public Document withPathParameters(List<Parameter> pathParameters) {
+    public Document withPathParameters(List<Property> pathParameters) {
         this.pathParameters = pathParameters;
         return this;
     }
 
-    public Document withFormParameters(List<Parameter> formParameters) {
+    public Document withFormParameters(List<Property> formParameters) {
         this.formParameters = formParameters;
         return this;
     }
 
-    public Document withQueryParameters(List<Parameter> queryParameters) {
+    public Document withQueryParameters(List<Property> queryParameters) {
         this.queryParameters = queryParameters;
         return this;
     }

@@ -32,7 +32,7 @@ import java.util.Map;
 
 import eu.codesketch.scriba.rest.analyser.domain.model.Description;
 import eu.codesketch.scriba.rest.analyser.domain.model.Name;
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.Path;
 import eu.codesketch.scriba.rest.analyser.domain.model.Payload;
 
@@ -47,9 +47,9 @@ public class DocumentBuilder implements Cloneable {
 
     private String httpMethod;
     private List<String> pathSegments;
-    private Map<AnnotatedElement, Parameter> pathParameters;
-    private Map<AnnotatedElement, Parameter> formParameters;
-    private Map<AnnotatedElement, Parameter> queryParameters;
+    private Map<AnnotatedElement, Property> pathParameters;
+    private Map<AnnotatedElement, Property> formParameters;
+    private Map<AnnotatedElement, Property> queryParameters;
     private List<String> consumables;
     private List<String> producible;
     private Payload requestPayload;
@@ -89,17 +89,17 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public DocumentBuilder putPathParameter(AnnotatedElement annotatedElement,
-                    Parameter pathParameter) {
+                    Property pathParameter) {
         this.pathParameters.put(annotatedElement, pathParameter);
         return this;
     }
 
-    public DocumentBuilder putFormParameter(AnnotatedElement annotatedElement, Parameter parameter) {
+    public DocumentBuilder putFormParameter(AnnotatedElement annotatedElement, Property parameter) {
         this.formParameters.put(annotatedElement, parameter);
         return this;
     }
 
-    public DocumentBuilder putQueryParameter(AnnotatedElement annotatedElement, Parameter parameter) {
+    public DocumentBuilder putQueryParameter(AnnotatedElement annotatedElement, Property parameter) {
         this.queryParameters.put(annotatedElement, parameter);
         return this;
     }
@@ -116,13 +116,13 @@ public class DocumentBuilder implements Cloneable {
         return this.pathParameters.containsKey(annotatedElement)
                         || this.formParameters.containsKey(annotatedElement)
                         || this.queryParameters.containsKey(annotatedElement)
-                        || this.requestPayload.hasParameter(annotatedElement)
-                        || this.responsePayload.hasParameter(annotatedElement);
+                        || this.requestPayload.hasProperty(annotatedElement)
+                        || this.responsePayload.hasProperty(annotatedElement);
     }
 
-    public Parameter getParameter(AnnotatedElement annotatedElement) {
+    public Property getParameter(AnnotatedElement annotatedElement) {
         if (hasParameterForAnnotatedElement(annotatedElement)) {
-            Parameter answer = this.pathParameters.get(annotatedElement);
+            Property answer = this.pathParameters.get(annotatedElement);
             if (null != answer) {
                 return answer;
             }
@@ -134,11 +134,11 @@ public class DocumentBuilder implements Cloneable {
             if (null != answer) {
                 return answer;
             }
-            answer = this.requestPayload.getParameter(annotatedElement);
+            answer = this.requestPayload.getProperty(annotatedElement);
             if (null != answer) {
                 return answer;
             }
-            return this.responsePayload.getParameter(annotatedElement);
+            return this.responsePayload.getProperty(annotatedElement);
         }
         throw new IllegalStateException(
                         String.format("requested annotated element %s has not been processed as a parameter, is the order for the Decorator correct??",

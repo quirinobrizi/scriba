@@ -24,7 +24,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
@@ -60,7 +60,7 @@ public class FormParamAnnotationIntrospector implements Introspector {
         String defaultValue = null != defaultValueAnnotation ? defaultValueAnnotation.value()
                         : null;
         String parameterType = decorator.getParameterType().getName();
-        documentBuilder.putFormParameter(decorator.annotatedElement(), new Parameter(parameterType,
+        documentBuilder.putFormParameter(decorator.annotatedElement(), new Property(parameterType,
                         pathParam.value(), defaultValue));
     }
 

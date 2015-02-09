@@ -23,7 +23,7 @@ import javax.inject.Singleton;
 import javax.validation.constraints.Past;
 import javax.ws.rs.Consumes;
 
-import eu.codesketch.scriba.rest.analyser.domain.model.Parameter;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
 import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
@@ -52,7 +52,7 @@ public class PastAnnotationIntrospector implements Introspector {
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
-        Parameter parameter = documentBuilder.getParameter(decorator.annotatedElement());
+        Property parameter = documentBuilder.getParameter(decorator.annotatedElement());
         parameter.constraints("date must be in the past considering calendar based on the current timezone and the current locale.");
     }
 
