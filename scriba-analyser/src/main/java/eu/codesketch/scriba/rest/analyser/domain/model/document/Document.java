@@ -29,10 +29,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import eu.codesketch.scriba.rest.analyser.domain.model.Description;
 import eu.codesketch.scriba.rest.analyser.domain.model.HttpMethods;
+import eu.codesketch.scriba.rest.analyser.domain.model.Message;
 import eu.codesketch.scriba.rest.analyser.domain.model.Name;
-import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.Path;
 import eu.codesketch.scriba.rest.analyser.domain.model.Payload;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 
 /**
  * Represent the documentation information about an API.
@@ -55,6 +56,7 @@ public class Document {
     @JsonProperty private List<Property> queryParameters;
     @JsonProperty private Payload requestPayload;
     @JsonProperty private Payload responsePayload;
+    @JsonProperty private List<Message> messages;
 
     private Document(String httpMethod) {
         this.httpMethod = lookupHttpMethod(httpMethod);
@@ -132,6 +134,11 @@ public class Document {
         return this;
     }
 
+    public Document withMessages(List<Message> messages) {
+        this.messages = messages;
+        return this;
+    }
+
     public static Document createNewDocument(String httpMethod) {
         return new Document(httpMethod);
     }
@@ -146,4 +153,5 @@ public class Document {
                         .append(", payload=").append(requestPayload).append("]");
         return builder.toString();
     }
+
 }

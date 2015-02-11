@@ -31,10 +31,11 @@ import java.util.List;
 import java.util.Map;
 
 import eu.codesketch.scriba.rest.analyser.domain.model.Description;
+import eu.codesketch.scriba.rest.analyser.domain.model.Message;
 import eu.codesketch.scriba.rest.analyser.domain.model.Name;
-import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.Path;
 import eu.codesketch.scriba.rest.analyser.domain.model.Payload;
+import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 
 /**
  * A builder for {@link Document} class.
@@ -52,6 +53,7 @@ public class DocumentBuilder implements Cloneable {
     private Map<AnnotatedElement, Property> queryParameters;
     private List<String> consumables;
     private List<String> producible;
+    private List<Message> messages;
     private Payload requestPayload;
     private Payload responsePayload;
     private Name name;
@@ -64,6 +66,7 @@ public class DocumentBuilder implements Cloneable {
         this.queryParameters = new HashMap<>();
         this.consumables = new ArrayList<>();
         this.producible = new ArrayList<>();
+        this.messages = new ArrayList<>();
         this.requestPayload = new Payload();
         this.responsePayload = new Payload();
     }
@@ -185,6 +188,11 @@ public class DocumentBuilder implements Cloneable {
         return this;
     }
 
+    public DocumentBuilder addMessage(Message message) {
+        this.messages.add(message);
+        return this;
+    }
+
     public DocumentBuilder setProducible(List<String> producible) {
         this.producible.addAll(producible);
         return this;
@@ -217,7 +225,7 @@ public class DocumentBuilder implements Cloneable {
                         .withFormParameters(new ArrayList<>(this.formParameters.values()))
                         .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
                         .withRequestPayload(this.requestPayload)
-                        .withResponsePayload(this.responsePayload);
+                        .withResponsePayload(this.responsePayload).withMessages(this.messages);
     }
 
     @Override

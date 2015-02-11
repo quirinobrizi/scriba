@@ -19,6 +19,8 @@
  */
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.jsr349;
 
+import static eu.codesketch.scriba.rest.analyser.domain.model.Message.createMessageForBadRequest;
+
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -26,7 +28,6 @@ import javax.ws.rs.Consumes;
 import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
-import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
 
 /**
  * Introspect {@link Consumes} annotation and populate the provided
@@ -40,7 +41,7 @@ import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspect
  *
  */
 @Singleton
-public class NotNullAnnotationIntrospector implements Introspector {
+public class NotNullAnnotationIntrospector extends AbstractJSR349AnnotationIntrospector {
 
     /*
      * (non-Javadoc)
@@ -51,9 +52,12 @@ public class NotNullAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
-        Property parameter = documentBuilder.getParameter(decorator.annotatedElement());
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
+        NotNull annotation = descriptor.getWrappedAnnotationAs(type());
+        Property parameter = documentBuilder.getParameter(descriptor.annotatedElement());
         parameter.nullable(Boolean.FALSE).constraints("element must not be null");
+        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
+                        descriptor)));
     }
 
     /*

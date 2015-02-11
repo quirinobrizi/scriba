@@ -19,6 +19,7 @@
  */
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.jsr349;
 
+import static eu.codesketch.scriba.rest.analyser.domain.model.Message.createMessageForBadRequest;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import javax.inject.Singleton;
@@ -28,7 +29,6 @@ import javax.ws.rs.Consumes;
 import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
-import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
 
 /**
  * Introspect {@link Consumes} annotation and populate the provided
@@ -42,7 +42,7 @@ import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspect
  *
  */
 @Singleton
-public class PatternAnnotationIntrospector implements Introspector {
+public class PatternAnnotationIntrospector extends AbstractJSR349AnnotationIntrospector {
 
     /*
      * (non-Javadoc)
@@ -53,9 +53,10 @@ public class PatternAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
-        Pattern pattern = decorator.getWrappedAnnotationAs(Pattern.class);
-        Property parameter = documentBuilder.getParameter(decorator.annotatedElement());
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
+        Pattern annotation = descriptor.getWrappedAnnotationAs(type());
+        Pattern pattern = descriptor.getWrappedAnnotationAs(Pattern.class);
+        Property parameter = documentBuilder.getParameter(descriptor.annotatedElement());
         if (hasFlags(pattern)) {
             parameter.constraints(String.format(
                             "value must match the specified regular expression %s with flags %s",
@@ -65,6 +66,8 @@ public class PatternAnnotationIntrospector implements Introspector {
                             "value must match the specified regular expression %s",
                             pattern.regexp()));
         }
+        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
+                        descriptor)));
     }
 
     /*

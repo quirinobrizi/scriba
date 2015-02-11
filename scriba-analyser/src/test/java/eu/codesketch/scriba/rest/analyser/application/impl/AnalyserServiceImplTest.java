@@ -119,7 +119,7 @@ public class AnalyserServiceImplTest {
         @ApiResponse(type = BookMessage.class)
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response addForm(
-                        @Size(min = 1, max = 40) @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
+                        @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
                         @QueryParam("collection") Long collection) {
             return null;
         }

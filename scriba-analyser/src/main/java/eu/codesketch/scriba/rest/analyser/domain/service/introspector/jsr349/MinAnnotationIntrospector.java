@@ -22,7 +22,7 @@ package eu.codesketch.scriba.rest.analyser.domain.service.introspector.jsr349;
 import static eu.codesketch.scriba.rest.analyser.domain.model.Message.createMessageForBadRequest;
 
 import javax.inject.Singleton;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.Min;
 import javax.ws.rs.Consumes;
 
 import eu.codesketch.scriba.rest.analyser.domain.model.Property;
@@ -41,7 +41,7 @@ import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
  *
  */
 @Singleton
-public class PastAnnotationIntrospector extends AbstractJSR349AnnotationIntrospector {
+public class MinAnnotationIntrospector extends AbstractJSR349AnnotationIntrospector {
 
     /*
      * (non-Javadoc)
@@ -53,9 +53,11 @@ public class PastAnnotationIntrospector extends AbstractJSR349AnnotationIntrospe
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
-        Past annotation = descriptor.getWrappedAnnotationAs(type());
+        Min annotation = descriptor.getWrappedAnnotationAs(type());
         Property parameter = documentBuilder.getParameter(descriptor.annotatedElement());
-        parameter.constraints("date must be in the past considering calendar based on the current timezone and the current locale.");
+        parameter.constraints(String.format(
+                        "value must be higher or equal to the specified minimum %d",
+                        annotation.value()));
         documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
                         descriptor)));
     }
@@ -66,8 +68,8 @@ public class PastAnnotationIntrospector extends AbstractJSR349AnnotationIntrospe
      * @see eu.codesketch.rest.scriba.analyser.introspector.Introspector#type()
      */
     @Override
-    public Class<Past> type() {
-        return Past.class;
+    public Class<Min> type() {
+        return Min.class;
     }
 
 }

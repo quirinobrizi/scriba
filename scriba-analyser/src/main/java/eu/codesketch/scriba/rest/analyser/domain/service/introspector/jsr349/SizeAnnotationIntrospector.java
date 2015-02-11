@@ -19,6 +19,8 @@
  */
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.jsr349;
 
+import static eu.codesketch.scriba.rest.analyser.domain.model.Message.createMessageForBadRequest;
+
 import javax.inject.Singleton;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
@@ -26,7 +28,6 @@ import javax.ws.rs.Consumes;
 import eu.codesketch.scriba.rest.analyser.domain.model.Property;
 import eu.codesketch.scriba.rest.analyser.domain.model.decorator.Descriptor;
 import eu.codesketch.scriba.rest.analyser.domain.model.document.DocumentBuilder;
-import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspector;
 
 /**
  * Introspect {@link Consumes} annotation and populate the provided
@@ -40,7 +41,7 @@ import eu.codesketch.scriba.rest.analyser.domain.service.introspector.Introspect
  *
  */
 @Singleton
-public class SizeAnnotationIntrospector implements Introspector {
+public class SizeAnnotationIntrospector extends AbstractJSR349AnnotationIntrospector {
 
     /*
      * (non-Javadoc)
@@ -51,12 +52,15 @@ public class SizeAnnotationIntrospector implements Introspector {
      * java.lang.Object, int)
      */
     @Override
-    public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
-        Size size = decorator.getWrappedAnnotationAs(Size.class);
-        Property parameter = documentBuilder.getParameter(decorator.annotatedElement());
+    public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
+        Size annotation = descriptor.getWrappedAnnotationAs(type());
+        Size size = descriptor.getWrappedAnnotationAs(Size.class);
+        Property parameter = documentBuilder.getParameter(descriptor.annotatedElement());
         parameter.constraints(String.format(
                         "element size must be higher or equal to %d and lower or equal to %d",
                         size.min(), size.max()));
+        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
+                        descriptor)));
     }
 
     /*
