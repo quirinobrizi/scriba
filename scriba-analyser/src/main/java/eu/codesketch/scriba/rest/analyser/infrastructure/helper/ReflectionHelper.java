@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,11 +89,11 @@ public abstract class ReflectionHelper {
         decorators.addAll(toDecorators(method.getDeclaredAnnotations(), level, method));
         Class<?>[] parameterTypes = method.getParameterTypes();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-		for (int i=0; i<parameterTypes.length;i++) {
-			Class<?> parameterType = parameterTypes[i];
-			Annotation[] annotations = parameterAnnotations[i];
-        	Parameter parameter = new Parameter(i, parameterType, annotations);
-            if (annotations.length > 0) {
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class<?> parameterType = parameterTypes[i];
+            Annotation[] annotations = parameterAnnotations[i];
+            Parameter parameter = new Parameter(i, parameterType, annotations);
+            if (methodIsAnnotatedButNotWithValidOnly(annotations)) {
                 decorators.addAll(toDecorators(annotations, level, parameter));
             } else {
                 LOGGER.debug("found not annotated parameter fallback to custom BodyTypeAnnotation");
@@ -129,8 +131,8 @@ public abstract class ReflectionHelper {
      * @return a list containing all the declare {@link Descriptor} or an empty
      *         list if none are found.
      */
-    public static <A extends Annotation> List<Descriptor> getDescriptorsForAnnotation(Class<?> clazz,
-                    Class<A> annotation) {
+    public static <A extends Annotation> List<Descriptor> getDescriptorsForAnnotation(
+                    Class<?> clazz, Class<A> annotation) {
         List<Descriptor> decorators = new ArrayList<>();
         List<Class<?>> targets = getClassChain(clazz);
         int levels = targets.size() - 1;
@@ -222,7 +224,6 @@ public abstract class ReflectionHelper {
         return Modifier.isPublic(method.getModifiers())
                         && method.getReturnType().equals(void.class)
                         && method.getParameterTypes().length == 1;
-        // && method.getName().matches("^set[A-Z].*");
     }
 
     private static List<Descriptor> toDecorators(Annotation[] annotations, int level,
@@ -232,5 +233,14 @@ public abstract class ReflectionHelper {
             decorators.add(new Descriptor(level, annotation, annotatedElement));
         }
         return decorators;
+    }
+
+    private static boolean methodIsAnnotatedButNotWithValidOnly(Annotation[] annotations) {
+        if (annotations.length > 1) {
+            return true;
+        } else if (annotations.length == 1 && !Valid.class.equals(annotations[0].annotationType())) {
+            return true;
+        }
+        return false;
     }
 }

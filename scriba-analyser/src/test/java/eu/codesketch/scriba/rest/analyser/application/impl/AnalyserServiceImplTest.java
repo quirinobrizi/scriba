@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
@@ -76,12 +77,13 @@ public class AnalyserServiceImplTest {
         }
 
         @POST
+        @Valid
         @Path("/books")
         @ApiName("Store book")
         @ApiDescription("Allows add a new book to the collection")
         @Consumes({ "application/json", "application/xml" })
         @Produces({ "application/json", "application/xml" })
-        public void add(Book book) {
+        public void add(@Valid Book book) {
 
         }
 
