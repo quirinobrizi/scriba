@@ -19,6 +19,7 @@
  */
 package eu.codesketch.scriba.rest.analyser.domain.service.introspector.jackson;
 
+import static eu.codesketch.scriba.rest.analyser.domain.service.introspector.IntrospectorHelper.isPrimitiveOrWrapper;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.getDescriptorsForAnnotation;
 import static eu.codesketch.scriba.rest.analyser.infrastructure.helper.ReflectionHelper.isSetter;
 
@@ -28,7 +29,6 @@ import java.lang.reflect.Method;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.slf4j.Logger;
@@ -101,7 +101,7 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
                             .getName()) : propertyName;
         }
         LOGGER.debug("JsonProperty annotation has defined property name {}", propertyName);
-        if (!ClassUtils.isPrimitiveOrWrapper(parameterType)) {
+        if (!isPrimitiveOrWrapper(parameterType)) {
             Property property = new Property(null, propertyName);
             for (Descriptor innerDescriptor : getDescriptorsForAnnotation(parameterType,
                             JsonProperty.class)) {

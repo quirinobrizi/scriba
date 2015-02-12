@@ -78,7 +78,7 @@ public abstract class IntrospectorHelper {
 
     public static Property extractProperty(Field field) {
         Class<?> type = field.getType();
-        if (type.isPrimitive() || PRIMITIVE_WRAPPER.contains(type)) {
+        if (isPrimitiveOrWrapper(type)) {
             return new Property(type.getName(), field.getName());
         } else {
             Property property = new Property(null, field.getName());
@@ -87,5 +87,9 @@ public abstract class IntrospectorHelper {
             }
             return property;
         }
+    }
+
+    public static boolean isPrimitiveOrWrapper(Class<?> type) {
+        return type.isPrimitive() || PRIMITIVE_WRAPPER.contains(type);
     }
 }
