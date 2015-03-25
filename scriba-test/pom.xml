@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.codesketch.rest.scriba</groupId>
+		<groupId>codesketch.scriba</groupId>
 		<artifactId>scriba</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -16,7 +16,7 @@
 			<artifactId>jsr311-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>eu.codesketch.rest.scriba</groupId>
+			<groupId>codesketch.scriba</groupId>
 			<artifactId>scriba-annotations</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -33,7 +33,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>eu.codesketch.rest.scriba</groupId>
+				<groupId>codesketch.scriba</groupId>
 				<artifactId>scriba-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 				<executions>
@@ -46,7 +46,7 @@
 				</executions>
 				<configuration>
 					<interfaces>
-						<interface>eu.codesketch.scriba.test.BookInterface</interface>
+						<interface>codesketch.scriba.test.BookInterface</interface>
 					</interfaces>
 				</configuration>
 			</plugin>
