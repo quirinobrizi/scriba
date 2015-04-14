@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codesketch.scriba.analyser.application.AnalyserService;
+import codesketch.scriba.analyser.domain.model.Environment;
+import codesketch.scriba.analyser.domain.model.ServiceDescriptor;
 import codesketch.scriba.analyser.domain.model.document.Document;
 import codesketch.scriba.analyser.infrastructure.guice.ScribaInjector;
 
@@ -52,7 +54,7 @@ public class Scriba {
         this.mapper = new ObjectMapper();
     }
 
-    public String document(List<Class<?>> interfaces) {
+    public String document(List<Class<?>> interfaces, List<Environment> environments, String version) {
         AnalyserService analyser = Guice.createInjector(new ScribaInjector()).getInstance(
                         AnalyserService.class);
         List<Document> documents = new ArrayList<>();
@@ -60,12 +62,12 @@ public class Scriba {
             LOGGER.info("analysing class {}", target);
             documents.addAll(analyser.analyse(target));
         }
-        return serialize(documents);
+        return serialize(new ServiceDescriptor(version, environments, documents));
     }
 
-    private String serialize(List<Document> documents) {
+    private String serialize(ServiceDescriptor serviceDescriptor) {
         try {
-            return mapper.writeValueAsString(documents);
+            return mapper.writeValueAsString(serviceDescriptor);
         } catch (IOException e) {
             LOGGER.error("unable serialize documents");
             throw new RuntimeException(e);

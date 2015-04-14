@@ -48,6 +48,13 @@
 					<interfaces>
 						<interface>codesketch.scriba.test.BookInterface</interface>
 					</interfaces>
+					<environments>
+						<environment>
+							<name>test</name>
+							<endpoint>http://test.endpoint.org</endpoint>
+						</environment>
+					</environments>
+					<!-- <targetUrl>http://test.ep.org/docs</targetUrl> -->
 				</configuration>
 			</plugin>
 		</plugins>

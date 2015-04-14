@@ -40,6 +40,10 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.WriterFactory;
 
 import codesketch.scriba.analyser.Scriba;
+import codesketch.scriba.analyser.domain.model.Environment;
+
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 /**
  * The main Mojo.
@@ -53,6 +57,7 @@ public class ScribaMojo extends AbstractMojo {
 
     @Parameter private List<String> interfaces;
     @Parameter private URL targetUrl;
+    @Parameter private List<Environment> environments;
 
     /**
      * @parameter default-value="${project}"
@@ -68,19 +73,38 @@ public class ScribaMojo extends AbstractMojo {
             getLog().warn(message);
             throw new MojoFailureException(message);
         } else {
-            report(new Scriba().document(interfaces()));
+            report(new Scriba().document(interfaces(), environments, project.getVersion()));
         }
     }
 
-    private void report(String document) throws MojoFailureException {
-        Writer writer = null;
+    private void report(String data) throws MojoFailureException {
+        if (targetUrlHasBeenProvided() && targetUrlIsNotFile()) {
+            try {
+                Unirest.post(targetUrl.toExternalForm()).body(data).asJson();
+            } catch (UnirestException e) {
+                throw new MojoFailureException(String.format(
+                                "can't send results to remote host [%s]", targetUrl), e);
+            } finally {
+                shutdownSilently();
+            }
+        } else {
+            Writer writer = null;
+            try {
+                writer = WriterFactory.newPlatformWriter(getOutputFile());
+                writer.write(data);
+            } catch (IOException e) {
+                throw new MojoFailureException("can't write results", e);
+            } finally {
+                closeSilently(writer);
+            }
+        }
+    }
+
+    private void shutdownSilently() {
         try {
-            writer = WriterFactory.newPlatformWriter(getOutputFile());
-            writer.write(document);
+            Unirest.shutdown();
         } catch (IOException e) {
-            throw new MojoFailureException("can't write results", e);
-        } finally {
-            closeSilently(writer);
+            getLog().warn("unable shutdown unirest!");
         }
     }
 
@@ -129,5 +153,13 @@ public class ScribaMojo extends AbstractMojo {
         } else {
             return FileUtils.toFile(targetUrl);
         }
+    }
+
+    private boolean targetUrlHasBeenProvided() {
+        return null != targetUrl;
+    }
+
+    private boolean targetUrlIsNotFile() {
+        return !targetUrl.getProtocol().equalsIgnoreCase("file");
     }
 }
