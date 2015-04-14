@@ -27,7 +27,7 @@ Analysing the following interface:
 @Path("books")
 public interface BookInterface {
 	
-	 @GET
+	@GET
     @Produces(APPLICATION_JSON)
     @ApiName("List books")
     @ApiDescription("List all present books")
