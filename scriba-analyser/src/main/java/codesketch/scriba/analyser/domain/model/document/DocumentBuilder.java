@@ -26,9 +26,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import codesketch.scriba.analyser.domain.model.Description;
 import codesketch.scriba.analyser.domain.model.Message;
@@ -55,7 +57,7 @@ public class DocumentBuilder implements Cloneable {
     private Map<AnnotatedElement, Property> queryParameters;
     private List<String> consumables;
     private List<String> producible;
-    private List<Message> messages;
+    private Set<Message> messages;
     private Payload requestPayload;
     private Payload responsePayload;
     private Name name;
@@ -70,7 +72,7 @@ public class DocumentBuilder implements Cloneable {
         this.queryParameters = new HashMap<>();
         this.consumables = new ArrayList<>();
         this.producible = new ArrayList<>();
-        this.messages = new ArrayList<>();
+        this.messages = new HashSet<>();
         this.requestPayload = new Payload();
         this.responsePayload = new Payload();
     }
@@ -250,7 +252,8 @@ public class DocumentBuilder implements Cloneable {
                         .withFormParameters(new ArrayList<>(this.formParameters.values()))
                         .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
                         .withRequestPayload(this.requestPayload)
-                        .withResponsePayload(this.responsePayload).withMessages(this.messages);
+                        .withResponsePayload(this.responsePayload)
+                        .withMessages(new ArrayList<>(this.messages));
     }
 
     @Override
