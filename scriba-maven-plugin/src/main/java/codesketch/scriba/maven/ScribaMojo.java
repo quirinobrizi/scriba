@@ -80,7 +80,7 @@ public class ScribaMojo extends AbstractMojo {
     private void report(String data) throws MojoFailureException {
         if (targetUrlHasBeenProvided() && targetUrlIsNotFile()) {
             try {
-                Unirest.post(targetUrl.toExternalForm()).body(data).asJson();
+                Unirest.put(targetUrl.toExternalForm()).body(data).asJson();
             } catch (UnirestException e) {
                 throw new MojoFailureException(String.format(
                                 "can't send results to remote host [%s]", targetUrl), e);

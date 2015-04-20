@@ -32,6 +32,7 @@ import codesketch.scriba.analyser.domain.model.Environment;
 import codesketch.scriba.analyser.domain.model.ServiceDescriptor;
 import codesketch.scriba.analyser.domain.model.document.Document;
 import codesketch.scriba.analyser.infrastructure.guice.ScribaInjector;
+import codesketch.scriba.analyser.infrastructure.message.ServiceDescriptorMessage;
 
 import com.google.inject.Guice;
 
@@ -67,7 +68,9 @@ public class Scriba {
 
     private String serialize(ServiceDescriptor serviceDescriptor) {
         try {
-            return mapper.writeValueAsString(serviceDescriptor);
+            String content = mapper.writeValueAsString(serviceDescriptor);
+            return mapper.writeValueAsString(new ServiceDescriptorMessage(serviceDescriptor
+                            .getVersion(), content));
         } catch (IOException e) {
             LOGGER.error("unable serialize documents");
             throw new RuntimeException(e);
