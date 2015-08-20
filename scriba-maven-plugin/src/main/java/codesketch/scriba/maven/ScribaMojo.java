@@ -19,6 +19,8 @@
  */
 package codesketch.scriba.maven;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -42,8 +44,11 @@ import org.codehaus.plexus.util.WriterFactory;
 import codesketch.scriba.analyser.Scriba;
 import codesketch.scriba.analyser.domain.model.Environment;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
 /**
  * The main Mojo.
@@ -57,6 +62,7 @@ public class ScribaMojo extends AbstractMojo {
 
     @Parameter private List<String> interfaces;
     @Parameter private URL targetUrl;
+    @Parameter private String accessToken;
     @Parameter private List<Environment> environments;
 
     /**
@@ -79,24 +85,37 @@ public class ScribaMojo extends AbstractMojo {
 
     private void report(String data) throws MojoFailureException {
         if (targetUrlHasBeenProvided() && targetUrlIsNotFile()) {
-            try {
-                Unirest.put(targetUrl.toExternalForm()).body(data).asJson();
-            } catch (UnirestException e) {
-                throw new MojoFailureException(String.format(
-                                "can't send results to remote host [%s]", targetUrl), e);
-            } finally {
-                shutdownSilently();
-            }
+            sendResultDocumentViaHttp(data);
         } else {
-            Writer writer = null;
-            try {
-                writer = WriterFactory.newPlatformWriter(getOutputFile());
-                writer.write(data);
-            } catch (IOException e) {
-                throw new MojoFailureException("can't write results", e);
-            } finally {
-                closeSilently(writer);
+            writeResultDocumentToFileSystem(data);
+        }
+    }
+
+    private void writeResultDocumentToFileSystem(String data) throws MojoFailureException {
+        Writer writer = null;
+        try {
+            writer = WriterFactory.newPlatformWriter(getOutputFile());
+            writer.write(data);
+        } catch (IOException e) {
+            throw new MojoFailureException("can't write results", e);
+        } finally {
+            closeSilently(writer);
+        }
+    }
+
+    private void sendResultDocumentViaHttp(String data) throws MojoFailureException {
+        try {
+            HttpRequestWithBody httpRequestWithBody = Unirest.put(targetUrl.toExternalForm());
+            if (null != accessToken) {
+                httpRequestWithBody.header("Authorization", format("Bearer %s", accessToken));
             }
+            HttpResponse<JsonNode> httpResponse = httpRequestWithBody.body(data).asJson();
+            getLog().info(httpResponse.getBody().toString());
+        } catch (UnirestException e) {
+            throw new MojoFailureException(String.format("can't send results to remote host [%s]",
+                            targetUrl), e);
+        } finally {
+            shutdownSilently();
         }
     }
 

@@ -7,7 +7,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>scriba-test</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>Scriba Test</name>
 	<description>A simple project for testing out scriba-maven-plugin</description>
 
@@ -55,7 +54,7 @@
 							<endpoint>http://test.endpoint.org</endpoint>
 						</environment>
 					</environments>
-					<targetUrl>http://www.whiteboard.com/api/whiteboard/projects/1/documents/1</targetUrl>
+					<targetUrl>file://test.json</targetUrl>
 				</configuration>
 			</plugin>
 		</plugins>
