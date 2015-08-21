@@ -3,6 +3,7 @@
 *.war
 *.ear
 *.class
+*.iml
 
 # eclipse specific git ignore
 *.pydevproject
@@ -19,6 +20,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+.idea
 
 # External tool builders
 .externalToolBuilders/

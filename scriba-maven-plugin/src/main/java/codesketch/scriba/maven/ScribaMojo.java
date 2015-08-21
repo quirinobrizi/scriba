@@ -19,7 +19,17 @@
  */
 package codesketch.scriba.maven;
 
-import static java.lang.String.format;
+import codesketch.scriba.analyser.Scriba;
+import codesketch.scriba.analyser.domain.model.Environment;
+import codesketch.scriba.maven.model.Credential;
+import codesketch.scriba.maven.writer.HttpWriter;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.WriterFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,41 +39,20 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.WriterFactory;
-
-import codesketch.scriba.analyser.Scriba;
-import codesketch.scriba.analyser.domain.model.Environment;
-
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequestWithBody;
-
 /**
  * The main Mojo.
  *
  * @author quirino.brizi
  * @since 3 Feb 2015
- * 
  */
 @Mojo(name = "document", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.COMPILE)
 public class ScribaMojo extends AbstractMojo {
 
     @Parameter private List<String> interfaces;
     @Parameter private URL targetUrl;
-    @Parameter private String accessToken;
+    @Parameter private Credential credential;
     @Parameter private List<Environment> environments;
+    @Parameter private URL authenticateUrl;
 
     /**
      * @parameter default-value="${project}"
@@ -104,27 +93,8 @@ public class ScribaMojo extends AbstractMojo {
     }
 
     private void sendResultDocumentViaHttp(String data) throws MojoFailureException {
-        try {
-            HttpRequestWithBody httpRequestWithBody = Unirest.put(targetUrl.toExternalForm());
-            if (null != accessToken) {
-                httpRequestWithBody.header("Authorization", format("Bearer %s", accessToken));
-            }
-            HttpResponse<JsonNode> httpResponse = httpRequestWithBody.body(data).asJson();
-            getLog().info(httpResponse.getBody().toString());
-        } catch (UnirestException e) {
-            throw new MojoFailureException(String.format("can't send results to remote host [%s]",
-                            targetUrl), e);
-        } finally {
-            shutdownSilently();
-        }
-    }
-
-    private void shutdownSilently() {
-        try {
-            Unirest.shutdown();
-        } catch (IOException e) {
-            getLog().warn("unable shutdown unirest!");
-        }
+        codesketch.scriba.maven.writer.Writer writer = new HttpWriter(getLog(), credential, targetUrl, authenticateUrl);
+        writer.write(data);
     }
 
     private void closeSilently(Writer writer) {
