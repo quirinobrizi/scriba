@@ -1,21 +1,5 @@
 package codesketch.scriba.analyser.domain.service.introspector.scriba;
 
-import static java.lang.Boolean.FALSE;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import codesketch.scriba.analyser.domain.model.Payload;
 import codesketch.scriba.analyser.domain.model.Property;
 import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
@@ -23,6 +7,21 @@ import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 import codesketch.scriba.analyser.domain.service.introspector.Introspector;
 import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
 import codesketch.scriba.annotations.ApiResponse;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.List;
+
+import static java.lang.Boolean.FALSE;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApiResponseAnnotationIntrospectorTest {
@@ -39,7 +38,7 @@ public class ApiResponseAnnotationIntrospectorTest {
     @Mock private List<Property> parameterList;
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void testInstrospect() {
         Class annotationType = ApiResponse.class;
         Class fieldAnnotationType = JsonProperty.class;
@@ -49,7 +48,7 @@ public class ApiResponseAnnotationIntrospectorTest {
         when(descriptor.annotationType()).thenReturn(annotationType);
         when(apiResponse.type()).thenReturn(clazz);
         when(introspectorManager.introspector(fieldAnnotationType)).thenReturn(introspector);
-        when(documentBuilder.getOrCreateResponsePayload()).thenReturn(payload);
+        when(documentBuilder.getOrCreateResponsePayload(apiResponse.type(), "")).thenReturn(payload);
         when(payload.getProperties()).thenReturn(parameterList);
         when(parameterList.isEmpty()).thenReturn(FALSE);
         // act

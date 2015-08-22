@@ -1,50 +1,38 @@
 /**
- * Scriba is a software library that aims to analyse REST interface and 
+ * Scriba is a software library that aims to analyse REST interface and
  * produce machine readable documentation.
- *
+ * <p/>
  * Copyright (C) 2015  Quirino Brizi (quirino.brizi@gmail.com)
- *
+ * <p/>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package codesketch.scriba.analyser.domain.model.document;
 
-import static codesketch.scriba.analyser.domain.model.document.Document.createNewDocument;
-import static codesketch.scriba.analyser.infrastructure.helper.StringHelper.join;
+import codesketch.scriba.analyser.domain.model.*;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import codesketch.scriba.analyser.domain.model.Description;
-import codesketch.scriba.analyser.domain.model.Message;
-import codesketch.scriba.analyser.domain.model.Name;
-import codesketch.scriba.analyser.domain.model.Path;
-import codesketch.scriba.analyser.domain.model.Payload;
-import codesketch.scriba.analyser.domain.model.Property;
+import static codesketch.scriba.analyser.domain.model.document.Document.createNewDocument;
+import static codesketch.scriba.analyser.infrastructure.helper.StringHelper.join;
 
 /**
  * A builder for {@link Document} class.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015
- *
  */
 public class DocumentBuilder implements Cloneable {
 
@@ -73,8 +61,6 @@ public class DocumentBuilder implements Cloneable {
         this.consumables = new ArrayList<>();
         this.producible = new ArrayList<>();
         this.messages = new HashSet<>();
-        this.requestPayload = new Payload();
-        this.responsePayload = new Payload();
     }
 
     public DocumentBuilder setName(Name name) {
@@ -98,7 +84,7 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public DocumentBuilder putCookieParameter(AnnotatedElement annotatedElement,
-                    Property pathParameter) {
+                                              Property pathParameter) {
         this.cookieParameters.put(annotatedElement, pathParameter);
         return this;
     }
@@ -109,7 +95,7 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public DocumentBuilder putPathParameter(AnnotatedElement annotatedElement,
-                    Property pathParameter) {
+                                            Property pathParameter) {
         this.pathParameters.put(annotatedElement, pathParameter);
         return this;
     }
@@ -126,63 +112,86 @@ public class DocumentBuilder implements Cloneable {
 
     /**
      * Verifies if a parameter is present for the annotated element.
-     * 
-     * @param annotatedElement
-     *            the annotated element to check
+     *
+     * @param descriptor the annotated element to check
      * @return true if the a parameter exists for the annotated element as a one
-     *         of form, path, or query parameter, false otherwise.
+     * of form, path, or query parameter, false otherwise.
      */
-    public Boolean hasParameterForAnnotatedElement(AnnotatedElement annotatedElement) {
-        return this.pathParameters.containsKey(annotatedElement)
-                        || this.formParameters.containsKey(annotatedElement)
-                        || this.queryParameters.containsKey(annotatedElement)
-                        || this.requestPayload.hasProperty(annotatedElement)
-                        || this.responsePayload.hasProperty(annotatedElement)
-                        || this.cookieParameters.containsKey(annotatedElement)
-                        || this.headerParameters.containsKey(annotatedElement);
+    public Boolean hasParameterForAnnotatedElement(Descriptor descriptor) {
+        AnnotatedElement element = descriptor.annotatedElement();
+
+        boolean found = this.pathParameters.containsKey(element)
+                || this.formParameters.containsKey(element)
+                || this.queryParameters.containsKey(element)
+                || this.cookieParameters.containsKey(element)
+                || this.headerParameters.containsKey(element);
+        if (!found) {
+            if (descriptor.isResponseInspected()) {
+                if (!found) {
+                    if (null != this.responsePayload) {
+                        return this.responsePayload.isOfType(element.getClass()) || this.responsePayload.hasProperty(element);
+                    }
+                }
+            } else {
+                if (null != this.requestPayload) {
+                    found |= this.requestPayload.isOfType(element.getClass()) || this.requestPayload.hasProperty(element);
+                }
+            }
+        }
+        return true;
     }
 
-    public Property getParameter(AnnotatedElement annotatedElement) {
-        if (hasParameterForAnnotatedElement(annotatedElement)) {
-            Property answer = this.pathParameters.get(annotatedElement);
+    public ObjectElement getParameter(Descriptor descriptor) {
+        AnnotatedElement element = descriptor.annotatedElement();
+        Property answer = this.pathParameters.get(element);
+        if (null != answer) {
+            return answer;
+        }
+        answer = this.formParameters.get(element);
+        if (null != answer) {
+            return answer;
+        }
+        answer = this.queryParameters.get(element);
+        if (null != answer) {
+            return answer;
+        }
+        answer = this.cookieParameters.get(element);
+        if (null != answer) {
+            return answer;
+        }
+        answer = this.headerParameters.get(element);
+        if (null != answer) {
+            return answer;
+        }
+        if(descriptor.isResponseInspected()) {
+            if(this.responsePayload.isOfType(descriptor.getParameterType())) {
+                return this.responsePayload;
+            }
+            answer = this.responsePayload.getProperty(element);
             if (null != answer) {
                 return answer;
             }
-            answer = this.formParameters.get(annotatedElement);
+
+        } else {
+            if (this.requestPayload.isOfType(descriptor.getParameterType())) {
+                return this.requestPayload;
+            }
+            answer = this.requestPayload.getProperty(element);
             if (null != answer) {
                 return answer;
             }
-            answer = this.queryParameters.get(annotatedElement);
-            if (null != answer) {
-                return answer;
-            }
-            answer = this.requestPayload.getProperty(annotatedElement);
-            if (null != answer) {
-                return answer;
-            }
-            answer = this.responsePayload.getProperty(annotatedElement);
-            if (null != answer) {
-                return answer;
-            }
-            answer = this.cookieParameters.get(annotatedElement);
-            if (null != answer) {
-                return answer;
-            }
-            return this.headerParameters.get(annotatedElement);
         }
         throw new IllegalStateException(
-                        String.format("requested annotated element %s has not been processed as a parameter, is the API correclty annotated?",
-                                        annotatedElement));
+                String.format("requested annotated element %s has not been processed as a parameter, is the API correctly annotated?",
+                        descriptor.toString()));
     }
 
     /**
      * Set or replaces consumable types. This is because method level annotation
-     * 
-     * @param value
-     *            the consumable types.
-     * @param isMethod
-     *            a flag indicating whether the consumable types are defined at
-     *            method or type level.
+     *
+     * @param value    the consumable types.
+     * @param isMethod a flag indicating whether the consumable types are defined at
+     *                 method or type level.
      * @return
      */
     public DocumentBuilder setOrReplaceConsumableTypes(String[] value, Boolean isMethod) {
@@ -197,12 +206,10 @@ public class DocumentBuilder implements Cloneable {
 
     /**
      * Set or replaces producible types. This is because method level annotation
-     * 
-     * @param value
-     *            the consumable types.
-     * @param isMethod
-     *            a flag indicating whether the consumable types are defined at
-     *            method or type level.
+     *
+     * @param value    the consumable types.
+     * @param isMethod a flag indicating whether the consumable types are defined at
+     *                 method or type level.
      * @return
      */
     public DocumentBuilder setOrReplaceProducibleTypes(String[] value, Boolean isMethod) {
@@ -230,30 +237,30 @@ public class DocumentBuilder implements Cloneable {
         return this;
     }
 
-    public Payload getOrCreateRequestPayload() {
+    public Payload getOrCreateRequestPayload(Class<?> type, String name) {
         if (null == this.requestPayload) {
-            this.requestPayload = new Payload();
+            this.requestPayload = new Payload(type, name);
         }
         return this.requestPayload;
     }
 
-    public Payload getOrCreateResponsePayload() {
+    public Payload getOrCreateResponsePayload(Class<?> type, String name) {
         if (null == this.responsePayload) {
-            this.responsePayload = new Payload();
+            this.responsePayload = new Payload(type, name);
         }
         return this.responsePayload;
     }
 
     public Document build() {
         return createNewDocument(this.httpMethod).withName(this.name).withDescription(description)
-                        .withPath(new Path(buildPath())).withConsumes(this.consumables)
-                        .withProduces(this.producible)
-                        .withPathParameters(new ArrayList<>(this.pathParameters.values()))
-                        .withFormParameters(new ArrayList<>(this.formParameters.values()))
-                        .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
-                        .withRequestPayload(this.requestPayload)
-                        .withResponsePayload(this.responsePayload)
-                        .withMessages(new ArrayList<>(this.messages));
+                .withPath(new Path(buildPath())).withConsumes(this.consumables)
+                .withProduces(this.producible)
+                .withPathParameters(new ArrayList<>(this.pathParameters.values()))
+                .withFormParameters(new ArrayList<>(this.formParameters.values()))
+                .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
+                .withRequestPayload(this.requestPayload)
+                .withResponsePayload(this.responsePayload)
+                .withMessages(new ArrayList<>(this.messages));
     }
 
     @Override
@@ -269,8 +276,8 @@ public class DocumentBuilder implements Cloneable {
     @Override
     public String toString() {
         return "DocumentBuilder [httpMethod=" + httpMethod + ", pathSegments=" + pathSegments
-                        + ", pathParameters=" + pathParameters + ", consumables=" + consumables
-                        + ", producible=" + producible + ", payload=" + requestPayload + "]";
+                + ", pathParameters=" + pathParameters + ", consumables=" + consumables
+                + ", producible=" + producible + ", payload=" + requestPayload + "]";
     }
 
     private void setPathSegments(List<String> pathSegments) {

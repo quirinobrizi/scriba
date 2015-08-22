@@ -1,26 +1,23 @@
 package codesketch.scriba.analyser.infrastructure.helper;
 
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getAnnotatedMethods;
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getClassChain;
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getDecorators;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
+import javax.ws.rs.Path;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.Path;
-
-import org.junit.Test;
+import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ReflectionHelperTest {
 
     @Test
     public void testGetAnnotations_annotatedBaseClass() {
         // act
-        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDecorators(AnnotatedBaseClass.class);
+        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDescriptors(AnnotatedBaseClass.class);
         // assert
         assertEquals(1, annotations.size());
         codesketch.scriba.analyser.domain.model.decorator.Descriptor annotation = annotations.iterator().next();
@@ -31,7 +28,7 @@ public class ReflectionHelperTest {
     @Test
     public void testGetAnnotations_annotatedClass() {
         // act
-        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDecorators(AnnotatedClass.class);
+        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDescriptors(AnnotatedClass.class);
         // assert
         assertEquals(2, annotations.size());
         int level = annotations.size() - 1;

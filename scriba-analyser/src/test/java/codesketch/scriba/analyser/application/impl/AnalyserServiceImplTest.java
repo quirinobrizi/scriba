@@ -1,11 +1,15 @@
 package codesketch.scriba.analyser.application.impl;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Date;
-import java.util.List;
+import codesketch.scriba.analyser.domain.model.HttpMethods;
+import codesketch.scriba.analyser.domain.model.document.Document;
+import codesketch.scriba.analyser.infrastructure.guice.ScribaInjector;
+import codesketch.scriba.annotations.ApiDescription;
+import codesketch.scriba.annotations.ApiName;
+import codesketch.scriba.annotations.ApiResponse;
+import com.google.inject.Guice;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -13,33 +17,15 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Pattern.Flag;
 import javax.validation.constraints.Size;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
+import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.junit.Before;
-import org.junit.Test;
-
-import codesketch.scriba.analyser.application.impl.AnalyserServiceImpl;
-import codesketch.scriba.analyser.domain.model.HttpMethods;
-import codesketch.scriba.analyser.domain.model.document.Document;
-import codesketch.scriba.analyser.infrastructure.guice.ScribaInjector;
-import codesketch.scriba.annotations.ApiDescription;
-import codesketch.scriba.annotations.ApiName;
-import codesketch.scriba.annotations.ApiResponse;
-
-import com.google.inject.Guice;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AnalyserServiceImplTest {
 
@@ -58,7 +44,7 @@ public class AnalyserServiceImplTest {
         for (Document document : documents) {
             if (HttpMethods.GET.getMethod().equals(document.getHttpMethod())) {
                 assertTrue(asList("/store/books", "/store/books/{bookId}").contains(
-                                document.getPath()));
+                        document.getPath()));
             }
         }
     }
@@ -82,8 +68,8 @@ public class AnalyserServiceImplTest {
         @Path("/books")
         @ApiName("Store book")
         @ApiDescription("Allows add a new book to the collection")
-        @Consumes({ "application/json", "application/xml" })
-        @Produces({ "application/json", "application/xml" })
+        @Consumes({"application/json", "application/xml"})
+        @Produces({"application/json", "application/xml"})
         public void add(@Valid Book book) {
 
         }
@@ -92,8 +78,8 @@ public class AnalyserServiceImplTest {
         @Path("/books/{bookId}")
         @ApiName("Update book")
         @ApiDescription("Allows update a book already part of the collection")
-        @Consumes({ "application/json", "application/xml" })
-        @Produces({ "application/json", "application/xml" })
+        @Consumes({"application/json", "application/xml"})
+        @Produces({"application/json", "application/xml"})
         public void update(@NotNull @PathParam("bookId") Long bookId, Book book) {
 
         }
@@ -122,8 +108,8 @@ public class AnalyserServiceImplTest {
         @ApiResponse(type = BookMessage.class)
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response addForm(
-                        @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = { Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
-                        @QueryParam("collection") Long collection) {
+                @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = {Flag.CASE_INSENSITIVE}) @FormParam("name") String name,
+                @QueryParam("collection") Long collection) {
             return null;
         }
     }

@@ -1,32 +1,32 @@
 /**
- * Scriba is a software library that aims to analyse REST interface and 
+ * Scriba is a software library that aims to analyse REST interface and
  * produce machine readable documentation.
- *
+ * <p/>
  * Copyright (C) 2015  Quirino Brizi (quirino.brizi@gmail.com)
- *
+ * <p/>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package codesketch.scriba.analyser.domain.model;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Represent an api payload
@@ -35,9 +35,17 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @since 29 Jan 2015
  *
  */
-public class Payload {
+public class Payload extends ObjectElement {
+
+    @JsonProperty private Class<?> type;
 
     private Map<AnnotatedElement, Property> properties = new HashMap<>();
+
+    public Payload(Class<?> type, String name) {
+        super(null, "", false);
+        this.type = type;
+    }
+
 
     public Payload addParameter(AnnotatedElement annotatedElement, Property parameter) {
         if (!this.properties.containsValue(parameter)) {
@@ -66,5 +74,10 @@ public class Payload {
     @JsonIgnore
     public Property getProperty(AnnotatedElement annotatedElement) {
         return this.properties.get(annotatedElement);
+    }
+
+    @JsonIgnore
+    public boolean isOfType(Class<?> type) {
+        return this.type.equals(type);
     }
 }

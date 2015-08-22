@@ -1,40 +1,39 @@
 /**
- * Scriba is a software library that aims to analyse REST interface and 
+ * Scriba is a software library that aims to analyse REST interface and
  * produce machine readable documentation.
- *
+ * <p/>
  * Copyright (C) 2015  Quirino Brizi (quirino.brizi@gmail.com)
- *
+ * <p/>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package codesketch.scriba.analyser.domain.model.decorator;
 
-import static codesketch.scriba.analyser.domain.model.decorator.Order.lookupOrder;
-import static java.lang.Boolean.FALSE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static codesketch.scriba.analyser.domain.model.decorator.Order.lookupOrder;
+import static java.lang.Boolean.FALSE;
 
 /**
  * Describes the context on which the introspection is executed.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015
- *
  */
 public class Descriptor {
 
@@ -49,26 +48,32 @@ public class Descriptor {
     /**
      * Create a new wrapper for {@link java.lang.annotation.Annotation} setting
      * its level.
-     * 
-     * @param level
-     *            the level on the class chain the annotation is declared, level
-     *            0 means the base class level n identifies the last
-     *            implementation/extension.
-     * @param annotation
-     *            the annotation to wrap.
-     * @param onMethod
-     *            a flag that indicates if the onnotation is place on method or
-     *            not.
+     *
+     * @param level            the level on the class chain the annotation is declared, level
+     *                         0 means the base class level n identifies the last
+     *                         implementation/extension.
+     * @param annotation       the annotation to wrap.
+     * @param annotatedElement The annotoated element.
      */
     public Descriptor(int level, java.lang.annotation.Annotation annotation,
-                    AnnotatedElement annotatedElement) {
+                      AnnotatedElement annotatedElement) {
         this.level = level;
         this.annotation = annotation;
         this.annotatedElement = annotatedElement;
         this.order = lookupOrder(annotation.annotationType());
         this.response = FALSE;
         LOGGER.info("created new descriptor for annotation {} with order {}", annotation,
-                        this.order);
+                this.order);
+    }
+
+    public static Comparator<Descriptor> descriptorsOrderComparator() {
+        return new Comparator<Descriptor>() {
+
+            @Override
+            public int compare(Descriptor o1, Descriptor o2) {
+                return o2.order() - o1.order();
+            }
+        };
     }
 
     public int level() {
@@ -99,14 +104,15 @@ public class Descriptor {
         if (type.isAssignableFrom(annotatedElement.getClass())) {
             return type.cast(annotatedElement);
         }
+        LOGGER.warn("Annotated element {} is not assignable from the requested type {}", annotatedElement, type);
         return null;
     }
 
     public Class<?> getParameterType() {
         if (codesketch.scriba.analyser.infrastructure.reflect.Parameter.class
-                        .isAssignableFrom(this.annotatedElement.getClass())) {
+                .isAssignableFrom(this.annotatedElement.getClass())) {
             return codesketch.scriba.analyser.infrastructure.reflect.Parameter.class.cast(
-                            this.annotatedElement).getType();
+                    this.annotatedElement).getType();
         }
         return null;
     }
@@ -131,18 +137,8 @@ public class Descriptor {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Decorator [level=").append(level).append(", annotation=")
-                        .append(annotation).append(", annotatedElement=").append(annotatedElement)
-                        .append("]");
+                .append(annotation).append(", annotatedElement=").append(annotatedElement)
+                .append("]");
         return builder.toString();
-    }
-
-    public static Comparator<Descriptor> descriptorsOrderComparator() {
-        return new Comparator<Descriptor>() {
-
-            @Override
-            public int compare(Descriptor o1, Descriptor o2) {
-                return o2.order() - o1.order();
-            }
-        };
     }
 }

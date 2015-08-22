@@ -1,48 +1,47 @@
 /**
- * Scriba is a software library that aims to analyse REST interface and 
+ * Scriba is a software library that aims to analyse REST interface and
  * produce machine readable documentation.
- *
+ * <p/>
  * Copyright (C) 2015  Quirino Brizi (quirino.brizi@gmail.com)
- *
+ * <p/>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package codesketch.scriba.analyser.application.impl;
-
-import static codesketch.scriba.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
-import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.introspect;
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getAnnotatedMethods;
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getDecorators;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import codesketch.scriba.analyser.application.AnalyserService;
 import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
 import codesketch.scriba.analyser.domain.model.document.Document;
 import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
+import codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper;
 import codesketch.scriba.annotations.ApiDescription;
 import codesketch.scriba.annotations.ApiName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static codesketch.scriba.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
+import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.introspect;
+import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getAnnotatedMethods;
+import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getDescriptors;
 
 /**
  * Analyse interfaces that defines REST APIs using:
@@ -71,7 +70,7 @@ public class AnalyserServiceImpl implements AnalyserService {
      * using <a
      * href="https://jcp.org/aboutJava/communityprocess/final/jsr311/">JSR
      * -311</a>.
-     * 
+     *
      * @param clazz
      *            the class to analyse
      * @return a list of {@link Document} that describe the APIs contained on
@@ -80,7 +79,7 @@ public class AnalyserServiceImpl implements AnalyserService {
     @Override
     public List<Document> analyse(Class<?> clazz) {
         List<Document> documents = new ArrayList<>();
-        List<DocumentBuilder> builders = collectAlldeclaredAnnotations(clazz);
+        List<DocumentBuilder> builders = collectDocumentBuilders(clazz);
 
         for (DocumentBuilder documentBuilder : builders) {
             documents.add(documentBuilder.build());
@@ -90,10 +89,10 @@ public class AnalyserServiceImpl implements AnalyserService {
         return documents;
     }
 
-    private List<DocumentBuilder> collectAlldeclaredAnnotations(Class<?> clazz) {
+    private List<DocumentBuilder> collectDocumentBuilders(Class<?> clazz) {
         List<DocumentBuilder> builders = new ArrayList<>();
 
-        List<Descriptor> typeDecorators = getDecorators(clazz);
+        List<Descriptor> typeDecorators = getDescriptors(clazz);
         LOGGER.debug("retrieved type annotations {}", typeDecorators);
         DocumentBuilder documentBuilder = new DocumentBuilder();
         int level = 0;
@@ -106,7 +105,7 @@ public class AnalyserServiceImpl implements AnalyserService {
         LOGGER.debug("retrieved methods {}", methods);
         level += 1;
         for (Method method : methods) {
-            List<Descriptor> decorators = getDecorators(method, level);
+            List<Descriptor> decorators = ReflectionHelper.getDescriptors(method, level);
             Collections.sort(decorators, descriptorsOrderComparator());
             DocumentBuilder documentBuilderClone = documentBuilder.clone();
             for (Descriptor annotation : decorators) {
