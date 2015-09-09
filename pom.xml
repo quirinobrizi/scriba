@@ -28,6 +28,17 @@
         <javax.el.api.version>3.0-b02</javax.el.api.version>
         <org.hibernate.validator.version>5.0.2.Final</org.hibernate.validator.version>
     </properties>
+    
+    <distributionManagement>
+		<repository>
+			<id>internal</id>
+			<url>http://codesketch.no-ip.org/archiva/repository/internal/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://codesketch.no-ip.org/archiva/repository/snapshots/</url>
+		</snapshotRepository>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
