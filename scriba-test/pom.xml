@@ -54,7 +54,12 @@
 							<endpoint>http://test.endpoint.org</endpoint>
 						</environment>
 					</environments>
-					<targetUrl>file://test.json</targetUrl>
+					<credential>
+						<username>${scriba.username}</username>
+						<password>${scriba.password}</password>
+					</credential>
+					<authenticateUrl>${scriba.authenticate.url}</authenticateUrl>
+					<targetUrl>${scriba.target.url}</targetUrl>
 				</configuration>
 			</plugin>
 		</plugins>
