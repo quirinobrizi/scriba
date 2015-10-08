@@ -1,11 +1,11 @@
 package codesketch.scriba.annotations;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Allows define the return type for the API. This annotation is available at
@@ -20,9 +20,23 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface ApiResponse {
 
     /**
+     * The response code returned by the API in the successful scenario
+     * 
+     * @return the response code
+     */
+    int responseCode() default 200;
+
+    /**
+     * The message to display on documentation
+     * 
+     * @return the desired message to display on documentation
+     */
+    String message() default "n/a";
+
+    /**
      * The return type.
      *
      * @return the API return type.
      */
-    Class<?> type();
+    Class<?>type();
 }

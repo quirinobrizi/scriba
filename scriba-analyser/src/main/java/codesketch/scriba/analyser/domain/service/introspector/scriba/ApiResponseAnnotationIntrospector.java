@@ -19,29 +19,32 @@
  */
 package codesketch.scriba.analyser.domain.service.introspector.scriba;
 
-import codesketch.scriba.analyser.domain.model.Payload;
-import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
-import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
-import codesketch.scriba.analyser.domain.service.introspector.Introspector;
-import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
-import codesketch.scriba.annotations.ApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-
+import static codesketch.scriba.analyser.domain.model.Message.createMessage;
 import static codesketch.scriba.analyser.domain.model.decorator.Descriptor.descriptorsOrderComparator;
 import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.extractProperty;
 import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.introspect;
 import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.extractAllDescriptors;
 import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getFields;
 import static java.lang.Boolean.TRUE;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import codesketch.scriba.analyser.domain.model.Payload;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
+import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
+import codesketch.scriba.analyser.domain.service.introspector.Introspector;
+import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
+import codesketch.scriba.annotations.ApiResponse;
 
 /**
  * Introspect {@link Consumes} annotation and populate the provided
@@ -57,7 +60,7 @@ import static java.lang.Boolean.TRUE;
 public class ApiResponseAnnotationIntrospector implements Introspector {
 
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(ApiResponseAnnotationIntrospector.class);
+                    .getLogger(ApiResponseAnnotationIntrospector.class);
 
     @Inject private IntrospectorManager introspectorManager;
 
@@ -81,6 +84,8 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
                 payload.addParameter(element, extractProperty(field));
             }
         }
+        documentBuilder.addMessage(
+                        createMessage(apiResponse.responseCode(), apiResponse.message()));
     }
 
     /*

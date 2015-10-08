@@ -19,10 +19,7 @@
  */
 package codesketch.scriba.test;
 
-import codesketch.scriba.annotations.*;
-import codesketch.scriba.annotations.ApiParameter.Type;
-import codesketch.scriba.annotations.ApiVerb.Verb;
-import org.codehaus.jackson.annotate.JsonProperty;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -32,7 +29,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import codesketch.scriba.annotations.ApiDescription;
+import codesketch.scriba.annotations.ApiName;
+import codesketch.scriba.annotations.ApiParameter;
+import codesketch.scriba.annotations.ApiParameter.Type;
+import codesketch.scriba.annotations.ApiPath;
+import codesketch.scriba.annotations.ApiResponse;
+import codesketch.scriba.annotations.ApiVerb;
+import codesketch.scriba.annotations.ApiVerb.Verb;
 
 /**
  *
@@ -63,8 +69,8 @@ public interface BookInterface {
     @Produces(APPLICATION_JSON)
     @ApiName("Create a new book")
     @ApiDescription("Create a new book and make it available to the library on-line service")
-    @ApiResponse(type = Book.class)
-    public Response create(@NotNull @Valid Book book);
+    @ApiResponse(type = Book.class, responseCode = 201)
+    public Response create(@NotNull(message = "book  parameter must be provided") @Valid Book book);
 
     public static class Book {
 
