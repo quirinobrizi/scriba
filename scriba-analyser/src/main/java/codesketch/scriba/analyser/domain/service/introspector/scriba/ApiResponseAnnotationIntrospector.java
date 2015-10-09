@@ -85,7 +85,7 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
             }
         }
         documentBuilder.addMessage(
-                        createMessage(apiResponse.responseCode(), apiResponse.message()));
+                        createMessage(apiResponse.responseCode(), apiResponse.message(), true));
     }
 
     /*

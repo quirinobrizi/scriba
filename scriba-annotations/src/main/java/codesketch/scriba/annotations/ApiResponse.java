@@ -20,6 +20,14 @@ import java.lang.annotation.Target;
 public @interface ApiResponse {
 
     /**
+     * A flag indicating if current response is for a successful operation or
+     * not
+     * 
+     * @return true or false.
+     */
+    boolean success() default true;
+
+    /**
      * The response code returned by the API in the successful scenario
      * 
      * @return the response code
@@ -31,7 +39,7 @@ public @interface ApiResponse {
      * 
      * @return the desired message to display on documentation
      */
-    String message() default "n/a";
+    String message() default "";
 
     /**
      * The return type.

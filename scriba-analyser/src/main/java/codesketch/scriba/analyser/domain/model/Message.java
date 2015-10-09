@@ -34,18 +34,45 @@ public class Message {
 
     @JsonProperty private Integer status;
     @JsonProperty private String message;
+    @JsonProperty private Boolean success;
 
-    private Message(Integer status, String message) {
+    private Message(Integer status, String message, Boolean success) {
         this.status = status;
         this.message = message;
+        this.success = success;
     }
 
+    /**
+     * Create a new message for an unsuccessful operation.
+     * 
+     * @param status
+     *            the status code returned
+     * @param message
+     *            the message returned
+     * @return a new {@link Message} instance
+     */
     public static Message createMessage(Integer status, String message) {
-        return new Message(status, message);
+        return new Message(status, message, false);
     }
 
     public static Message createMessageForBadRequest(String message) {
-        return new Message(400, message);
+        return new Message(400, message, false);
+    }
+
+    /**
+     * Create a new message.
+     * 
+     * @param status
+     *            the status code returned
+     * @param message
+     *            the message returned
+     * @param success
+     *            a flag indicating if the current message is for a successful
+     *            or failure operation.
+     * @return a new {@link Message} instance
+     */
+    public static Message createMessage(Integer status, String message, Boolean success) {
+        return new Message(status, message, success);
     }
 
     public Integer getStatus() {
@@ -69,7 +96,7 @@ public class Message {
         }
         Message other = (Message) obj;
         return new EqualsBuilder().append(this.status, other.status)
-                .append(this.message, other.message).build();
+                        .append(this.message, other.message).build();
     }
 
     @Override
