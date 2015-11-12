@@ -1,4 +1,4 @@
-# scriba
+# Scriba
 Scriba is a code analyzer able to generate a JSON representation of your APIs. It integrates with Maven build system via a plugin so that it can integrate in a less invasive way into your build process.
 Scriba can be configured to send the generated JSON representation automatically to a remote service via HTTP(S) protocol or to write it to a file so that you can post-process your API documentation as per your needs.
 
