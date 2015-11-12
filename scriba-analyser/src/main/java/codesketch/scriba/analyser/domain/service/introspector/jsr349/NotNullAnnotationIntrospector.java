@@ -56,8 +56,8 @@ public class NotNullAnnotationIntrospector extends AbstractJSR349AnnotationIntro
         NotNull annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
         parameter.nullable(Boolean.FALSE).constraints("element must not be null");
-        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
-                descriptor)));
+        documentBuilder.addMessage(
+                        createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }
 
     /*

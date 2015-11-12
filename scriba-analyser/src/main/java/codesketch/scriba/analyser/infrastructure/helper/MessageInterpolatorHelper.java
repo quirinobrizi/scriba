@@ -23,7 +23,7 @@ public class MessageInterpolatorHelper {
         Object validatedValue = null;
         Class<?> rootBeanType = descriptor.getParameterType();
         Context context = new MessageInterpolatorContext(constraintDescriptor, validatedValue,
-                rootBeanType);
+                        rootBeanType);
         return messageInterpolator.interpolate(message, context);
     }
 
@@ -34,7 +34,7 @@ public class MessageInterpolatorHelper {
         ElementType type = null;
         ConstraintOrigin definedOn = ConstraintOrigin.DEFINED_LOCALLY;
         return new ConstraintDescriptorImpl<Annotation>(member, annotation, constraintHelper, type,
-                definedOn);
+                        definedOn);
     }
 
     private Member extractMemberForm(AnnotatedElement annotatedElement) {

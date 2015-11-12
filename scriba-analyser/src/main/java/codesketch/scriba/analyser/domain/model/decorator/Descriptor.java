@@ -49,21 +49,24 @@ public class Descriptor {
      * Create a new wrapper for {@link java.lang.annotation.Annotation} setting
      * its level.
      *
-     * @param level            the level on the class chain the annotation is declared, level
-     *                         0 means the base class level n identifies the last
-     *                         implementation/extension.
-     * @param annotation       the annotation to wrap.
-     * @param annotatedElement The annotoated element.
+     * @param level
+     *            the level on the class chain the annotation is declared, level
+     *            0 means the base class level n identifies the last
+     *            implementation/extension.
+     * @param annotation
+     *            the annotation to wrap.
+     * @param annotatedElement
+     *            The annotoated element.
      */
     public Descriptor(int level, java.lang.annotation.Annotation annotation,
-                      AnnotatedElement annotatedElement) {
+                    AnnotatedElement annotatedElement) {
         this.level = level;
         this.annotation = annotation;
         this.annotatedElement = annotatedElement;
         this.order = lookupOrder(annotation.annotationType());
         this.response = FALSE;
         LOGGER.info("created new descriptor for annotation {} with order {}", annotation,
-                this.order);
+                        this.order);
     }
 
     public static Comparator<Descriptor> descriptorsOrderComparator() {
@@ -104,15 +107,16 @@ public class Descriptor {
         if (type.isAssignableFrom(annotatedElement.getClass())) {
             return type.cast(annotatedElement);
         }
-        LOGGER.warn("Annotated element {} is not assignable from the requested type {}", annotatedElement, type);
+        LOGGER.warn("Annotated element {} is not assignable from the requested type {}",
+                        annotatedElement, type);
         return null;
     }
 
     public Class<?> getParameterType() {
         if (codesketch.scriba.analyser.infrastructure.reflect.Parameter.class
-                .isAssignableFrom(this.annotatedElement.getClass())) {
-            return codesketch.scriba.analyser.infrastructure.reflect.Parameter.class.cast(
-                    this.annotatedElement).getType();
+                        .isAssignableFrom(this.annotatedElement.getClass())) {
+            return codesketch.scriba.analyser.infrastructure.reflect.Parameter.class
+                            .cast(this.annotatedElement).getType();
         }
         return null;
     }
@@ -136,9 +140,8 @@ public class Descriptor {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Decorator [level=").append(level).append(", annotation=")
-                .append(annotation).append(", annotatedElement=").append(annotatedElement)
-                .append("]");
+        builder.append("Decorator [level=").append(level).append(", annotation=").append(annotation)
+                        .append(", annotatedElement=").append(annotatedElement).append("]");
         return builder.toString();
     }
 }

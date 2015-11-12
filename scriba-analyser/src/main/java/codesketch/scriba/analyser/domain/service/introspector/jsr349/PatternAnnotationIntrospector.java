@@ -58,16 +58,16 @@ public class PatternAnnotationIntrospector extends AbstractJSR349AnnotationIntro
         Pattern pattern = descriptor.getWrappedAnnotationAs(Pattern.class);
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
         if (hasFlags(pattern)) {
-            parameter.constraints(String.format(
-                    "value must match the specified regular expression %s with flags %s",
-                    pattern.regexp(), join(pattern.flags(), ", ")));
+            parameter.constraints(
+                            String.format("value must match the specified regular expression %s with flags %s",
+                                            pattern.regexp(), join(pattern.flags(), ", ")));
         } else {
-            parameter.constraints(String.format(
-                    "value must match the specified regular expression %s",
-                    pattern.regexp()));
+            parameter.constraints(
+                            String.format("value must match the specified regular expression %s",
+                                            pattern.regexp()));
         }
-        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
-                descriptor)));
+        documentBuilder.addMessage(
+                        createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }
 
     /*

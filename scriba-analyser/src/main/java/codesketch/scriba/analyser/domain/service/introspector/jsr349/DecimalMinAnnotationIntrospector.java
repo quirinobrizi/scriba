@@ -55,11 +55,11 @@ public class DecimalMinAnnotationIntrospector extends AbstractJSR349AnnotationIn
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         DecimalMin annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(String.format(
-                "value must be higher or equal to the specified maximum %d, inclusive %s",
-                annotation.value(), annotation.inclusive()));
-        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
-                descriptor)));
+        parameter.constraints(
+                        String.format("value must be higher or equal to the specified maximum %d, inclusive %s",
+                                        annotation.value(), annotation.inclusive()));
+        documentBuilder.addMessage(
+                        createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }
 
     /*

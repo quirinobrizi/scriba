@@ -53,108 +53,109 @@ import codesketch.scriba.maven.writer.HttpWriter;
 @Mojo(name = "document", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.COMPILE)
 public class ScribaMojo extends AbstractMojo {
 
-	@Parameter private List<String> interfaces;
-	@Parameter private URL targetUrl;
-	@Parameter private Credential credential;
-	@Parameter private List<Environment> environments;
-	@Parameter private URL authenticateUrl;
+    @Parameter private List<String> interfaces;
+    @Parameter private URL targetUrl;
+    @Parameter private Credential credential;
+    @Parameter private List<Environment> environments;
+    @Parameter private URL authenticateUrl;
 
-	/**
-	 * @parameter default-value="${project}"
-	 * @required
-	 * @readonly
-	 */
-	@Component private MavenProject project;
+    /**
+     * @parameter default-value="${project}"
+     * @required
+     * @readonly
+     */
+    @Component private MavenProject project;
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		if (null == interfaces) {
-			String message = "no interfaces defined, at least one should be defined using plugin configuration";
-			getLog().warn(message);
-			throw new MojoFailureException(message);
-		} else {
-			report(new Scriba().document(interfaces(), environments, project.getVersion()));
-		}
-	}
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (null == interfaces) {
+            String message = "no interfaces defined, at least one should be defined using plugin configuration";
+            getLog().warn(message);
+            throw new MojoFailureException(message);
+        } else {
+            report(new Scriba().document(interfaces(), environments, project.getVersion()));
+        }
+    }
 
-	private void report(String data) throws MojoFailureException {
-		if (targetUrlHasBeenProvided() && targetUrlIsNotFile()) {
-			sendResultDocumentViaHttp(data);
-		} else {
-			writeResultDocumentToFileSystem(data);
-		}
-	}
+    private void report(String data) throws MojoFailureException {
+        if (targetUrlHasBeenProvided() && targetUrlIsNotFile()) {
+            sendResultDocumentViaHttp(data);
+        } else {
+            writeResultDocumentToFileSystem(data);
+        }
+    }
 
-	private void writeResultDocumentToFileSystem(String data) throws MojoFailureException {
-		Writer writer = null;
-		try {
-			writer = WriterFactory.newPlatformWriter(getOutputFile());
-			writer.write(data);
-		} catch (IOException e) {
-			throw new MojoFailureException("can't write results", e);
-		} finally {
-			closeSilently(writer);
-		}
-	}
+    private void writeResultDocumentToFileSystem(String data) throws MojoFailureException {
+        Writer writer = null;
+        try {
+            writer = WriterFactory.newPlatformWriter(getOutputFile());
+            writer.write(data);
+        } catch (IOException e) {
+            throw new MojoFailureException("can't write results", e);
+        } finally {
+            closeSilently(writer);
+        }
+    }
 
-	private void sendResultDocumentViaHttp(String data) throws MojoFailureException {
-		codesketch.scriba.maven.writer.Writer writer = new HttpWriter(getLog(), credential, targetUrl, authenticateUrl);
-		writer.write(data);
-	}
+    private void sendResultDocumentViaHttp(String data) throws MojoFailureException {
+        codesketch.scriba.maven.writer.Writer writer = new HttpWriter(getLog(), credential,
+                        targetUrl, authenticateUrl);
+        writer.write(data);
+    }
 
-	private void closeSilently(Writer writer) {
-		if (null != writer) {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				getLog().warn("can't close writer!");
-			}
-		}
-	}
+    private void closeSilently(Writer writer) {
+        if (null != writer) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                getLog().warn("can't close writer!");
+            }
+        }
+    }
 
-	private List<Class<?>> interfaces() throws MojoExecutionException {
-		List<Class<?>> classes = new ArrayList<>();
-		getLog().debug(String.format("defined interfaces %s", interfaces));
-		for (String iface : interfaces) {
-			try {
-				getLog().debug(String.format("loading interface %s", iface));
-				classes.add(Class.forName(iface, false, getClassLoader()));
-			} catch (ClassNotFoundException e) {
-				throw new MojoExecutionException(String.format("class %s not found", iface), e);
-			}
-		}
-		return classes;
-	}
+    private List<Class<?>> interfaces() throws MojoExecutionException {
+        List<Class<?>> classes = new ArrayList<>();
+        getLog().debug(String.format("defined interfaces %s", interfaces));
+        for (String iface : interfaces) {
+            try {
+                getLog().debug(String.format("loading interface %s", iface));
+                classes.add(Class.forName(iface, false, getClassLoader()));
+            } catch (ClassNotFoundException e) {
+                throw new MojoExecutionException(String.format("class %s not found", iface), e);
+            }
+        }
+        return classes;
+    }
 
-	private ClassLoader getClassLoader() throws MojoExecutionException {
-		try {
-			List<String> classpathElements = project.getCompileClasspathElements();
-			classpathElements.add(project.getBuild().getOutputDirectory());
-			classpathElements.add(project.getBuild().getTestOutputDirectory());
-			URL urls[] = new URL[classpathElements.size()];
-			for (int i = 0; i < classpathElements.size(); ++i) {
-				urls[i] = new File(classpathElements.get(i)).toURI().toURL();
-			}
-			return new URLClassLoader(urls, getClass().getClassLoader());
-		} catch (Exception e) {
-			throw new MojoExecutionException("Couldn't create a classloader.", e);
-		}
-	}
+    private ClassLoader getClassLoader() throws MojoExecutionException {
+        try {
+            List<String> classpathElements = project.getCompileClasspathElements();
+            classpathElements.add(project.getBuild().getOutputDirectory());
+            classpathElements.add(project.getBuild().getTestOutputDirectory());
+            URL urls[] = new URL[classpathElements.size()];
+            for (int i = 0; i < classpathElements.size(); ++i) {
+                urls[i] = new File(classpathElements.get(i)).toURI().toURL();
+            }
+            return new URLClassLoader(urls, getClass().getClassLoader());
+        } catch (Exception e) {
+            throw new MojoExecutionException("Couldn't create a classloader.", e);
+        }
+    }
 
-	private File getOutputFile() {
-		if (null == targetUrl) {
-			return new File(project.getBasedir(), "target/scriba.json");
-		} else {
-			return FileUtils.toFile(targetUrl);
-		}
-	}
+    private File getOutputFile() {
+        if (null == targetUrl) {
+            return new File(project.getBasedir(), "target/scriba.json");
+        } else {
+            return FileUtils.toFile(targetUrl);
+        }
+    }
 
-	private boolean targetUrlHasBeenProvided() {
-		getLog().info(String.format("use [%s] as a target URL", targetUrl));
-		return null != targetUrl;
-	}
+    private boolean targetUrlHasBeenProvided() {
+        getLog().info(String.format("use [%s] as a target URL", targetUrl));
+        return null != targetUrl;
+    }
 
-	private boolean targetUrlIsNotFile() {
-		return !targetUrl.getProtocol().equalsIgnoreCase("file");
-	}
+    private boolean targetUrlIsNotFile() {
+        return !targetUrl.getProtocol().equalsIgnoreCase("file");
+    }
 }

@@ -57,7 +57,7 @@ import static java.lang.Boolean.FALSE;
 public class RequestPayloadAnnotationIntrospector implements Introspector {
 
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(RequestPayloadAnnotationIntrospector.class);
+                    .getLogger(RequestPayloadAnnotationIntrospector.class);
 
     @Inject private IntrospectorManager introspectorManager;
 
@@ -72,21 +72,20 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         codesketch.scriba.analyser.infrastructure.reflect.Parameter parameter = descriptor
-                .annotatedElementAs(codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
+                        .annotatedElementAs(
+                                        codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
         LOGGER.debug("processing annotated element of type {}", parameter.getClass());
         Class<?> parameterType = descriptor.getParameterType();
         AnnotatedElement element = descriptor.annotatedElement();
         Payload payload = documentBuilder.getOrCreateRequestPayload(parameterType, "");
         if (isPrimitiveOrWrapper(parameterType)) {
-            payload.addParameter(element,
-                    new Property(parameterType.getName(), null));
+            payload.addParameter(element, new Property(parameterType.getName(), null));
         } else {
             doInspectBody(documentBuilder, parameterType);
             if (payload.getProperties().isEmpty()) {
                 LOGGER.debug("no decorators has been found inspect fields");
                 for (Field field : getFields(parameterType)) {
-                    payload.addParameter(
-                            element, extractProperty(field));
+                    payload.addParameter(element, extractProperty(field));
                 }
             }
         }

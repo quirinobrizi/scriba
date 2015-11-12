@@ -46,11 +46,11 @@ import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.
 /**
  * Analyse interfaces that defines REST APIs using:
  * <ul>
- * <li><a
- * href="https://jcp.org/aboutJava/communityprocess/final/jsr311/">JSR-311</a></li>
+ * <li><a href="https://jcp.org/aboutJava/communityprocess/final/jsr311/">JSR-
+ * 311</a></li>
  * <li>Custom API annotations {@link ApiName} {@link ApiDescription}
- * <li><a
- * href="https://jcp.org/aboutJava/communityprocess/final/jsr349/">JSR-349</a></li>
+ * <li><a href="https://jcp.org/aboutJava/communityprocess/final/jsr349/">JSR-
+ * 349</a></li>
  * </ul>
  * annotations.
  *
@@ -67,8 +67,8 @@ public class AnalyserServiceImpl implements AnalyserService {
 
     /**
      * Analyse the provided class for annotation that describe the REST APIs
-     * using <a
-     * href="https://jcp.org/aboutJava/communityprocess/final/jsr311/">JSR
+     * using
+     * <a href="https://jcp.org/aboutJava/communityprocess/final/jsr311/">JSR
      * -311</a>.
      *
      * @param clazz

@@ -55,13 +55,14 @@ public class PathParamAnnotationIntrospector implements Introspector {
     public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         PathParam pathParam = decorator.getWrappedAnnotationAs(PathParam.class);
         codesketch.scriba.analyser.infrastructure.reflect.Parameter parameter = decorator
-                .annotatedElementAs(codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
+                        .annotatedElementAs(
+                                        codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
         DefaultValue defaultValueAnnotation = parameter.getAnnotation(DefaultValue.class);
         String defaultValue = null != defaultValueAnnotation ? defaultValueAnnotation.value()
-                : null;
+                        : null;
         String parameterType = decorator.getParameterType().getName();
-        documentBuilder.putPathParameter(decorator.annotatedElement(), new Property(parameterType,
-                pathParam.value(), defaultValue));
+        documentBuilder.putPathParameter(decorator.annotatedElement(),
+                        new Property(parameterType, pathParam.value(), defaultValue));
     }
 
     /*

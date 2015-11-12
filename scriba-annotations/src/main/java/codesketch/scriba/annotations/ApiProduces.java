@@ -23,5 +23,5 @@ public @interface ApiProduces {
      * Define the content types that the API produces as a response (i.e.
      * application/json).
      */
-    String[] value();
+    String[]value();
 }

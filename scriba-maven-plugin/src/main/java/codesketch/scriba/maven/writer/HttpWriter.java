@@ -33,7 +33,9 @@ public class HttpWriter implements Writer {
         this.authenticateUrl = authenticateUrl;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see codesketch.scriba.maven.writer.Writer#write(java.lang.String)
      */
     @Override
@@ -41,13 +43,15 @@ public class HttpWriter implements Writer {
 
         try {
             HttpResponse<JsonNode> response = Unirest.post(this.authenticateUrl.toExternalForm())
-                    .body(this.credential.toJson()).asJson();
+                            .body(this.credential.toJson()).asJson();
             String accessToken = (String) response.getBody().getObject().get("accessToken");
             HttpResponse<JsonNode> putDocumentResponse = Unirest.put(targetUrl.toExternalForm())
-                    .header("Authorization", format("Bearer %s", accessToken)).body(data).asJson();
+                            .header("Authorization", format("Bearer %s", accessToken)).body(data)
+                            .asJson();
             this.logger.info(putDocumentResponse.getBody().toString());
         } catch (UnirestException e) {
-            throw new MojoFailureException(format("can't send results to remote host [%s]", targetUrl), e);
+            throw new MojoFailureException(
+                            format("can't send results to remote host [%s]", targetUrl), e);
         } finally {
             this.shutdownSilently();
         }

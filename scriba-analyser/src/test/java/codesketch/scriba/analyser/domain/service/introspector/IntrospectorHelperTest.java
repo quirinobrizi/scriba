@@ -10,7 +10,7 @@ import static org.mockito.Mockito.*;
 public class IntrospectorHelperTest {
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testIntrospect() {
         IntrospectorManager introspectorManager = mock(IntrospectorManager.class);
         DocumentBuilder documentBuilder = mock(DocumentBuilder.class);

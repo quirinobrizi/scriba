@@ -22,5 +22,5 @@ public @interface ApiConsumes {
     /**
      * Define the content types that the API consumes (i.e. application/json).
      */
-    String[] value();
+    String[]value();
 }

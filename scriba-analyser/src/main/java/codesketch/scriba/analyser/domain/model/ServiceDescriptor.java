@@ -47,7 +47,7 @@ public class ServiceDescriptor {
     @JsonProperty("updater") private String username;
 
     public ServiceDescriptor(String version, List<Environment> environments,
-                             List<Document> documents) {
+                    List<Document> documents) {
         this.version = version;
         this.environments = environments;
         this.documents = documents;

@@ -55,11 +55,11 @@ public class DigitsAnnotationIntrospector extends AbstractJSR349AnnotationIntros
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Digits annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(String
-                .format("must be a number within accepted range, integral digits %d, fractional digits %d",
-                        annotation.integer(), annotation.fraction()));
-        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
-                descriptor)));
+        parameter.constraints(
+                        String.format("must be a number within accepted range, integral digits %d, fractional digits %d",
+                                        annotation.integer(), annotation.fraction()));
+        documentBuilder.addMessage(
+                        createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }
 
     /*

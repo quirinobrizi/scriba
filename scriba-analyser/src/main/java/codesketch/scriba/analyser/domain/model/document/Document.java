@@ -140,10 +140,10 @@ public class Document {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Document [httpMethod=").append(httpMethod).append(", name=").append(name)
-                .append(", description=").append(description).append(", path=")
-                .append(path).append(", consumes=").append(consumes).append(", produces=")
-                .append(produces).append(", pathParameters=").append(pathParameters)
-                .append(", payload=").append(requestPayload).append("]");
+                        .append(", description=").append(description).append(", path=").append(path)
+                        .append(", consumes=").append(consumes).append(", produces=")
+                        .append(produces).append(", pathParameters=").append(pathParameters)
+                        .append(", payload=").append(requestPayload).append("]");
         return builder.toString();
     }
 

@@ -53,9 +53,10 @@ public class Scriba {
         this.mapper = new ObjectMapper();
     }
 
-    public String document(List<Class<?>> interfaces, List<Environment> environments, String version) {
-        AnalyserService analyser = Guice.createInjector(new ScribaInjector()).getInstance(
-                AnalyserService.class);
+    public String document(List<Class<?>> interfaces, List<Environment> environments,
+                    String version) {
+        AnalyserService analyser = Guice.createInjector(new ScribaInjector())
+                        .getInstance(AnalyserService.class);
         List<Document> documents = new ArrayList<>();
         for (Class<?> target : interfaces) {
             LOGGER.info("analysing class {}", target);
@@ -67,8 +68,8 @@ public class Scriba {
     private String serialize(ServiceDescriptor serviceDescriptor) {
         try {
             String content = mapper.writeValueAsString(serviceDescriptor);
-            return mapper.writeValueAsString(new ServiceDescriptorMessage(serviceDescriptor
-                    .getVersion(), content));
+            return mapper.writeValueAsString(
+                            new ServiceDescriptorMessage(serviceDescriptor.getVersion(), content));
         } catch (IOException e) {
             LOGGER.error("unable serialize documents");
             throw new RuntimeException(e);

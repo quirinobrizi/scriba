@@ -60,32 +60,33 @@ public class ApiParameterAnnotationIntrospector implements Introspector {
         String parameterType = decorator.getParameterType().getName();
         String defaultValue = getDefaultValueIfAny(decorator);
         switch (type) {
-            case COOKIE:
-                documentBuilder.putCookieParameter(decorator.annotatedElement(), new Property(
-                        parameterType, apiParameter.value(), defaultValue));
-                break;
-            case FORM:
-                documentBuilder.putFormParameter(decorator.annotatedElement(), new Property(
-                        parameterType, apiParameter.value(), defaultValue));
-                break;
-            case HEADER:
-                documentBuilder.putHeaderParameter(decorator.annotatedElement(), new Property(
-                        parameterType, apiParameter.value(), defaultValue));
-                break;
-            case PATH:
-                documentBuilder.putPathParameter(decorator.annotatedElement(), new Property(
-                        parameterType, apiParameter.value(), defaultValue));
-                break;
-            case QUERY:
-                documentBuilder.putQueryParameter(decorator.annotatedElement(), new Property(
-                        parameterType, apiParameter.value(), defaultValue));
-                break;
+        case COOKIE:
+            documentBuilder.putCookieParameter(decorator.annotatedElement(),
+                            new Property(parameterType, apiParameter.value(), defaultValue));
+            break;
+        case FORM:
+            documentBuilder.putFormParameter(decorator.annotatedElement(),
+                            new Property(parameterType, apiParameter.value(), defaultValue));
+            break;
+        case HEADER:
+            documentBuilder.putHeaderParameter(decorator.annotatedElement(),
+                            new Property(parameterType, apiParameter.value(), defaultValue));
+            break;
+        case PATH:
+            documentBuilder.putPathParameter(decorator.annotatedElement(),
+                            new Property(parameterType, apiParameter.value(), defaultValue));
+            break;
+        case QUERY:
+            documentBuilder.putQueryParameter(decorator.annotatedElement(),
+                            new Property(parameterType, apiParameter.value(), defaultValue));
+            break;
         }
     }
 
     private String getDefaultValueIfAny(Descriptor decorator) {
         codesketch.scriba.analyser.infrastructure.reflect.Parameter parameter = decorator
-                .annotatedElementAs(codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
+                        .annotatedElementAs(
+                                        codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
         DefaultValue defaultValueAnnotation = parameter.getAnnotation(DefaultValue.class);
         if (null == defaultValueAnnotation) {
             ApiDefault apiDefault = parameter.getAnnotation(ApiDefault.class);

@@ -14,8 +14,8 @@ import static org.junit.Assert.assertNull;
 public class IntrospectorManagerTest {
 
     private static final PathAnnotationIntrospector INTROSPECTOR = new PathAnnotationIntrospector();
-    private IntrospectorManager testObj = new IntrospectorManagerImpl(new HashSet<Introspector>(
-            Arrays.asList(INTROSPECTOR)));
+    private IntrospectorManager testObj = new IntrospectorManagerImpl(
+                    new HashSet<Introspector>(Arrays.asList(INTROSPECTOR)));
 
     @Test
     public void testIntrospector() {

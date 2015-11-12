@@ -43,8 +43,8 @@ public class AnalyserServiceImplTest {
         assertEquals(6, documents.size());
         for (Document document : documents) {
             if (HttpMethods.GET.getMethod().equals(document.getHttpMethod())) {
-                assertTrue(asList("/store/books", "/store/books/{bookId}").contains(
-                        document.getPath()));
+                assertTrue(asList("/store/books", "/store/books/{bookId}")
+                                .contains(document.getPath()));
             }
         }
     }
@@ -68,8 +68,8 @@ public class AnalyserServiceImplTest {
         @Path("/books")
         @ApiName("Store book")
         @ApiDescription("Allows add a new book to the collection")
-        @Consumes({"application/json", "application/xml"})
-        @Produces({"application/json", "application/xml"})
+        @Consumes({ "application/json", "application/xml" })
+        @Produces({ "application/json", "application/xml" })
         public void add(@Valid Book book) {
 
         }
@@ -78,8 +78,8 @@ public class AnalyserServiceImplTest {
         @Path("/books/{bookId}")
         @ApiName("Update book")
         @ApiDescription("Allows update a book already part of the collection")
-        @Consumes({"application/json", "application/xml"})
-        @Produces({"application/json", "application/xml"})
+        @Consumes({ "application/json", "application/xml" })
+        @Produces({ "application/json", "application/xml" })
         public void update(@NotNull @PathParam("bookId") Long bookId, Book book) {
 
         }
@@ -108,8 +108,9 @@ public class AnalyserServiceImplTest {
         @ApiResponse(type = BookMessage.class)
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response addForm(
-                @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = {Flag.CASE_INSENSITIVE}) @FormParam("name") String name,
-                @QueryParam("collection") Long collection) {
+                        @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = {
+                                        Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
+                        @QueryParam("collection") Long collection) {
             return null;
         }
     }

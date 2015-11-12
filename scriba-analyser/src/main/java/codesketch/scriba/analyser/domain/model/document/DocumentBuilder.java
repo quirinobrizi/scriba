@@ -84,18 +84,19 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public DocumentBuilder putCookieParameter(AnnotatedElement annotatedElement,
-                                              Property pathParameter) {
+                    Property pathParameter) {
         this.cookieParameters.put(annotatedElement, pathParameter);
         return this;
     }
 
-    public DocumentBuilder putHeaderParameter(AnnotatedElement annotatedElement, Property parameter) {
+    public DocumentBuilder putHeaderParameter(AnnotatedElement annotatedElement,
+                    Property parameter) {
         this.headerParameters.put(annotatedElement, parameter);
         return this;
     }
 
     public DocumentBuilder putPathParameter(AnnotatedElement annotatedElement,
-                                            Property pathParameter) {
+                    Property pathParameter) {
         this.pathParameters.put(annotatedElement, pathParameter);
         return this;
     }
@@ -105,7 +106,8 @@ public class DocumentBuilder implements Cloneable {
         return this;
     }
 
-    public DocumentBuilder putQueryParameter(AnnotatedElement annotatedElement, Property parameter) {
+    public DocumentBuilder putQueryParameter(AnnotatedElement annotatedElement,
+                    Property parameter) {
         this.queryParameters.put(annotatedElement, parameter);
         return this;
     }
@@ -113,28 +115,31 @@ public class DocumentBuilder implements Cloneable {
     /**
      * Verifies if a parameter is present for the annotated element.
      *
-     * @param descriptor the annotated element to check
+     * @param descriptor
+     *            the annotated element to check
      * @return true if the a parameter exists for the annotated element as a one
-     * of form, path, or query parameter, false otherwise.
+     *         of form, path, or query parameter, false otherwise.
      */
     public Boolean hasParameterForAnnotatedElement(Descriptor descriptor) {
         AnnotatedElement element = descriptor.annotatedElement();
 
         boolean found = this.pathParameters.containsKey(element)
-                || this.formParameters.containsKey(element)
-                || this.queryParameters.containsKey(element)
-                || this.cookieParameters.containsKey(element)
-                || this.headerParameters.containsKey(element);
+                        || this.formParameters.containsKey(element)
+                        || this.queryParameters.containsKey(element)
+                        || this.cookieParameters.containsKey(element)
+                        || this.headerParameters.containsKey(element);
         if (!found) {
             if (descriptor.isResponseInspected()) {
                 if (!found) {
                     if (null != this.responsePayload) {
-                        return this.responsePayload.isOfType(element.getClass()) || this.responsePayload.hasProperty(element);
+                        return this.responsePayload.isOfType(element.getClass())
+                                        || this.responsePayload.hasProperty(element);
                     }
                 }
             } else {
                 if (null != this.requestPayload) {
-                    found |= this.requestPayload.isOfType(element.getClass()) || this.requestPayload.hasProperty(element);
+                    found |= this.requestPayload.isOfType(element.getClass())
+                                    || this.requestPayload.hasProperty(element);
                 }
             }
         }
@@ -163,8 +168,8 @@ public class DocumentBuilder implements Cloneable {
         if (null != answer) {
             return answer;
         }
-        if(descriptor.isResponseInspected()) {
-            if(this.responsePayload.isOfType(descriptor.getParameterType())) {
+        if (descriptor.isResponseInspected()) {
+            if (this.responsePayload.isOfType(descriptor.getParameterType())) {
                 return this.responsePayload;
             }
             answer = this.responsePayload.getProperty(element);
@@ -182,16 +187,18 @@ public class DocumentBuilder implements Cloneable {
             }
         }
         throw new IllegalStateException(
-                String.format("requested annotated element %s has not been processed as a parameter, is the API correctly annotated?",
-                        descriptor.toString()));
+                        String.format("requested annotated element %s has not been processed as a parameter, is the API correctly annotated?",
+                                        descriptor.toString()));
     }
 
     /**
      * Set or replaces consumable types. This is because method level annotation
      *
-     * @param value    the consumable types.
-     * @param isMethod a flag indicating whether the consumable types are defined at
-     *                 method or type level.
+     * @param value
+     *            the consumable types.
+     * @param isMethod
+     *            a flag indicating whether the consumable types are defined at
+     *            method or type level.
      * @return
      */
     public DocumentBuilder setOrReplaceConsumableTypes(String[] value, Boolean isMethod) {
@@ -207,9 +214,11 @@ public class DocumentBuilder implements Cloneable {
     /**
      * Set or replaces producible types. This is because method level annotation
      *
-     * @param value    the consumable types.
-     * @param isMethod a flag indicating whether the consumable types are defined at
-     *                 method or type level.
+     * @param value
+     *            the consumable types.
+     * @param isMethod
+     *            a flag indicating whether the consumable types are defined at
+     *            method or type level.
      * @return
      */
     public DocumentBuilder setOrReplaceProducibleTypes(String[] value, Boolean isMethod) {
@@ -253,14 +262,14 @@ public class DocumentBuilder implements Cloneable {
 
     public Document build() {
         return createNewDocument(this.httpMethod).withName(this.name).withDescription(description)
-                .withPath(new Path(buildPath())).withConsumes(this.consumables)
-                .withProduces(this.producible)
-                .withPathParameters(new ArrayList<>(this.pathParameters.values()))
-                .withFormParameters(new ArrayList<>(this.formParameters.values()))
-                .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
-                .withRequestPayload(this.requestPayload)
-                .withResponsePayload(this.responsePayload)
-                .withMessages(new ArrayList<>(this.messages));
+                        .withPath(new Path(buildPath())).withConsumes(this.consumables)
+                        .withProduces(this.producible)
+                        .withPathParameters(new ArrayList<>(this.pathParameters.values()))
+                        .withFormParameters(new ArrayList<>(this.formParameters.values()))
+                        .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
+                        .withRequestPayload(this.requestPayload)
+                        .withResponsePayload(this.responsePayload)
+                        .withMessages(new ArrayList<>(this.messages));
     }
 
     @Override
@@ -276,8 +285,8 @@ public class DocumentBuilder implements Cloneable {
     @Override
     public String toString() {
         return "DocumentBuilder [httpMethod=" + httpMethod + ", pathSegments=" + pathSegments
-                + ", pathParameters=" + pathParameters + ", consumables=" + consumables
-                + ", producible=" + producible + ", payload=" + requestPayload + "]";
+                        + ", pathParameters=" + pathParameters + ", consumables=" + consumables
+                        + ", producible=" + producible + ", payload=" + requestPayload + "]";
     }
 
     private void setPathSegments(List<String> pathSegments) {

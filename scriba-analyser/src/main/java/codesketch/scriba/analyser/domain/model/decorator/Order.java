@@ -39,7 +39,7 @@ import java.lang.annotation.Annotation;
 public enum Order {
 
     NOT_NULL(NotNull.class, Integer.MAX_VALUE), SIZE(Size.class, Integer.MAX_VALUE), PATTERN(
-            Pattern.class, Integer.MAX_VALUE), PAST(Past.class, Integer.MAX_VALUE);
+                    Pattern.class, Integer.MAX_VALUE), PAST(Past.class, Integer.MAX_VALUE);
 
     private Class<? extends Annotation> annotation;
     private Integer order;

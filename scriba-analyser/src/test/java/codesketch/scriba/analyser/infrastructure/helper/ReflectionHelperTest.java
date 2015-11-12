@@ -17,10 +17,12 @@ public class ReflectionHelperTest {
     @Test
     public void testGetAnnotations_annotatedBaseClass() {
         // act
-        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDescriptors(AnnotatedBaseClass.class);
+        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDescriptors(
+                        AnnotatedBaseClass.class);
         // assert
         assertEquals(1, annotations.size());
-        codesketch.scriba.analyser.domain.model.decorator.Descriptor annotation = annotations.iterator().next();
+        codesketch.scriba.analyser.domain.model.decorator.Descriptor annotation = annotations
+                        .iterator().next();
         assertEquals(Path.class, annotation.annotationType());
         assertEquals(0, annotation.level());
     }
@@ -28,7 +30,8 @@ public class ReflectionHelperTest {
     @Test
     public void testGetAnnotations_annotatedClass() {
         // act
-        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDescriptors(AnnotatedClass.class);
+        List<codesketch.scriba.analyser.domain.model.decorator.Descriptor> annotations = getDescriptors(
+                        AnnotatedClass.class);
         // assert
         assertEquals(2, annotations.size());
         int level = annotations.size() - 1;

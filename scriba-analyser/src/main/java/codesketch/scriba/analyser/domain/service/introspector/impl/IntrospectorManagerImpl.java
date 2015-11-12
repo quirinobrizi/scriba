@@ -52,8 +52,11 @@ public class IntrospectorManagerImpl implements IntrospectorManager {
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManagerInt#introspector(java.lang.Class)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see eu.codesketch.rest.scriba.analyser.domain.service.introspector.
+     * IntrospectorManagerInt#introspector(java.lang.Class)
      */
     @Override
     public Introspector introspector(Class<?> type) {
@@ -64,8 +67,12 @@ public class IntrospectorManagerImpl implements IntrospectorManager {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.codesketch.rest.scriba.analyser.domain.service.introspector.IntrospectorManagerInt#register(eu.codesketch.rest.scriba.analyser.domain.service.introspector.Introspector)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see eu.codesketch.rest.scriba.analyser.domain.service.introspector.
+     * IntrospectorManagerInt#register(eu.codesketch.rest.scriba.analyser.domain
+     * .service.introspector.Introspector)
      */
     @Override
     public void register(Introspector introspector) {

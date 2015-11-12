@@ -43,9 +43,9 @@ public abstract class IntrospectorHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntrospectorHelper.class);
 
     private static final List<Class<?>> PRIMITIVE_WRAPPER = Arrays.asList(String.class,
-            Boolean.class, Byte.class, Character.class, Short.class, Integer.class,
-            Long.class, Double.class, Float.class, Void.class, Date.class, Currency.class,
-            List.class, Map.class);
+                    Boolean.class, Byte.class, Character.class, Short.class, Integer.class,
+                    Long.class, Double.class, Float.class, Void.class, Date.class, Currency.class,
+                    List.class, Map.class);
 
     private IntrospectorHelper() {
     }
@@ -62,12 +62,13 @@ public abstract class IntrospectorHelper {
      *            the introspection descriptor.
      */
     public static void introspect(IntrospectorManager introspectorManager,
-                                  DocumentBuilder documentBuilder, Descriptor descriptor) {
+                    DocumentBuilder documentBuilder, Descriptor descriptor) {
         Introspector introspector = introspectorManager.introspector(descriptor.annotationType());
         if (null != introspector) {
             introspector.instrospect(documentBuilder, descriptor);
         } else {
-            LOGGER.warn("unable instrospect {} as no valid introspector has been found", descriptor);
+            LOGGER.warn("unable instrospect {} as no valid introspector has been found",
+                            descriptor);
         }
     }
 

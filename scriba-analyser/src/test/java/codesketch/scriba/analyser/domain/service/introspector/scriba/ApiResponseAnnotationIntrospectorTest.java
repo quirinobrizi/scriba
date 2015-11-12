@@ -38,7 +38,7 @@ public class ApiResponseAnnotationIntrospectorTest {
     @Mock private List<Property> parameterList;
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testInstrospect() {
         Class annotationType = ApiResponse.class;
         Class fieldAnnotationType = JsonProperty.class;
@@ -48,7 +48,8 @@ public class ApiResponseAnnotationIntrospectorTest {
         when(descriptor.annotationType()).thenReturn(annotationType);
         when(apiResponse.type()).thenReturn(clazz);
         when(introspectorManager.introspector(fieldAnnotationType)).thenReturn(introspector);
-        when(documentBuilder.getOrCreateResponsePayload(apiResponse.type(), "")).thenReturn(payload);
+        when(documentBuilder.getOrCreateResponsePayload(apiResponse.type(), ""))
+                        .thenReturn(payload);
         when(payload.getProperties()).thenReturn(parameterList);
         when(parameterList.isEmpty()).thenReturn(FALSE);
         // act

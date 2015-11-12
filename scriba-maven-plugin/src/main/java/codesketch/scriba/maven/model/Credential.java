@@ -37,6 +37,7 @@ public class Credential {
     }
 
     public String toJson() {
-        return String.format("{\"email\": \"%s\", \"password\":\"%s\"}", this.username, this.password);
+        return String.format("{\"email\": \"%s\", \"password\":\"%s\"}", this.username,
+                        this.password);
     }
 }

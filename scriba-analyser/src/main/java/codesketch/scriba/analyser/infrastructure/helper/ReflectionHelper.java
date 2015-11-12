@@ -47,9 +47,10 @@ public abstract class ReflectionHelper {
     /**
      * Collect all the decorators declared on the provided class.
      *
-     * @param clazz the class to introspect
+     * @param clazz
+     *            the class to introspect
      * @return a list containing all the declare {@link Descriptor} or an empty
-     * list if none are found.
+     *         list if none are found.
      */
     public static List<Descriptor> getDescriptors(Class<?> clazz) {
         List<Descriptor> decorators = new ArrayList<>();
@@ -65,11 +66,13 @@ public abstract class ReflectionHelper {
     /**
      * Collect all the {@link Descriptor}s declared on the provided method.
      *
-     * @param method the method to inspect
-     * @param level  the level that the method has on the chain of path
-     *               inheritance.
+     * @param method
+     *            the method to inspect
+     * @param level
+     *            the level that the method has on the chain of path
+     *            inheritance.
      * @return a list containing all the declare {@link Descriptor} or an empty
-     * list if none are found.
+     *         list if none are found.
      */
     public static final List<Descriptor> getDescriptors(Method method, int level) {
         List<Descriptor> decorators = new ArrayList<>();
@@ -98,10 +101,12 @@ public abstract class ReflectionHelper {
             Class<?> target = targets.get(i);
             decorators.addAll(toDescriptors(target.getDeclaredAnnotations(), i, target, false));
             for (Method method : target.getDeclaredMethods()) {
-                decorators.addAll(toDescriptors(method.getDeclaredAnnotations(), i + 1, method, false));
+                decorators.addAll(toDescriptors(method.getDeclaredAnnotations(), i + 1, method,
+                                false));
             }
             for (Field field : target.getDeclaredFields()) {
-                decorators.addAll(toDescriptors(field.getDeclaredAnnotations(), i + 1, field, false));
+                decorators.addAll(
+                                toDescriptors(field.getDeclaredAnnotations(), i + 1, field, false));
             }
         }
         return decorators;
@@ -111,13 +116,15 @@ public abstract class ReflectionHelper {
      * Retrieve all the decorators for the requested annotation defined on the
      * declared class
      *
-     * @param clazz      the target class
-     * @param annotation the target annotation
+     * @param clazz
+     *            the target class
+     * @param annotation
+     *            the target annotation
      * @return a list containing all the declare {@link Descriptor} or an empty
-     * list if none are found.
+     *         list if none are found.
      */
     public static <A extends Annotation> List<Descriptor> getDescriptorsForAnnotation(
-            Class<?> clazz, Class<A> annotation) {
+                    Class<?> clazz, Class<A> annotation) {
         List<Descriptor> decorators = new ArrayList<>();
         List<Class<?>> targets = getClassChain(clazz);
         int levels = targets.size() - 1;
@@ -144,7 +151,7 @@ public abstract class ReflectionHelper {
     }
 
     public static final <A extends Annotation> Descriptor getDecoratorsForAnnotation(
-            AccessibleObject accessibleObject, Class<A> annotation) {
+                    AccessibleObject accessibleObject, Class<A> annotation) {
         A declaredAnnotation = accessibleObject.getAnnotation(annotation);
         return new Descriptor(0, declaredAnnotation, accessibleObject);
 
@@ -153,9 +160,10 @@ public abstract class ReflectionHelper {
     /**
      * Collect all the annotated methods declared on the provided class.
      *
-     * @param clazz the class to introspect
+     * @param clazz
+     *            the class to introspect
      * @return a list containing all the declare methods or an empty list if
-     * none are found.
+     *         none are found.
      */
     public static Set<Method> getAnnotatedMethods(Class<?> clazz) {
         Set<Method> annotations = new HashSet<>();
@@ -189,9 +197,10 @@ public abstract class ReflectionHelper {
      * InterfaceA.<br />
      * The method will exclude Object class from the chain
      *
-     * @param clazz the class to introspect
+     * @param clazz
+     *            the class to introspect
      * @return the list of classes that composes the inheritance chain starting
-     * from the provided one.
+     *         from the provided one.
      */
     public static List<Class<?>> getClassChain(Class<?> clazz) {
         List<Class<?>> chain = new ArrayList<>();
@@ -204,13 +213,13 @@ public abstract class ReflectionHelper {
     }
 
     public static boolean isSetter(Method method) {
-        return Modifier.isPublic(method.getModifiers())
-                && method.getReturnType().equals(void.class)
-                && method.getParameterTypes().length == 1;
+        return Modifier.isPublic(method.getModifiers()) && method.getReturnType().equals(void.class)
+                        && method.getParameterTypes().length == 1;
     }
 
     public static Set<Annotation> getMethodAnnotations(Method method) {
-        Set<Annotation> declaredAnnotations = new HashSet<Annotation>(Arrays.asList(method.getDeclaredAnnotations()));
+        Set<Annotation> declaredAnnotations = new HashSet<Annotation>(
+                        Arrays.asList(method.getDeclaredAnnotations()));
         Set<Annotation> parametersAnnotations = new HashSet<>();
         for (Annotation[] annotations : method.getParameterAnnotations()) {
             parametersAnnotations.addAll(Arrays.asList(annotations));
@@ -220,26 +229,33 @@ public abstract class ReflectionHelper {
     }
 
     /**
-     * Wrap all annotations found on the annotated element with {@link Descriptor}.
+     * Wrap all annotations found on the annotated element with
+     * {@link Descriptor}.
      *
-     * @param annotations the annotations found on the annotated element
-     * @param level       the introspection level
-     * @param element     the annotated element currently subject of the parsing
-     * @param isParameter boolean flag identifies if the parsing is currently running for parameter or other level annotations
+     * @param annotations
+     *            the annotations found on the annotated element
+     * @param level
+     *            the introspection level
+     * @param element
+     *            the annotated element currently subject of the parsing
+     * @param isParameter
+     *            boolean flag identifies if the parsing is currently running
+     *            for parameter or other level annotations
      * @return a list of {@link Descriptor}.
      */
     private static List<Descriptor> toDescriptors(Annotation[] annotations, int level,
-                                                  AnnotatedElement element, boolean isParameter) {
-        return toDescriptors(new HashSet<Annotation>(Arrays.asList(annotations)), level, element, isParameter);
+                    AnnotatedElement element, boolean isParameter) {
+        return toDescriptors(new HashSet<Annotation>(Arrays.asList(annotations)), level, element,
+                        isParameter);
     }
 
     private static List<Descriptor> toDescriptors(Set<Annotation> annotations, int level,
-                                                  AnnotatedElement element, boolean isParameter) {
+                    AnnotatedElement element, boolean isParameter) {
         List<Descriptor> decorators = new ArrayList<>();
         for (Annotation annotation : annotations) {
             if (isParameter && Valid.class.equals(annotation.annotationType())) {
-                LOGGER.debug("found annotated parameter containing @Valid annotation, " +
-                        "add custom RequestPayloadAnnotation to the introspector list");
+                LOGGER.debug("found annotated parameter containing @Valid annotation, "
+                                + "add custom RequestPayloadAnnotation to the introspector list");
                 decorators.add(new Descriptor(level, new RequestPayloadAnnotation(), element));
             } else {
                 decorators.add(new Descriptor(level, annotation, element));
@@ -252,9 +268,10 @@ public abstract class ReflectionHelper {
         if (annotations.length >= 1) {
             return true;
         }
-//        else if (annotations.length == 1 && !Valid.class.equals(annotations[0].annotationType())) {
-//            return true;
-//        }
+        // else if (annotations.length == 1 &&
+        // !Valid.class.equals(annotations[0].annotationType())) {
+        // return true;
+        // }
         return false;
     }
 }

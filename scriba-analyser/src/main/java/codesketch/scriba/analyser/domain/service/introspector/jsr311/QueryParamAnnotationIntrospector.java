@@ -55,13 +55,14 @@ public class QueryParamAnnotationIntrospector implements Introspector {
     public void instrospect(DocumentBuilder documentBuilder, Descriptor decorator) {
         QueryParam queryParam = decorator.getWrappedAnnotationAs(QueryParam.class);
         codesketch.scriba.analyser.infrastructure.reflect.Parameter parameter = decorator
-                .annotatedElementAs(codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
+                        .annotatedElementAs(
+                                        codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
         DefaultValue defaultValueAnnotation = parameter.getAnnotation(DefaultValue.class);
         String defaultValue = null != defaultValueAnnotation ? defaultValueAnnotation.value()
-                : null;
+                        : null;
         String parameterType = decorator.getParameterType().getName();
-        documentBuilder.putQueryParameter(decorator.annotatedElement(), new Property(
-                parameterType, queryParam.value(), defaultValue));
+        documentBuilder.putQueryParameter(decorator.annotatedElement(),
+                        new Property(parameterType, queryParam.value(), defaultValue));
     }
 
     /*

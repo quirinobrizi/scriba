@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since 30 Jan 2015
  */
 @Documented
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
+@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
 @Retention(RUNTIME)
 public @interface ApiDefault {
 

@@ -46,7 +46,6 @@ public class Payload extends ObjectElement {
         this.type = type;
     }
 
-
     public Payload addParameter(AnnotatedElement annotatedElement, Property parameter) {
         if (!this.properties.containsValue(parameter)) {
             this.properties.put(annotatedElement, parameter);

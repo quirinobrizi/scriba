@@ -67,7 +67,7 @@ public class Property extends ObjectElement {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Parameter [type=").append(type).append(", name=").append(getName())
-                .append(", defaultValue=").append(getDefaultValue()).append("]");
+                        .append(", defaultValue=").append(getDefaultValue()).append("]");
         return builder.toString();
     }
 
@@ -84,7 +84,7 @@ public class Property extends ObjectElement {
         }
         Property other = (Property) obj;
         return new EqualsBuilder().append(this.type, other.type).append(getName(), other.getName())
-                .build();
+                        .build();
     }
 
     @Override
@@ -97,6 +97,6 @@ public class Property extends ObjectElement {
             return null;
         }
         return parameterType.substring(parameterType.lastIndexOf('.') + 1, parameterType.length())
-                .toLowerCase();
+                        .toLowerCase();
     }
 }

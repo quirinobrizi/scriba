@@ -55,11 +55,11 @@ public class MaxAnnotationIntrospector extends AbstractJSR349AnnotationIntrospec
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Max annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(String.format(
-                "value must be lower or equal to the specified maximum %d",
-                annotation.value()));
-        documentBuilder.addMessage(createMessageForBadRequest(interpolate(annotation.message(),
-                descriptor)));
+        parameter.constraints(
+                        String.format("value must be lower or equal to the specified maximum %d",
+                                        annotation.value()));
+        documentBuilder.addMessage(
+                        createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }
 
     /*
