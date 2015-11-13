@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>codesketch.scriba</groupId>
 		<artifactId>scriba</artifactId>
-		<version>0.0.3</version>
+		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>scriba-test</artifactId>
 	<name>Scriba Test</name>
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>codesketch.scriba</groupId>
 			<artifactId>scriba-annotations</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -34,7 +34,7 @@
 			<plugin>
 				<groupId>codesketch.scriba</groupId>
 				<artifactId>scriba-maven-plugin</artifactId>
-				<version>0.0.3</version>
+				<version>0.0.4-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
