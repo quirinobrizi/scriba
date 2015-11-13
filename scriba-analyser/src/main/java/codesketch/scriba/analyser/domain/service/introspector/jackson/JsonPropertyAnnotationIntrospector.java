@@ -19,25 +19,28 @@
  */
 package codesketch.scriba.analyser.domain.service.introspector.jackson;
 
-import codesketch.scriba.analyser.domain.model.Payload;
-import codesketch.scriba.analyser.domain.model.Property;
-import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
-import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
-import codesketch.scriba.analyser.domain.service.introspector.Introspector;
+import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.isPrimitiveOrWrapper;
+import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getDescriptorsForAnnotation;
+import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.isSetter;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.isPrimitiveOrWrapper;
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.getDescriptorsForAnnotation;
-import static codesketch.scriba.analyser.infrastructure.helper.ReflectionHelper.isSetter;
+import codesketch.scriba.analyser.domain.model.Payload;
+import codesketch.scriba.analyser.domain.model.Property;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
+import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
+import codesketch.scriba.analyser.domain.service.introspector.Introspector;
 
 /**
  * Introspect {@link Consumes} annotation and populate the provided
@@ -66,12 +69,12 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
-        AnnotatedElement element = descriptor.annotatedElement();
+        AnnotatedElement annotatedElement = descriptor.annotatedElement();
         Class<?> parameterType = descriptor.getParameterType();
         Payload payload = descriptor.isResponseInspected()
-                        ? documentBuilder.getOrCreateResponsePayload(parameterType, "")
+                        ? documentBuilder.getOrCreateResponsePayload(getDeclaringClass(annotatedElement), "")
                         : documentBuilder.getOrCreateRequestPayload(parameterType, "");
-        payload.addParameter(element, extractProperty(descriptor));
+        payload.addParameter(annotatedElement, extractProperty(descriptor));
     }
 
     /*
@@ -82,6 +85,14 @@ public class JsonPropertyAnnotationIntrospector implements Introspector {
     @Override
     public Class<JsonProperty> type() {
         return JsonProperty.class;
+    }
+
+    private Class<?> getDeclaringClass(AnnotatedElement annotatedElement) {
+        if (Member.class.isAssignableFrom(annotatedElement.getClass())) {
+            return Member.class.cast(annotatedElement).getDeclaringClass();
+        } else {
+            return annotatedElement.getClass();
+        }
     }
 
     private Property extractProperty(Descriptor descriptor) {

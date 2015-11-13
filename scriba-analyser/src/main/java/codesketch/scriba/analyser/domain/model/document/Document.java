@@ -19,14 +19,21 @@
  */
 package codesketch.scriba.analyser.domain.model.document;
 
-import codesketch.scriba.analyser.domain.model.*;
+import static codesketch.scriba.analyser.domain.model.HttpMethods.lookupHttpMethod;
+
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import java.util.List;
-
-import static codesketch.scriba.analyser.domain.model.HttpMethods.lookupHttpMethod;
+import codesketch.scriba.analyser.domain.model.Description;
+import codesketch.scriba.analyser.domain.model.HttpMethods;
+import codesketch.scriba.analyser.domain.model.Message;
+import codesketch.scriba.analyser.domain.model.Name;
+import codesketch.scriba.analyser.domain.model.Path;
+import codesketch.scriba.analyser.domain.model.Payload;
+import codesketch.scriba.analyser.domain.model.Property;
 
 /**
  * Represent the documentation information about an API.
@@ -48,7 +55,7 @@ public class Document {
     @JsonProperty private List<Property> formParameters;
     @JsonProperty private List<Property> queryParameters;
     @JsonProperty private Payload requestPayload;
-    @JsonProperty private Payload responsePayload;
+    @JsonProperty private List<Payload> responsePayloads;
     @JsonProperty private List<Message> messages;
 
     private Document(String httpMethod) {
@@ -126,8 +133,8 @@ public class Document {
         return this;
     }
 
-    public Document withResponsePayload(Payload responsePayload) {
-        this.responsePayload = responsePayload;
+    public Document withResponsePayloads(List<Payload> responsePayloads) {
+        this.responsePayloads = responsePayloads;
         return this;
     }
 

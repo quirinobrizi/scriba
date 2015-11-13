@@ -19,14 +19,15 @@
  */
 package codesketch.scriba.analyser.domain.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.Validate;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Represent an api payload
@@ -43,6 +44,7 @@ public class Payload extends ObjectElement {
 
     public Payload(Class<?> type, String name) {
         super(null, "", false);
+        Validate.notNull(type, "Payload type must be provided");
         this.type = type;
     }
 
@@ -77,6 +79,7 @@ public class Payload extends ObjectElement {
 
     @JsonIgnore
     public boolean isOfType(Class<?> type) {
+        System.out.println(this.type + " -- " + type);
         return this.type.equals(type);
     }
 }

@@ -19,22 +19,56 @@
  */
 package codesketch.scriba.analyser.infrastructure.guice;
 
+import static com.google.inject.multibindings.Multibinder.newSetBinder;
+
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.Multibinder;
+
 import codesketch.scriba.analyser.application.AnalyserService;
 import codesketch.scriba.analyser.application.impl.AnalyserServiceImpl;
 import codesketch.scriba.analyser.domain.service.introspector.Introspector;
 import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
 import codesketch.scriba.analyser.domain.service.introspector.impl.IntrospectorManagerImpl;
 import codesketch.scriba.analyser.domain.service.introspector.jackson.JsonPropertyAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.jsr311.*;
-import codesketch.scriba.analyser.domain.service.introspector.jsr349.*;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.*;
-import com.google.inject.AbstractModule;
-import com.google.inject.multibindings.Multibinder;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static com.google.inject.multibindings.Multibinder.newSetBinder;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.ConsumesAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.DeleteAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.FormParamAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.GetAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.HeadAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.OptionsAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.PathAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.PathParamAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.PostAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.ProducesAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.PutAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr311.QueryParamAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.AssertFalseAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.AssertTrueAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.DecimalMaxAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.DecimalMinAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.DigitsAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.FutureAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.MaxAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.MinAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.NotNullAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.NullAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.PastAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.PatternAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.SizeAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.jsr349.ValidAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiConsumesAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiDescriptionAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiNameAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiParameterAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiPathAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiProducesAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiResponseAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiResponsesAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiVerbAnnotationIntrospector;
+import codesketch.scriba.analyser.domain.service.introspector.scriba.RequestPayloadAnnotationIntrospector;
 
 /**
  * Injector configuration.
@@ -61,9 +95,10 @@ public class ScribaInjector extends AbstractModule {
             RequestPayloadAnnotationIntrospector.class, 
             // Custom
             ApiDescriptionAnnotationIntrospector.class, ApiNameAnnotationIntrospector.class, 
-            ApiResponseAnnotationIntrospector.class, ApiVerbAnnotationIntrospector.class,
+            ApiResponseAnnotationIntrospector.class, ApiResponsesAnnotationIntrospector.class, 
             ApiConsumesAnnotationIntrospector.class, ApiProducesAnnotationIntrospector.class,
             ApiParameterAnnotationIntrospector.class, ApiPathAnnotationIntrospector.class,
+            ApiVerbAnnotationIntrospector.class,
             // JSR 349
             AssertFalseAnnotationIntrospector.class, AssertTrueAnnotationIntrospector.class,
             DecimalMaxAnnotationIntrospector.class, DecimalMinAnnotationIntrospector.class,

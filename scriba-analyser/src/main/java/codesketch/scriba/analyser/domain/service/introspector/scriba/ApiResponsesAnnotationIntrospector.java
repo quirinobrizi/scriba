@@ -44,6 +44,7 @@ import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 import codesketch.scriba.analyser.domain.service.introspector.Introspector;
 import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
 import codesketch.scriba.annotations.ApiResponse;
+import codesketch.scriba.annotations.ApiResponses;
 
 /**
  * Introspect {@link ApiResponse} annotation and populate the provided
@@ -56,10 +57,10 @@ import codesketch.scriba.annotations.ApiResponse;
  * @since 03 Feb 2015
  */
 @Singleton
-public class ApiResponseAnnotationIntrospector implements Introspector {
+public class ApiResponsesAnnotationIntrospector implements Introspector {
 
     private static final Logger LOGGER = LoggerFactory
-                    .getLogger(ApiResponseAnnotationIntrospector.class);
+                    .getLogger(ApiResponsesAnnotationIntrospector.class);
 
     @Inject private IntrospectorManager introspectorManager;
 
@@ -73,21 +74,26 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
-        ApiResponse apiResponse = descriptor.getWrappedAnnotationAs(ApiResponse.class);
-        if (null != apiResponse.type()) {
-            Payload payload = documentBuilder.getOrCreateResponsePayload(apiResponse.type(), "");
-            doInspectBody(documentBuilder, apiResponse.type());
+        ApiResponses apiResponses = descriptor.getWrappedAnnotationAs(ApiResponses.class);
+        for (ApiResponse apiResponse : apiResponses.value()) {
 
-            AnnotatedElement element = descriptor.annotatedElement();
-            if (payload.getProperties().isEmpty()) {
-                LOGGER.debug("no decorators has been found inspect fields");
-                for (Field field : getFields(apiResponse.type())) {
-                    payload.addParameter(element, extractProperty(field));
+            if (null != apiResponse.type()) {
+                Payload payload = documentBuilder.getOrCreateResponsePayload(apiResponse.type(),
+                                "");
+                doInspectBody(documentBuilder, apiResponse.type());
+
+                AnnotatedElement element = descriptor.annotatedElement();
+                if (payload.getProperties().isEmpty()) {
+                    LOGGER.debug("no decorators has been found inspect fields");
+                    for (Field field : getFields(apiResponse.type())) {
+                        payload.addParameter(element, extractProperty(field));
+                    }
                 }
             }
+            documentBuilder.addMessage(createMessage(apiResponse.responseCode(),
+                            apiResponse.message(), apiResponse.success()));
         }
-        documentBuilder.addMessage(
-                        createMessage(apiResponse.responseCode(), apiResponse.message(), true));
+
     }
 
     /*
@@ -96,8 +102,8 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
      * @see eu.codesketch.rest.scriba.analyser.introspector.Introspector#type()
      */
     @Override
-    public Class<ApiResponse> type() {
-        return ApiResponse.class;
+    public Class<ApiResponses> type() {
+        return ApiResponses.class;
     }
 
     private void doInspectBody(DocumentBuilder documentBuilder, Class<?> body) {

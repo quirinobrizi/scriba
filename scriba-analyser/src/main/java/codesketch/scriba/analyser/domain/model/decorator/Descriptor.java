@@ -19,15 +19,16 @@
  */
 package codesketch.scriba.analyser.domain.model.decorator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static codesketch.scriba.analyser.domain.model.decorator.Order.lookupOrder;
+import static java.lang.Boolean.FALSE;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 
-import static codesketch.scriba.analyser.domain.model.decorator.Order.lookupOrder;
-import static java.lang.Boolean.FALSE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Describes the context on which the introspection is executed.
@@ -117,6 +118,10 @@ public class Descriptor {
                         .isAssignableFrom(this.annotatedElement.getClass())) {
             return codesketch.scriba.analyser.infrastructure.reflect.Parameter.class
                             .cast(this.annotatedElement).getType();
+        } else if (Method.class.isAssignableFrom(this.annotatedElement.getClass())) {
+            return Method.class.cast(this.annotatedElement).getReturnType();
+        } else if (Field.class.isAssignableFrom(this.annotatedElement.getClass())) {
+            return Field.class.cast(this.annotatedElement).getType();
         }
         return null;
     }

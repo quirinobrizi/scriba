@@ -37,6 +37,7 @@ import codesketch.scriba.annotations.ApiParameter;
 import codesketch.scriba.annotations.ApiParameter.Type;
 import codesketch.scriba.annotations.ApiPath;
 import codesketch.scriba.annotations.ApiResponse;
+import codesketch.scriba.annotations.ApiResponses;
 import codesketch.scriba.annotations.ApiVerb;
 import codesketch.scriba.annotations.ApiVerb.Verb;
 
@@ -69,11 +70,16 @@ public interface BookInterface {
     @Produces(APPLICATION_JSON)
     @ApiName("Create a new book")
     @ApiDescription("Create a new book and make it available to the library on-line service")
-    @ApiResponse(type = Book.class, responseCode = 201)
+    @ApiResponses({ @ApiResponse(type = Book.class, responseCode = 201),
+                    @ApiResponse(type = Error.class, responseCode = 500, message = "internal server error", success = false) })
     public Response create(@NotNull(message = "book  parameter must be provided") @Valid Book book);
 
     public static class Book {
 
         @NotNull @JsonProperty private String isbn;
+    }
+
+    public static class Error {
+        @NotNull @JsonProperty private String message;
     }
 }

@@ -15,6 +15,7 @@ Currently the library support introspection for JSR-311, JSR-349, Jackson and fo
  * @ApiPath, allows to define the path this API will respond to requests
  * @ApiProduces, allows to define the media type provided as output by the API
  * @ApiResponse, allows to define the API response type, its numerical response code and a message for documentation purposes
+ * @ApiResponses, allows to define all responses the an API can return. Accepts an array of @ApiResponse
  * @ApiVerb, allows to define the verb the API respond.
  
  A JSON describing the analysed APIs is provided as output.

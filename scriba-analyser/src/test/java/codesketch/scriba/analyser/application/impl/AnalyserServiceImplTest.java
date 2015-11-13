@@ -1,15 +1,11 @@
 package codesketch.scriba.analyser.application.impl;
 
-import codesketch.scriba.analyser.domain.model.HttpMethods;
-import codesketch.scriba.analyser.domain.model.document.Document;
-import codesketch.scriba.analyser.infrastructure.guice.ScribaInjector;
-import codesketch.scriba.annotations.ApiDescription;
-import codesketch.scriba.annotations.ApiName;
-import codesketch.scriba.annotations.ApiResponse;
-import com.google.inject.Guice;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.junit.Before;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -17,15 +13,33 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Pattern.Flag;
 import javax.validation.constraints.Size;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Date;
-import java.util.List;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.inject.Guice;
+
+import codesketch.scriba.analyser.domain.model.HttpMethods;
+import codesketch.scriba.analyser.domain.model.document.Document;
+import codesketch.scriba.analyser.infrastructure.guice.ScribaInjector;
+import codesketch.scriba.annotations.ApiDescription;
+import codesketch.scriba.annotations.ApiName;
+import codesketch.scriba.annotations.ApiResponse;
+import codesketch.scriba.annotations.ApiResponses;
 
 public class AnalyserServiceImplTest {
 
@@ -88,7 +102,7 @@ public class AnalyserServiceImplTest {
         @Path("/books/{bookId}")
         @ApiName("Get book")
         @ApiDescription("Allows retrieve information about a book")
-        @ApiResponse(type = BookMessage.class)
+        @ApiResponses({ @ApiResponse(type = BookMessage.class) })
         public Response findById(@PathParam("bookId") Long bookId) {
             return null;
         }
@@ -105,7 +119,9 @@ public class AnalyserServiceImplTest {
         @Path("/books/minimal")
         @ApiName("Create minimal book")
         @ApiDescription("Allows create a new book with only its name")
-        @ApiResponse(type = BookMessage.class)
+        @ApiResponses({ @ApiResponse(type = BookMessage.class),
+                        @ApiResponse(type = ErrorMessage.class, success = false, responseCode = 401, message = "Unauthorized"),
+                        @ApiResponse(type = ErrorMessage.class, success = false, responseCode = 500, message = "Internal server error") })
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response addForm(
                         @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = {
@@ -132,7 +148,7 @@ public class AnalyserServiceImplTest {
     }
 
     public static class BookMessage {
-        @NotNull @JsonProperty private String isbn;
+        @NotNull(message = "ISBN parameter is not nullable and must be provided") @JsonProperty private String isbn;
         @JsonProperty private Title title;
         @JsonProperty private String author;
         @JsonProperty private Date publicationDate;
@@ -144,5 +160,10 @@ public class AnalyserServiceImplTest {
 
     public static class Title {
         @JsonProperty String title;
+    }
+
+    public static class ErrorMessage {
+        @JsonProperty Integer code;
+        @JsonProperty String message;
     }
 }

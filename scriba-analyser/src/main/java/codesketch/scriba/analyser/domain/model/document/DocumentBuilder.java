@@ -19,14 +19,27 @@
  */
 package codesketch.scriba.analyser.domain.model.document;
 
-import codesketch.scriba.analyser.domain.model.*;
-import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
-
-import java.lang.reflect.AnnotatedElement;
-import java.util.*;
-
 import static codesketch.scriba.analyser.domain.model.document.Document.createNewDocument;
 import static codesketch.scriba.analyser.infrastructure.helper.StringHelper.join;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import codesketch.scriba.analyser.domain.model.Description;
+import codesketch.scriba.analyser.domain.model.Message;
+import codesketch.scriba.analyser.domain.model.Name;
+import codesketch.scriba.analyser.domain.model.ObjectElement;
+import codesketch.scriba.analyser.domain.model.Path;
+import codesketch.scriba.analyser.domain.model.Payload;
+import codesketch.scriba.analyser.domain.model.Property;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
 
 /**
  * A builder for {@link Document} class.
@@ -47,7 +60,7 @@ public class DocumentBuilder implements Cloneable {
     private List<String> producible;
     private Set<Message> messages;
     private Payload requestPayload;
-    private Payload responsePayload;
+    private List<Payload> responsePayloads;
     private Name name;
     private Description description;
 
@@ -61,6 +74,7 @@ public class DocumentBuilder implements Cloneable {
         this.consumables = new ArrayList<>();
         this.producible = new ArrayList<>();
         this.messages = new HashSet<>();
+        this.responsePayloads = new ArrayList<>();
     }
 
     public DocumentBuilder setName(Name name) {
@@ -131,9 +145,8 @@ public class DocumentBuilder implements Cloneable {
         if (!found) {
             if (descriptor.isResponseInspected()) {
                 if (!found) {
-                    if (null != this.responsePayload) {
-                        return this.responsePayload.isOfType(element.getClass())
-                                        || this.responsePayload.hasProperty(element);
+                    for (Payload payload : this.responsePayloads) {
+                        return payload.isOfType(element.getClass()) || payload.hasProperty(element);
                     }
                 }
             } else {
@@ -144,6 +157,7 @@ public class DocumentBuilder implements Cloneable {
             }
         }
         return true;
+
     }
 
     public ObjectElement getParameter(Descriptor descriptor) {
@@ -169,12 +183,14 @@ public class DocumentBuilder implements Cloneable {
             return answer;
         }
         if (descriptor.isResponseInspected()) {
-            if (this.responsePayload.isOfType(descriptor.getParameterType())) {
-                return this.responsePayload;
-            }
-            answer = this.responsePayload.getProperty(element);
-            if (null != answer) {
-                return answer;
+            for (Payload payload : this.responsePayloads) {
+                if (payload.isOfType(descriptor.getParameterType())) {
+                    return payload;
+                }
+                answer = payload.getProperty(element);
+                if (null != answer) {
+                    return answer;
+                }
             }
 
         } else {
@@ -254,10 +270,16 @@ public class DocumentBuilder implements Cloneable {
     }
 
     public Payload getOrCreateResponsePayload(Class<?> type, String name) {
-        if (null == this.responsePayload) {
-            this.responsePayload = new Payload(type, name);
+        if (!this.responsePayloads.isEmpty()) {
+            for (Payload payload : this.responsePayloads) {
+                if (payload.isOfType(type)) {
+                    return payload;
+                }
+            }
         }
-        return this.responsePayload;
+        Payload payload = new Payload(type, name);
+        this.responsePayloads.add(payload);
+        return payload;
     }
 
     public Document build() {
@@ -268,7 +290,7 @@ public class DocumentBuilder implements Cloneable {
                         .withFormParameters(new ArrayList<>(this.formParameters.values()))
                         .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
                         .withRequestPayload(this.requestPayload)
-                        .withResponsePayload(this.responsePayload)
+                        .withResponsePayloads(this.responsePayloads)
                         .withMessages(new ArrayList<>(this.messages));
     }
 
