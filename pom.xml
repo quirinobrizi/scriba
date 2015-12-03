@@ -5,9 +5,7 @@
 	<version>0.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Scriba</name>
-	<description>Goal of this library is to allow collect information about REST interfaces in order to generate a readable representation
-        of the API.
-    </description>
+	<description>Goal of this library is to allow collect information about REST interfaces in order to generate a readable representation of the API.</description>
 	<modules>
 		<module>scriba-analyser</module>
 		<module>scriba-annotations</module>
@@ -30,12 +28,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>internal</id>
-			<url>http://codesketch.no-ip.org/archiva/repository/internal/</url>
+			<id>central</id>
+			<name>artifactory.codesketch.co.uk-releases</name>
+			<url>https://artifactory.codesketch.co.uk/artifactory/libs-release-local</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
-			<url>http://codesketch.no-ip.org/archiva/repository/snapshots/</url>
+			<name>artifactory.codesketch.co.uk-snapshots</name>
+			<url>https://artifactory.codesketch.co.uk/artifactory/libs-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 
