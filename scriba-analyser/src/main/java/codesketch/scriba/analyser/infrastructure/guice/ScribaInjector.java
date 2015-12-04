@@ -32,6 +32,7 @@ import codesketch.scriba.analyser.application.impl.AnalyserServiceImpl;
 import codesketch.scriba.analyser.domain.service.introspector.Introspector;
 import codesketch.scriba.analyser.domain.service.introspector.IntrospectorManager;
 import codesketch.scriba.analyser.domain.service.introspector.impl.IntrospectorManagerImpl;
+import codesketch.scriba.analyser.domain.service.introspector.jackson.FasterXMLJsonPropertyAnnotationIntrospector;
 import codesketch.scriba.analyser.domain.service.introspector.jackson.JsonPropertyAnnotationIntrospector;
 import codesketch.scriba.analyser.domain.service.introspector.jsr311.ConsumesAnnotationIntrospector;
 import codesketch.scriba.analyser.domain.service.introspector.jsr311.DeleteAnnotationIntrospector;
@@ -108,7 +109,7 @@ public class ScribaInjector extends AbstractModule {
             PastAnnotationIntrospector.class, PatternAnnotationIntrospector.class,
             SizeAnnotationIntrospector.class, ValidAnnotationIntrospector.class,
             // Jackson
-            JsonPropertyAnnotationIntrospector.class
+            JsonPropertyAnnotationIntrospector.class, FasterXMLJsonPropertyAnnotationIntrospector.class
         );
     // @formatter:on
 
