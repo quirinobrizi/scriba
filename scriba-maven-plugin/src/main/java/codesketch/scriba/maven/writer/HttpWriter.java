@@ -48,7 +48,7 @@ public class HttpWriter implements Writer {
                             .body(this.credential.toJson()).asJson();
             String accessToken = (String) response.getBody().getObject().get("accessToken");
             this.logger.debug(format("token: %s", accessToken));
-            this.logger.debug(format("authentication performed, sending %s to the server", data));
+            this.logger.info(format("authentication performed, sending %s to the server", data));
             HttpResponse<JsonNode> putDocumentResponse = Unirest.put(targetUrl.toExternalForm())
                             .header("Authorization", format("Bearer %s", accessToken)).body(data)
                             .asJson();
