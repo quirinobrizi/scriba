@@ -3,18 +3,20 @@
  */
 package codesketch.scriba.maven.writer;
 
-import codesketch.scriba.maven.model.Credential;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
+import static java.lang.String.format;
 
 import java.io.IOException;
 import java.net.URL;
 
-import static java.lang.String.format;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import codesketch.scriba.maven.model.Credential;
 
 /**
  * @author quirino.brizi
@@ -45,6 +47,8 @@ public class HttpWriter implements Writer {
             HttpResponse<JsonNode> response = Unirest.post(this.authenticateUrl.toExternalForm())
                             .body(this.credential.toJson()).asJson();
             String accessToken = (String) response.getBody().getObject().get("accessToken");
+            this.logger.debug(format("token: %s", accessToken));
+            this.logger.debug(format("authentication performed, sending %s to the server", data));
             HttpResponse<JsonNode> putDocumentResponse = Unirest.put(targetUrl.toExternalForm())
                             .header("Authorization", format("Bearer %s", accessToken)).body(data)
                             .asJson();
