@@ -13,12 +13,12 @@
 		<repository>
 			<id>central</id>
 			<name>artifactory.codesketch.co.uk-plugin-releases</name>
-			<url>http://localhost:18081/artifactory/plugins-release-local</url>
+			<url>https://artifactory.codesketch.co.uk/artifactory/plugins-release-local</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory.codesketch.co.uk-plugin-snapshots</name>
-			<url>http://localhost:18081/artifactory/plugins-snapshot-local</url>
+			<url>https://artifactory.codesketch.co.uk/artifactory/plugins-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 
