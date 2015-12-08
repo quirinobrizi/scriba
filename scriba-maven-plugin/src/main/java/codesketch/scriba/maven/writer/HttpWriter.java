@@ -5,7 +5,6 @@ package codesketch.scriba.maven.writer;
 
 import static java.lang.String.format;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.apache.maven.plugin.MojoFailureException;
@@ -62,10 +61,11 @@ public class HttpWriter implements Writer {
     }
 
     private void shutdownSilently() {
-        try {
-            Unirest.shutdown();
-        } catch (IOException e) {
-            this.logger.warn("unable shutdown unirest!");
-        }
+        // NOOP
+        // try {
+        // Unirest.shutdown();
+        // } catch (IOException e) {
+        // this.logger.warn("unable shutdown unirest!");
+        // }
     }
 }
