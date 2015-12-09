@@ -54,6 +54,7 @@ public class Document {
     @JsonProperty private List<Property> pathParameters;
     @JsonProperty private List<Property> formParameters;
     @JsonProperty private List<Property> queryParameters;
+    @JsonProperty private List<Property> headerParameters;
     @JsonProperty private Payload requestPayload;
     @JsonProperty private List<Payload> responsePayloads;
     @JsonProperty private List<Message> messages;
@@ -125,6 +126,11 @@ public class Document {
 
     public Document withQueryParameters(List<Property> queryParameters) {
         this.queryParameters = queryParameters;
+        return this;
+    }
+
+    public Document withHeaderParameters(List<Property> headerParameters) {
+        this.headerParameters = headerParameters;
         return this;
     }
 

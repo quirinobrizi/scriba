@@ -131,8 +131,8 @@ public class DocumentBuilder implements Cloneable {
      *
      * @param descriptor
      *            the annotated element to check
-     * @return true if the a parameter exists for the annotated element as a one
-     *         of form, path, or query parameter, false otherwise.
+     * @return true if the a parameter exists for the annotated element as a one of form, path, or query parameter, false
+     *         otherwise.
      */
     public Boolean hasParameterForAnnotatedElement(Descriptor descriptor) {
         AnnotatedElement element = descriptor.annotatedElement();
@@ -213,8 +213,7 @@ public class DocumentBuilder implements Cloneable {
      * @param value
      *            the consumable types.
      * @param isMethod
-     *            a flag indicating whether the consumable types are defined at
-     *            method or type level.
+     *            a flag indicating whether the consumable types are defined at method or type level.
      * @return
      */
     public DocumentBuilder setOrReplaceConsumableTypes(String[] value, Boolean isMethod) {
@@ -233,8 +232,7 @@ public class DocumentBuilder implements Cloneable {
      * @param value
      *            the consumable types.
      * @param isMethod
-     *            a flag indicating whether the consumable types are defined at
-     *            method or type level.
+     *            a flag indicating whether the consumable types are defined at method or type level.
      * @return
      */
     public DocumentBuilder setOrReplaceProducibleTypes(String[] value, Boolean isMethod) {
@@ -289,6 +287,7 @@ public class DocumentBuilder implements Cloneable {
                         .withPathParameters(new ArrayList<>(this.pathParameters.values()))
                         .withFormParameters(new ArrayList<>(this.formParameters.values()))
                         .withQueryParameters(new ArrayList<>(this.queryParameters.values()))
+                        .withHeaderParameters(new ArrayList<>(this.headerParameters.values()))
                         .withRequestPayload(this.requestPayload)
                         .withResponsePayloads(this.responsePayloads)
                         .withMessages(new ArrayList<>(this.messages));
