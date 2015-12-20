@@ -45,11 +45,17 @@ public @interface ApiParameter {
      * Defines from where the parameter will be retrieved, i.e. URI Template,
      * Header, Form, etc.
      *
-     * @return
+     * @return the API parameter type
      */
     Type type();
 
-    public enum Type {
-        COOKIE, FORM, PATH, HEADER, QUERY;
+    /**
+     * The parameter description, default to empty string.
+     * @return the API parameters description
+     */
+    String description() default "";
+
+    enum Type {
+        COOKIE, FORM, PATH, HEADER, QUERY
     }
 }

@@ -58,23 +58,23 @@ public class ApiParameterAnnotationIntrospector implements Introspector {
         switch (type) {
         case COOKIE:
             documentBuilder.putCookieParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue));
+                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
             break;
         case FORM:
             documentBuilder.putFormParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue));
+                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
             break;
         case HEADER:
             documentBuilder.putHeaderParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue));
+                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
             break;
         case PATH:
             documentBuilder.putPathParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue));
+                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
             break;
         case QUERY:
             documentBuilder.putQueryParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue));
+                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
             break;
         }
     }

@@ -36,6 +36,7 @@ public class Property extends ObjectElement {
 
     @JsonProperty private String type;
     @JsonProperty private List<Property> properties;
+    @JsonProperty private String description;
 
     /**
      * Create a new parameter setting its type and name;
@@ -50,9 +51,14 @@ public class Property extends ObjectElement {
     }
 
     public Property(String type, String name, String defaultValue) {
+        this(type, name, defaultValue, null);
+    }
+
+    public Property(String type, String name, String defaultValue, String description) {
         super(name, defaultValue, true);
         this.type = normalizeParameterType(type);
         this.properties = new ArrayList<>();
+        this.description = description;
     }
 
     public void addProperty(Property property) {
@@ -61,10 +67,8 @@ public class Property extends ObjectElement {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Parameter [type=").append(type).append(", name=").append(getName())
-                        .append(", defaultValue=").append(getDefaultValue()).append("]");
-        return builder.toString();
+        return "Parameter [type=" + type + ", name=" + getName() +
+                ", defaultValue=" + getDefaultValue() + "]";
     }
 
     @Override
