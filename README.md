@@ -331,3 +331,6 @@ The plugin will accept any response but will inspect it to retrieve the "accessT
 ```
 
 The above will generate a document at the specified ${scriba.target.uri} path.
+
+# Licence
+GNU GPL3

@@ -1,27 +1,28 @@
-/**
- * Scriba is a software library that aims to analyse REST interface and
- * produce machine readable documentation.
- * <p/>
- * Copyright (C) 2015  Quirino Brizi (quirino.brizi@gmail.com)
- * <p/>
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+/*
+ * Copyright [2015] [Quirino Brizi (quirino.brizi@gmail.com)]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package codesketch.scriba.analyser.domain.model.document;
 
 import static codesketch.scriba.analyser.domain.model.HttpMethods.lookupHttpMethod;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -45,22 +46,29 @@ import codesketch.scriba.analyser.domain.model.Property;
 @JsonSerialize(include = Inclusion.NON_EMPTY)
 public class Document {
 
+    private static final String PATH_PARAMETER_KEY = "path";
+    private static final String HEADER_PARAMETER_KEY = "header";
+    private static final String QUERY_PARAMETER_KEY = "query";
+    private static final String FORM_PARAMETER_KEY = "form";
+
     private HttpMethods httpMethod;
     private Name name;
     private Path path;
     private Description description;
     @JsonProperty private List<String> consumes;
     @JsonProperty private List<String> produces;
-    @JsonProperty private List<Property> pathParameters;
-    @JsonProperty private List<Property> formParameters;
-    @JsonProperty private List<Property> queryParameters;
-    @JsonProperty private List<Property> headerParameters;
+    @JsonProperty private Map<String, List<Property>> parameters;
+//    @JsonProperty private List<Property> pathParameters;
+//    @JsonProperty private List<Property> formParameters;
+//    @JsonProperty private List<Property> queryParameters;
+//    @JsonProperty private List<Property> headerParameters;
     @JsonProperty private Payload requestPayload;
     @JsonProperty private List<Payload> responsePayloads;
     @JsonProperty private List<Message> messages;
 
     private Document(String httpMethod) {
         this.httpMethod = lookupHttpMethod(httpMethod);
+        this.parameters = new HashMap<String, List<Property>>();
     }
 
     public static Document createNewDocument(String httpMethod) {
@@ -115,22 +123,22 @@ public class Document {
     }
 
     public Document withPathParameters(List<Property> pathParameters) {
-        this.pathParameters = pathParameters;
+        this.parameters.put(PATH_PARAMETER_KEY, null == pathParameters ? new ArrayList<Property>() : pathParameters);
         return this;
     }
 
     public Document withFormParameters(List<Property> formParameters) {
-        this.formParameters = formParameters;
+        this.parameters.put(FORM_PARAMETER_KEY, null == formParameters ? new ArrayList<Property>() : formParameters);
         return this;
     }
 
     public Document withQueryParameters(List<Property> queryParameters) {
-        this.queryParameters = queryParameters;
+        this.parameters.put(QUERY_PARAMETER_KEY, null == queryParameters ? new ArrayList<Property>() : queryParameters);
         return this;
     }
 
     public Document withHeaderParameters(List<Property> headerParameters) {
-        this.headerParameters = headerParameters;
+        this.parameters.put(HEADER_PARAMETER_KEY, null == headerParameters ? new ArrayList<Property>() : headerParameters);
         return this;
     }
 
@@ -155,7 +163,7 @@ public class Document {
         builder.append("Document [httpMethod=").append(httpMethod).append(", name=").append(name)
                         .append(", description=").append(description).append(", path=").append(path)
                         .append(", consumes=").append(consumes).append(", produces=")
-                        .append(produces).append(", pathParameters=").append(pathParameters)
+                        .append(produces).append(", parameters=").append(parameters)
                         .append(", payload=").append(requestPayload).append("]");
         return builder.toString();
     }
