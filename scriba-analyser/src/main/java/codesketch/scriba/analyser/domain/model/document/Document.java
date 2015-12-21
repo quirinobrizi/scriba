@@ -20,6 +20,7 @@ package codesketch.scriba.analyser.domain.model.document;
 import static codesketch.scriba.analyser.domain.model.HttpMethods.lookupHttpMethod;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,8 @@ public class Document {
     private static final String HEADER_PARAMETER_KEY = "header";
     private static final String QUERY_PARAMETER_KEY = "query";
     private static final String FORM_PARAMETER_KEY = "form";
+    private static final String REQUEST_PAYLOAD_KEY = "request";
+    private static final String RESPONSE_PAYLOAD_KEY = "response";
 
     private HttpMethods httpMethod;
     private Name name;
@@ -58,17 +61,13 @@ public class Document {
     @JsonProperty private List<String> consumes;
     @JsonProperty private List<String> produces;
     @JsonProperty private Map<String, List<Property>> parameters;
-//    @JsonProperty private List<Property> pathParameters;
-//    @JsonProperty private List<Property> formParameters;
-//    @JsonProperty private List<Property> queryParameters;
-//    @JsonProperty private List<Property> headerParameters;
-    @JsonProperty private Payload requestPayload;
-    @JsonProperty private List<Payload> responsePayloads;
+    @JsonProperty private Map<String, List<Payload>> payloads;
     @JsonProperty private List<Message> messages;
 
     private Document(String httpMethod) {
         this.httpMethod = lookupHttpMethod(httpMethod);
         this.parameters = new HashMap<String, List<Property>>();
+        this.payloads = new HashMap<String, List<Payload>>();
     }
 
     public static Document createNewDocument(String httpMethod) {
@@ -123,32 +122,38 @@ public class Document {
     }
 
     public Document withPathParameters(List<Property> pathParameters) {
-        this.parameters.put(PATH_PARAMETER_KEY, null == pathParameters ? new ArrayList<Property>() : pathParameters);
+        this.parameters.put(PATH_PARAMETER_KEY,
+                        null == pathParameters ? new ArrayList<Property>() : pathParameters);
         return this;
     }
 
     public Document withFormParameters(List<Property> formParameters) {
-        this.parameters.put(FORM_PARAMETER_KEY, null == formParameters ? new ArrayList<Property>() : formParameters);
+        this.parameters.put(FORM_PARAMETER_KEY,
+                        null == formParameters ? new ArrayList<Property>() : formParameters);
         return this;
     }
 
     public Document withQueryParameters(List<Property> queryParameters) {
-        this.parameters.put(QUERY_PARAMETER_KEY, null == queryParameters ? new ArrayList<Property>() : queryParameters);
+        this.parameters.put(QUERY_PARAMETER_KEY,
+                        null == queryParameters ? new ArrayList<Property>() : queryParameters);
         return this;
     }
 
     public Document withHeaderParameters(List<Property> headerParameters) {
-        this.parameters.put(HEADER_PARAMETER_KEY, null == headerParameters ? new ArrayList<Property>() : headerParameters);
+        this.parameters.put(HEADER_PARAMETER_KEY,
+                        null == headerParameters ? new ArrayList<Property>() : headerParameters);
         return this;
     }
 
     public Document withRequestPayload(Payload payload) {
-        this.requestPayload = payload;
+        this.payloads.put(REQUEST_PAYLOAD_KEY,
+                        null == payload ? new ArrayList<Payload>() : Arrays.asList(payload));
         return this;
     }
 
     public Document withResponsePayloads(List<Payload> responsePayloads) {
-        this.responsePayloads = responsePayloads;
+        this.payloads.put(RESPONSE_PAYLOAD_KEY,
+                        null == responsePayloads ? new ArrayList<Payload>() : responsePayloads);
         return this;
     }
 
@@ -164,7 +169,7 @@ public class Document {
                         .append(", description=").append(description).append(", path=").append(path)
                         .append(", consumes=").append(consumes).append(", produces=")
                         .append(produces).append(", parameters=").append(parameters)
-                        .append(", payload=").append(requestPayload).append("]");
+                        .append(", payloads=").append(payloads).append("]");
         return builder.toString();
     }
 

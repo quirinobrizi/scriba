@@ -27,184 +27,587 @@ As per the above Scriba annotation are not strictly required and can be avoided.
 Analysing the following interface:
 
 ```java
-@Path("books")
-public interface BookInterface {
+@Path("/store")
+@Consumes("application/json")
+@Produces("application/json")
+public static class BookStoreInterface {
 
     @GET
-    @Produces(APPLICATION_JSON)
+    @Path("/books")
     @ApiName("List books")
-    @ApiDescription("List all present books")
-    @ApiResponse(type = Book.class)
-    public Response list();
+    @ApiDescription("Retrieves all books")
+    @ApiResponse(type = BookMessage.class)
+    public Response list() {
+        return null;
+    }
+    
+    @POST
+    @Valid
+    @Path("/books")
+    @ApiName("Store book")
+    @ApiDescription("Allows add a new book to the collection")
+    @Consumes({ "application/json", "application/xml" })
+    @Produces({ "application/json", "application/xml" })
+    public void add(@Valid Book book) {
 
-    @ApiPath("/{isbn}")
-    @ApiVerb(Verb.GET)
-    @Produces(APPLICATION_JSON)
-    @ApiName("Find book")
-    @ApiDescription("Find a book among the stored")
-    @ApiResponse(type = Book.class)
-    public Response find(@NotNull @ApiParameter(value = "isbn", type = Type.PATH) String isbn);
+    }
+
+    @PUT
+    @Path("/books/{bookId}")
+    @ApiName("Update book")
+    @ApiDescription("Allows update a book already part of the collection")
+    @Consumes({ "application/json", "application/xml" })
+    @Produces({ "application/json", "application/xml" })
+    public void update(@NotNull @PathParam("bookId") Long bookId, Book book) {
+
+    }
+
+    @GET
+    @Path("/books/{bookId}")
+    @ApiName("Get book")
+    @ApiDescription("Allows retrieve information about a book")
+    @ApiResponses({ @ApiResponse(type = BookMessage.class) })
+    public Response findById(@PathParam("bookId") Long bookId) {
+        return null;
+    }
+
+    @DELETE
+    @Path("/books/{bookId}")
+    @ApiName("Delete book")
+    @ApiDescription("Allows delete a book from the collection")
+    public void delete(@DefaultValue("1") @PathParam("bookId") Long bookId) {
+
+    }
 
     @POST
-    @Produces(APPLICATION_JSON)
-    @ApiName("Create a new book")
-    @ApiDescription("Create a new book and make it available to the library on-line service")
-    @ApiResponse(type = Book.class, responseCode = 201)
-    public Response create(@NotNull(message = "book  parameter must be provided") @Valid Book book);
-
-    public static class Book {
-
-        @NotNull @JsonProperty private String isbn;
+    @Path("/books/minimal")
+    @ApiName("Create minimal book")
+    @ApiDescription("Allows create a new book with only its name")
+    @ApiResponses({ @ApiResponse(type = BookMessage.class),
+                    @ApiResponse(type = ErrorMessage.class, success = false, responseCode = 401, message = "Unauthorized"),
+                    @ApiResponse(type = ErrorMessage.class, success = false, responseCode = 500, message = "Internal server error") })
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addForm(
+                    @Size(min = 1, max = 40, message = "Book name should be of size between {min} and {max}") @Pattern(regexp = "[a-z]", flags = {
+                                    Flag.CASE_INSENSITIVE }) @FormParam("name") String name,
+                    @QueryParam("collection") Long collection) {
+        return null;
     }
 }
+
+public static class Book {
+    @JsonProperty private String author;
+    private Title title;
+    @Past @JsonProperty private Date publicationDate;
+
+    @JsonProperty("title")
+    public Title getTitle() {
+        return title;
+    }
+
+    @JsonProperty
+    public void setTitle(Title title) {
+        this.title = title;
+    }
+}
+
+public static class BookMessage {
+    @NotNull(message = "ISBN parameter is not nullable and must be provided") @JsonProperty private String isbn;
+    @JsonProperty private Title title;
+    @JsonProperty private String author;
+    @JsonProperty private Date publicationDate;
+
+    public String getIsbn() {
+        return isbn;
+    }
+}
+public static class Title {
+    @JsonProperty String title;
+}
+public static class ErrorMessage {
+    @JsonProperty Integer code;
+    @JsonProperty String message;
+}
+
 ```
 
 will produce:
 * with Scriba analyser
 
 ```json
-[
-    {
-        "httpMethod": "GET",
-        "name": "List books",
-        "path": "books",
-        "description": "List all present books",
-        "produces": [
-            "application/json"
-        ],
-        "responsePayload": {
-            "nullable": false,
-            "type": "codesketch.scriba.test.BookInterface$Book",
-            "properties": [
-                {
-                    "name": "isbn",
-                    "nullable": false,
-                    "constraints": [
-                        "element must not be null"
-                    ],
-                    "type": "string"
-                }
-            ]
-        },
-        "messages": [
-            {
-                "status": 200,
-                "message": "",
-                "success": true
-            },
-            {
-                "status": 400,
-                "message": "may not be null",
-                "success": false
-            }
-        ]
-    },
-    {
-        "httpMethod": "GET",
-        "name": "Find book",
-        "path": "books/{isbn}",
-        "description": "Find a book among the stored",
-        "produces": [
-            "application/json"
-        ],
-        "pathParameters": [
-            {
-                "name": "isbn",
-                "nullable": false,
-                "constraints": [
-                    "element must not be null"
-                ],
-                "type": "string"
-            }
-        ],
-        "responsePayload": {
-            "nullable": false,
-            "type": "codesketch.scriba.test.BookInterface$Book",
-            "properties": [
-                {
-                    "name": "isbn",
-                    "nullable": false,
-                    "constraints": [
-                        "element must not be null"
-                    ],
-                    "type": "string"
-                }
-            ]
-        },
-        "messages": [
-            {
-                "status": 200,
-                "message": "",
-                "success": true
-            },
-            {
-                "status": 400,
-                "message": "may not be null",
-                "success": false
-            }
-        ]
-    },
-    {
-        "httpMethod": "POST",
-        "name": "Create a new book",
-        "path": "books",
-        "description": "Create a new book and make it available to the library on-line service",
-        "produces": [
-            "application/json"
-        ],
-        "requestPayload": {
-            "nullable": false,
-            "constraints": [
-                "element must not be null"
+{
+    "version":"1.0.0",
+    "environments":[
+        {
+            "name":"test",
+            "endpoint":"http://test.endpoint.org"
+        }
+    ],
+    "documents":[
+        {
+            "httpMethod":"POST",
+            "name":"Store book",
+            "path":"/store/books",
+            "description":"Allows add a new book to the collection",
+            "consumes":[
+                "application/json",
+                "application/xml"
             ],
-            "type": "codesketch.scriba.test.BookInterface$Book",
-            "properties": [
+            "produces":[
+                "application/json",
+                "application/xml"
+            ],
+            "parameters":{
+                "form":[
+                ],
+                "query":[
+                ],
+                "path":[
+                ],
+                "header":[
+                ]
+            },
+            "payloads":{
+                "response":[
+                ],
+                "request":[
+                    {
+                        "nullable":false,
+                        "type":"codesketch.scriba.analyser.application.impl.AnalyserServiceImplTest$Book",
+                        "properties":[
+                            {
+                                "name":"author",
+                                "nullable":true,
+                                "type":"string"
+                            },
+                            {
+                                "name":"title",
+                                "nullable":true,
+                                "properties":[
+                                    {
+                                        "name":"title",
+                                        "nullable":true,
+                                        "type":"string"
+                                    }
+                                ]
+                            },
+                            {
+                                "name":"publicationDate",
+                                "nullable":true,
+                                "constraints":[
+                                    "date must be in the past considering calendar based on the current timezone and the current locale."
+                                ],
+                                "type":"date"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "messages":[
                 {
-                    "name": "isbn",
-                    "nullable": false,
-                    "constraints": [
-                        "element must not be null"
-                    ],
-                    "type": "string"
+                    "status":400,
+                    "message":"must be in the past",
+                    "success":false
                 }
             ]
         },
-        "responsePayload": {
-            "nullable": false,
-            "type": "codesketch.scriba.test.BookInterface$Book",
-            "properties": [
+        {
+            "httpMethod":"POST",
+            "name":"Create minimal book",
+            "path":"/store/books/minimal",
+            "description":"Allows create a new book with only its name",
+            "consumes":[
+                "application/x-www-form-urlencoded"
+            ],
+            "produces":[
+                "application/json"
+            ],
+            "parameters":{
+                "form":[
+                    {
+                        "name":"name",
+                        "nullable":true,
+                        "constraints":[
+                            "value must match the specified regular expression [a-z] with flags CASE_INSENSITIVE",
+                            "element size must be higher or equal to 1 and lower or equal to 40"
+                        ],
+                        "type":"string"
+                    }
+                ],
+                "query":[
+                    {
+                        "name":"collection",
+                        "nullable":true,
+                        "type":"long"
+                    }
+                ],
+                "path":[
+                ],
+                "header":[
+                ]
+            },
+            "payloads":{
+                "response":[
+                    {
+                        "nullable":false,
+                        "type":"codesketch.scriba.analyser.application.impl.AnalyserServiceImplTest$BookMessage",
+                        "properties":[
+                            {
+                                "name":"publicationDate",
+                                "nullable":true,
+                                "type":"date"
+                            },
+                            {
+                                "name":"isbn",
+                                "nullable":false,
+                                "constraints":[
+                                    "element must not be null"
+                                ],
+                                "type":"string"
+                            },
+                            {
+                                "name":"author",
+                                "nullable":true,
+                                "type":"string"
+                            },
+                            {
+                                "name":"title",
+                                "nullable":true,
+                                "properties":[
+                                    {
+                                        "name":"title",
+                                        "nullable":true,
+                                        "type":"string"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "nullable":false,
+                        "type":"codesketch.scriba.analyser.application.impl.AnalyserServiceImplTest$ErrorMessage",
+                        "properties":[
+                            {
+                                "name":"code",
+                                "nullable":true,
+                                "type":"integer"
+                            },
+                            {
+                                "name":"message",
+                                "nullable":true,
+                                "type":"string"
+                            }
+                        ]
+                    }
+                ],
+                "request":[
+                ]
+            },
+            "messages":[
                 {
-                    "name": "isbn",
-                    "nullable": false,
-                    "constraints": [
-                        "element must not be null"
-                    ],
-                    "type": "string"
+                    "status":200,
+                    "message":"",
+                    "success":true
+                },
+                {
+                    "status":400,
+                    "message":"ISBN parameter is not nullable and must be provided",
+                    "success":false
+                },
+                {
+                    "status":400,
+                    "message":"Book name should be of size between 1 and 40",
+                    "success":false
+                },
+                {
+                    "status":401,
+                    "message":"Unauthorized",
+                    "success":false
+                },
+                {
+                    "status":400,
+                    "message":"must match \\"                    [
+                        a-z
+                    ]                    \\"",
+                    "success":false
+                },
+                {
+                    "status":500,
+                    "message":"Internal server error",
+                    "success":false
                 }
             ]
         },
-        "messages": [
-            {
-                "status": 201,
-                "message": "",
-                "success": true
+        {
+            "httpMethod":"GET",
+            "name":"List books",
+            "path":"/store/books",
+            "description":"Retrieves all books",
+            "produces":[
+                "application/json"
+            ],
+            "parameters":{
+                "form":[
+                ],
+                "query":[
+                ],
+                "path":[
+                ],
+                "header":[
+                ]
             },
-            {
-                "status": 400,
-                "message": "may not be null",
-                "success": false
+            "payloads":{
+                "response":[
+                    {
+                        "nullable":false,
+                        "type":"codesketch.scriba.analyser.application.impl.AnalyserServiceImplTest$BookMessage",
+                        "properties":[
+                            {
+                                "name":"publicationDate",
+                                "nullable":true,
+                                "type":"date"
+                            },
+                            {
+                                "name":"isbn",
+                                "nullable":false,
+                                "constraints":[
+                                    "element must not be null"
+                                ],
+                                "type":"string"
+                            },
+                            {
+                                "name":"author",
+                                "nullable":true,
+                                "type":"string"
+                            },
+                            {
+                                "name":"title",
+                                "nullable":true,
+                                "properties":[
+                                    {
+                                        "name":"title",
+                                        "nullable":true,
+                                        "type":"string"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "request":[
+                ]
             },
-            {
-                "status": 400,
-                "message": "book  parameter must be provided",
-                "success": false
+            "messages":[
+                {
+                    "status":200,
+                    "message":"",
+                    "success":true
+                },
+                {
+                    "status":400,
+                    "message":"ISBN parameter is not nullable and must be provided",
+                    "success":false
+                }
+            ]
+        },
+        {
+            "httpMethod":"DELETE",
+            "name":"Delete book",
+            "path":"/store/books/{bookId}",
+            "description":"Allows delete a book from the collection",
+            "consumes":[
+                "application/json"
+            ],
+            "produces":[
+                "application/json"
+            ],
+            "parameters":{
+                "form":[
+                ],
+                "query":[
+                ],
+                "path":[
+                    {
+                        "name":"bookId",
+                        "defaultValue":"1",
+                        "nullable":true,
+                        "type":"long"
+                    }
+                ],
+                "header":[
+                ]
+            },
+            "payloads":{
+                "response":[
+                ],
+                "request":[
+                ]
             }
-        ]
-    }
-]
+        },
+        {
+            "httpMethod":"GET",
+            "name":"Get book",
+            "path":"/store/books/{bookId}",
+            "description":"Allows retrieve information about a book",
+            "produces":[
+                "application/json"
+            ],
+            "parameters":{
+                "form":[
+                ],
+                "query":[
+                ],
+                "path":[
+                    {
+                        "name":"bookId",
+                        "nullable":true,
+                        "type":"long"
+                    }
+                ],
+                "header":[
+                ]
+            },
+            "payloads":{
+                "response":[
+                    {
+                        "nullable":false,
+                        "type":"codesketch.scriba.analyser.application.impl.AnalyserServiceImplTest$BookMessage",
+                        "properties":[
+                            {
+                                "name":"publicationDate",
+                                "nullable":true,
+                                "type":"date"
+                            },
+                            {
+                                "name":"isbn",
+                                "nullable":false,
+                                "constraints":[
+                                    "element must not be null"
+                                ],
+                                "type":"string"
+                            },
+                            {
+                                "name":"author",
+                                "nullable":true,
+                                "type":"string"
+                            },
+                            {
+                                "name":"title",
+                                "nullable":true,
+                                "properties":[
+                                    {
+                                        "name":"title",
+                                        "nullable":true,
+                                        "type":"string"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "request":[
+                ]
+            },
+            "messages":[
+                {
+                    "status":200,
+                    "message":"",
+                    "success":true
+                },
+                {
+                    "status":400,
+                    "message":"ISBN parameter is not nullable and must be provided",
+                    "success":false
+                }
+            ]
+        },
+        {
+            "httpMethod":"PUT",
+            "name":"Update book",
+            "path":"/store/books/{bookId}",
+            "description":"Allows update a book already part of the collection",
+            "consumes":[
+                "application/json",
+                "application/xml"
+            ],
+            "produces":[
+                "application/json",
+                "application/xml"
+            ],
+            "parameters":{
+                "form":[
+                ],
+                "query":[
+                ],
+                "path":[
+                    {
+                        "name":"bookId",
+                        "nullable":false,
+                        "constraints":[
+                            "element must not be null"
+                        ],
+                        "type":"long"
+                    }
+                ],
+                "header":[
+                ]
+            },
+            "payloads":{
+                "response":[
+                ],
+                "request":[
+                    {
+                        "nullable":false,
+                        "type":"codesketch.scriba.analyser.application.impl.AnalyserServiceImplTest$Book",
+                        "properties":[
+                            {
+                                "name":"author",
+                                "nullable":true,
+                                "type":"string"
+                            },
+                            {
+                                "name":"title",
+                                "nullable":true,
+                                "properties":[
+                                    {
+                                        "name":"title",
+                                        "nullable":true,
+                                        "type":"string"
+                                    }
+                                ]
+                            },
+                            {
+                                "name":"publicationDate",
+                                "nullable":true,
+                                "constraints":[
+                                    "date must be in the past considering calendar based on the current timezone and the current locale."
+                                ],
+                                "type":"date"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "messages":[
+                {
+                    "status":400,
+                    "message":"may not be null",
+                    "success":false
+                },
+                {
+                    "status":400,
+                    "message":"must be in the past",
+                    "success":false
+                }
+            ]
+        }
+    ],
+    "updateTimestamp":1450704313770,
+    "updater":"quirino"
+}
 ```
 
-* with Scriba mavne plugin
+* with Scriba maven plugin
 
 ```json
 {
