@@ -15,22 +15,23 @@
  */
 package codesketch.scriba.analyser.domain.service.introspector.jsr349;
 
-import codesketch.scriba.analyser.domain.model.ObjectElement;
-import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
-import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
+import static codesketch.scriba.analyser.domain.model.Message.createMessageForBadRequest;
+import static java.lang.String.valueOf;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 
-import static codesketch.scriba.analyser.domain.model.Message.createMessageForBadRequest;
+import codesketch.scriba.analyser.domain.model.ObjectElement;
+import codesketch.scriba.analyser.domain.model.constraint.SizeConstraint;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
+import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 
 /**
- * Introspect {@link Consumes} annotation and populate the provided
- * {@link DocumentBuilder}.
+ * Introspect {@link Consumes} annotation and populate the provided {@link DocumentBuilder}.
  *
- * While populating the {@link DocumentBuilder} this introspector will take into
- * account that method level annotations will override the class level one.
+ * While populating the {@link DocumentBuilder} this introspector will take into account that method level annotations will
+ * override the class level one.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015
@@ -42,19 +43,15 @@ public class SizeAnnotationIntrospector extends AbstractJSR349AnnotationIntrospe
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * eu.codesketch.rest.scriba.analyser.introspector.Introspector#instrospect
-     * (eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder,
-     * java.lang.Object, int)
+     * @see eu.codesketch.rest.scriba.analyser.introspector.Introspector#instrospect
+     * (eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder, java.lang.Object, int)
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Size annotation = descriptor.getWrappedAnnotationAs(type());
-        Size size = descriptor.getWrappedAnnotationAs(Size.class);
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
         parameter.constraints(
-                        String.format("element size must be higher or equal to %d and lower or equal to %d",
-                                        size.min(), size.max()));
+                        new SizeConstraint(valueOf(annotation.min()), valueOf(annotation.max())));
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }

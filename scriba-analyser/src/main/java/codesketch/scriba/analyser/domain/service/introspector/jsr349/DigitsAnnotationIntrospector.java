@@ -15,22 +15,22 @@
  */
 package codesketch.scriba.analyser.domain.service.introspector.jsr349;
 
-import codesketch.scriba.analyser.domain.model.ObjectElement;
-import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
-import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
+import static codesketch.scriba.analyser.domain.model.Message.createMessageForBadRequest;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.Digits;
 import javax.ws.rs.Consumes;
 
-import static codesketch.scriba.analyser.domain.model.Message.createMessageForBadRequest;
+import codesketch.scriba.analyser.domain.model.ObjectElement;
+import codesketch.scriba.analyser.domain.model.constraint.DigitsConstraint;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
+import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 
 /**
- * Introspect {@link Consumes} annotation and populate the provided
- * {@link DocumentBuilder}.
+ * Introspect {@link Consumes} annotation and populate the provided {@link DocumentBuilder}.
  *
- * While populating the {@link DocumentBuilder} this introspector will take into
- * account that method level annotations will override the class level one.
+ * While populating the {@link DocumentBuilder} this introspector will take into account that method level annotations will
+ * override the class level one.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015
@@ -42,18 +42,15 @@ public class DigitsAnnotationIntrospector extends AbstractJSR349AnnotationIntros
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * eu.codesketch.rest.scriba.analyser.introspector.Introspector#instrospect
-     * (eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder,
-     * java.lang.Object, int)
+     * @see eu.codesketch.rest.scriba.analyser.introspector.Introspector#instrospect
+     * (eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder, java.lang.Object, int)
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Digits annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(
-                        String.format("must be a number within accepted range, integral digits %d, fractional digits %d",
-                                        annotation.integer(), annotation.fraction()));
+        parameter.constraints(new DigitsConstraint(String.valueOf(annotation.integer()),
+                        String.valueOf(annotation.fraction())));
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }

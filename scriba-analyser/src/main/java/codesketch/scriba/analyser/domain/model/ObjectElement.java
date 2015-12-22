@@ -16,11 +16,13 @@
 
 package codesketch.scriba.analyser.domain.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import java.util.ArrayList;
-import java.util.List;
+import codesketch.scriba.analyser.domain.model.constraint.Constraint;
 
 /**
  * Created by quirino.brizi on 22/08/15.
@@ -31,7 +33,7 @@ public abstract class ObjectElement {
     @JsonProperty private String name;
     @JsonProperty private String defaultValue;
     @JsonProperty private Boolean nullable;
-    @JsonProperty private List<String> constraints;
+    @JsonProperty private List<Constraint> constraints;
 
     protected ObjectElement(String name, String defaultValue, Boolean nullable) {
         this.name = name;
@@ -45,7 +47,7 @@ public abstract class ObjectElement {
         return this;
     }
 
-    public ObjectElement constraints(String constraints) {
+    public ObjectElement constraints(Constraint constraints) {
         this.constraints.add(constraints);
         return this;
     }
@@ -62,7 +64,7 @@ public abstract class ObjectElement {
         return name;
     }
 
-    public List<String> getConstraints() {
+    public List<Constraint> getConstraints() {
         return constraints;
     }
 }
