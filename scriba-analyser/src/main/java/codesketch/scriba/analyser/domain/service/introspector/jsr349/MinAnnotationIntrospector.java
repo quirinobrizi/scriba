@@ -51,7 +51,7 @@ public class MinAnnotationIntrospector extends AbstractJSR349AnnotationIntrospec
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Min annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(
+        parameter.addConstraint(
                         String.format("value must be higher or equal to the specified minimum %d",
                                         annotation.value()));
         documentBuilder.addMessage(

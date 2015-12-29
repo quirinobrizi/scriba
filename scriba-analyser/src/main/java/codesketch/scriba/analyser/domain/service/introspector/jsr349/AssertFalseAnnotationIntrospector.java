@@ -51,7 +51,7 @@ public class AssertFalseAnnotationIntrospector extends AbstractJSR349AnnotationI
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         AssertFalse annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints("value must be false");
+        parameter.addConstraint("value must be false");
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }

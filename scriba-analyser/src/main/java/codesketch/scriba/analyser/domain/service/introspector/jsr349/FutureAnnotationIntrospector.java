@@ -51,7 +51,7 @@ public class FutureAnnotationIntrospector extends AbstractJSR349AnnotationIntros
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Future annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(
+        parameter.addConstraint(
                         "date must be in the future considering calendar based on the current timezone and the current locale.");
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));

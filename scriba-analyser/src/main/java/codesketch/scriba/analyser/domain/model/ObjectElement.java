@@ -16,6 +16,7 @@
 
 package codesketch.scriba.analyser.domain.model;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -45,8 +46,15 @@ public abstract class ObjectElement {
         return this;
     }
 
-    public ObjectElement constraints(String constraints) {
-        this.constraints.add(constraints);
+    /**
+     * Add a constraint if the provided is not blank.
+     * @param constraint the constrint to add
+     * @return this {@link ObjectElement}
+     */
+    public ObjectElement addConstraint(String constraint) {
+        if(StringUtils.isNotBlank(constraint)) {
+            this.constraints.add(constraint);
+        }
         return this;
     }
 

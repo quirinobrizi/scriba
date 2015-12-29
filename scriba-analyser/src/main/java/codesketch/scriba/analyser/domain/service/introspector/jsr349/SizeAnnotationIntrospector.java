@@ -52,7 +52,7 @@ public class SizeAnnotationIntrospector extends AbstractJSR349AnnotationIntrospe
         Size annotation = descriptor.getWrappedAnnotationAs(type());
         Size size = descriptor.getWrappedAnnotationAs(Size.class);
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(
+        parameter.addConstraint(
                         String.format("element size must be higher or equal to %d and lower or equal to %d",
                                         size.min(), size.max()));
         documentBuilder.addMessage(

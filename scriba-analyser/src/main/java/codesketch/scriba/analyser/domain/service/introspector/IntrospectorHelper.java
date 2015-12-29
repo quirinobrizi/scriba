@@ -18,9 +18,11 @@ package codesketch.scriba.analyser.domain.service.introspector;
 import codesketch.scriba.analyser.domain.model.Property;
 import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
 import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
+import codesketch.scriba.annotations.ApiDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.DefaultValue;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -84,5 +86,18 @@ public abstract class IntrospectorHelper {
 
     public static boolean isPrimitiveOrWrapper(Class<?> type) {
         return type.isPrimitive() || PRIMITIVE_WRAPPER.contains(type);
+    }
+
+    public static String getDefaultValueIfAny(Descriptor descriptor) {
+        codesketch.scriba.analyser.infrastructure.reflect.Parameter parameter = descriptor
+                .annotatedElementAs(
+                        codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
+        DefaultValue defaultValueAnnotation = parameter.getAnnotation(DefaultValue.class);
+        if (null == defaultValueAnnotation) {
+            ApiDefault apiDefault = parameter.getAnnotation(ApiDefault.class);
+            return null != apiDefault ? apiDefault.value() : null;
+        } else {
+            return defaultValueAnnotation.value();
+        }
     }
 }

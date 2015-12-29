@@ -51,7 +51,7 @@ public class DecimalMaxAnnotationIntrospector extends AbstractJSR349AnnotationIn
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         DecimalMax annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(
+        parameter.addConstraint(
                         String.format("value must be lower or equal to the specified maximum %d, inclusive %s",
                                         annotation.value(), annotation.inclusive()));
         documentBuilder.addMessage(

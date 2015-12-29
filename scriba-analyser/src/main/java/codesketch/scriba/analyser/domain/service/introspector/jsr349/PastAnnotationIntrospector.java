@@ -51,7 +51,7 @@ public class PastAnnotationIntrospector extends AbstractJSR349AnnotationIntrospe
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Past annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.constraints(
+        parameter.addConstraint(
                         "date must be in the past considering calendar based on the current timezone and the current locale.");
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));

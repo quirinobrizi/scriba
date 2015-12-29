@@ -15,32 +15,39 @@
  */
 package codesketch.scriba.analyser.domain.model.decorator;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.lang.annotation.Annotation;
 
 /**
  * Defines the order the descriptor for a particular annotation should be
  * processed following the rule: higher the order later the processing.
- *
+ * <p/>
  * If the order for an annotation is not defined {@link Integer#MIN_VALUE} is
  * returned.
  *
  * @author quirino.brizi
  * @since 2 Feb 2015
- *
  */
 public enum Order {
 
-    NOT_NULL(NotNull.class, Integer.MAX_VALUE), SIZE(Size.class, Integer.MAX_VALUE), PATTERN(
-                    Pattern.class, Integer.MAX_VALUE), PAST(Past.class, Integer.MAX_VALUE);
+    NOT_NULL(NotNull.class, Integer.MAX_VALUE),
+    NULL(Null.class, Integer.MAX_VALUE),
+    SIZE(Size.class, Integer.MAX_VALUE),
+    PATTERN(Pattern.class, Integer.MAX_VALUE),
+    PAST(Past.class, Integer.MAX_VALUE),
+    MIN(Min.class, Integer.MAX_VALUE),
+    MAX(Max.class, Integer.MAX_VALUE),
+    FUTURE(Future.class, Integer.MAX_VALUE),
+    DECIMAL_MAX(DecimalMax.class, Integer.MAX_VALUE),
+    DECIMAL_MIN(DecimalMin.class, Integer.MAX_VALUE),
+    DIGITS(Digits.class, Integer.MAX_VALUE),
+    ASSERT_FALSE(AssertFalse.class, Integer.MAX_VALUE),
+    ASSERT_TRUE(AssertTrue.class, Integer.MAX_VALUE);
 
     private Class<? extends Annotation> annotation;
     private Integer order;
 
-    private Order(Class<? extends Annotation> annotation, Integer order) {
+    Order(Class<? extends Annotation> annotation, Integer order) {
         this.annotation = annotation;
         this.order = order;
     }

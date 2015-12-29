@@ -17,6 +17,7 @@ package codesketch.scriba.analyser.domain.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -63,6 +64,16 @@ public class Property extends ObjectElement {
 
     public void addProperty(Property property) {
         this.properties.add(property);
+    }
+
+    @JsonIgnore
+    public String getType() {
+        return type;
+    }
+
+    @JsonIgnore
+    public String getDescription() {
+        return description;
     }
 
     @Override

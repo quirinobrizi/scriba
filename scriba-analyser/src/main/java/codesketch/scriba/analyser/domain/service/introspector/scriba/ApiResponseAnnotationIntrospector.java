@@ -72,6 +72,7 @@ public class ApiResponseAnnotationIntrospector implements Introspector {
         ApiResponse apiResponse = descriptor.getWrappedAnnotationAs(ApiResponse.class);
         if (null != apiResponse.type()) {
             Payload payload = documentBuilder.getOrCreateResponsePayload(apiResponse.type(), "");
+            payload.setCollection(apiResponse.isCollection());
             doInspectBody(documentBuilder, apiResponse.type());
 
             AnnotatedElement element = descriptor.annotatedElement();

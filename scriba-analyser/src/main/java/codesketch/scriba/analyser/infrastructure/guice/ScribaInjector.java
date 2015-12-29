@@ -20,6 +20,7 @@ import static com.google.inject.multibindings.Multibinder.newSetBinder;
 import java.util.Arrays;
 import java.util.List;
 
+import codesketch.scriba.analyser.domain.service.introspector.scriba.*;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 
@@ -56,16 +57,6 @@ import codesketch.scriba.analyser.domain.service.introspector.jsr349.PastAnnotat
 import codesketch.scriba.analyser.domain.service.introspector.jsr349.PatternAnnotationIntrospector;
 import codesketch.scriba.analyser.domain.service.introspector.jsr349.SizeAnnotationIntrospector;
 import codesketch.scriba.analyser.domain.service.introspector.jsr349.ValidAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiConsumesAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiDescriptionAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiNameAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiParameterAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiPathAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiProducesAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiResponseAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiResponsesAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.ApiVerbAnnotationIntrospector;
-import codesketch.scriba.analyser.domain.service.introspector.scriba.RequestPayloadAnnotationIntrospector;
 
 /**
  * Injector configuration.
@@ -95,7 +86,7 @@ public class ScribaInjector extends AbstractModule {
             ApiResponseAnnotationIntrospector.class, ApiResponsesAnnotationIntrospector.class, 
             ApiConsumesAnnotationIntrospector.class, ApiProducesAnnotationIntrospector.class,
             ApiParameterAnnotationIntrospector.class, ApiPathAnnotationIntrospector.class,
-            ApiVerbAnnotationIntrospector.class,
+            ApiVerbAnnotationIntrospector.class, ApiIndirectParameterIntrospector.class,
             // JSR 349
             AssertFalseAnnotationIntrospector.class, AssertTrueAnnotationIntrospector.class,
             DecimalMaxAnnotationIntrospector.class, DecimalMinAnnotationIntrospector.class,

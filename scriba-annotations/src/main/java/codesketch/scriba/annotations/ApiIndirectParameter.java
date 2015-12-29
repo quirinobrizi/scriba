@@ -24,16 +24,16 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Indicate the parameter of an API. This annotation is available at method level
- * only.
- *
- * @author quirino.brizi
- * @since 30 Jan 2015
+ * Method level annotation, allows to define a parameter that is not directly defined/used
+ * on the documented API but is necessary for accessing the API itself.
+ * This is annotation is useful in cases like authentication is based on a token/API key
+ * and performed by an "in-the-middle" service.
+ * Created by quirino on 25/12/15.
  */
 @Documented
-@Target({ ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD })
+@Target({ElementType.METHOD})
 @Retention(RUNTIME)
-public @interface ApiParameter {
+public @interface ApiIndirectParameter {
 
     /**
      * Defines the name of the parameter whose value will be used to initialise
@@ -50,10 +50,28 @@ public @interface ApiParameter {
     Type type();
 
     /**
+     * Defines the object type of the parameter.
+     * @return The parameter value type.
+     */
+    Class<?> objectType();
+
+    /**
      * The parameter description, default to empty string.
      * @return the API parameters description
      */
     String description() default "";
+
+    /**
+     * The parameter default value if any.
+     * @return the parameter default value.
+     */
+    String defaultValue() default "";
+
+    /**
+     * A regular expression that defines the value constrints of the parameter.
+     * @return a regulr expression.
+     */
+    String constraint() default "";
 
     enum Type {
         COOKIE, FORM, PATH, HEADER, QUERY

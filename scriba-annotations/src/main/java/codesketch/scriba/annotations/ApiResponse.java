@@ -63,4 +63,11 @@ public @interface ApiResponse {
      * @return the API return type.
      */
     Class<?>type();
+
+    /**
+     * Indicate if the response payload is a collection of the defined type. Default to false.
+     *
+     * @return true if the response payload is a collection of the defined type, false otherwise.
+     */
+    boolean isCollection() default false;
 }

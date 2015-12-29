@@ -35,6 +35,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class Payload extends ObjectElement {
 
     @JsonProperty private Class<?> type;
+    @JsonProperty private boolean collection;
 
     private Map<AnnotatedElement, Property> properties = new HashMap<>();
 
@@ -42,12 +43,18 @@ public class Payload extends ObjectElement {
         super(null, "", false);
         Validate.notNull(type, "Payload type must be provided");
         this.type = type;
+        this.collection = false;
     }
 
     public Payload addParameter(AnnotatedElement annotatedElement, Property parameter) {
         if (!this.properties.containsValue(parameter)) {
             this.properties.put(annotatedElement, parameter);
         }
+        return this;
+    }
+
+    public Payload setCollection(boolean collection) {
+        this.collection = collection;
         return this;
     }
 

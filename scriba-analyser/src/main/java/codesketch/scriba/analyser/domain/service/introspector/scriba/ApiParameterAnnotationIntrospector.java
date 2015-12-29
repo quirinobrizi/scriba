@@ -27,8 +27,10 @@ import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 
+import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.getDefaultValueIfAny;
+
 /**
- * Introspect {@link Consumes} annotation and populate the provided
+ * Introspect {@link ApiParameter} annotation and populate the provided
  * {@link DocumentBuilder}.
  *
  * While populating the {@link DocumentBuilder} this introspector will take into
@@ -56,39 +58,26 @@ public class ApiParameterAnnotationIntrospector implements Introspector {
         String parameterType = decorator.getParameterType().getName();
         String defaultValue = getDefaultValueIfAny(decorator);
         switch (type) {
-        case COOKIE:
-            documentBuilder.putCookieParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
-            break;
-        case FORM:
-            documentBuilder.putFormParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
-            break;
-        case HEADER:
-            documentBuilder.putHeaderParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
-            break;
-        case PATH:
-            documentBuilder.putPathParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
-            break;
-        case QUERY:
-            documentBuilder.putQueryParameter(decorator.annotatedElement(),
-                            new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
-            break;
-        }
-    }
-
-    private String getDefaultValueIfAny(Descriptor decorator) {
-        codesketch.scriba.analyser.infrastructure.reflect.Parameter parameter = decorator
-                        .annotatedElementAs(
-                                        codesketch.scriba.analyser.infrastructure.reflect.Parameter.class);
-        DefaultValue defaultValueAnnotation = parameter.getAnnotation(DefaultValue.class);
-        if (null == defaultValueAnnotation) {
-            ApiDefault apiDefault = parameter.getAnnotation(ApiDefault.class);
-            return null != apiDefault ? apiDefault.value() : null;
-        } else {
-            return defaultValueAnnotation.value();
+            case COOKIE:
+                documentBuilder.putCookieParameter(decorator.annotatedElement(),
+                        new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
+                break;
+            case FORM:
+                documentBuilder.putFormParameter(decorator.annotatedElement(),
+                        new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
+                break;
+            case HEADER:
+                documentBuilder.putHeaderParameter(decorator.annotatedElement(),
+                        new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
+                break;
+            case PATH:
+                documentBuilder.putPathParameter(decorator.annotatedElement(),
+                        new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
+                break;
+            case QUERY:
+                documentBuilder.putQueryParameter(decorator.annotatedElement(),
+                        new Property(parameterType, apiParameter.value(), defaultValue, apiParameter.description()));
+                break;
         }
     }
 
