@@ -68,8 +68,8 @@ public @interface ApiIndirectParameter {
     String defaultValue() default "";
 
     /**
-     * A regular expression that defines the value constrints of the parameter.
-     * @return a regulr expression.
+     * A regular expression that defines the value constraints of the parameter.
+     * @return a regular expression.
      */
     String constraint() default "";
 

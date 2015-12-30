@@ -74,7 +74,7 @@ public class ApiIndirectParameterIntrospectorTest {
         verify(documentBuilder).putHeaderParameter(eq(annotatedElement), captor.capture());
         // assert
         Property property = captor.getValue();
-        assertEquals("[a-z]+", property.getConstraints().get(0));
+        assertEquals("[a-z]+", property.getConstraints().get(0).constraint());
         assertEquals("string", property.getType());
         assertEquals("authorization", property.getName());
         assertEquals("defaultValue", property.getDefaultValue());

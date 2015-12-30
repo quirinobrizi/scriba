@@ -16,6 +16,7 @@
 package codesketch.scriba.analyser.domain.service.introspector.jsr349;
 
 import codesketch.scriba.analyser.domain.model.ObjectElement;
+import codesketch.scriba.analyser.domain.model.constraint.FalseContraint;
 import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
 import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 
@@ -51,7 +52,7 @@ public class AssertFalseAnnotationIntrospector extends AbstractJSR349AnnotationI
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         AssertFalse annotation = descriptor.getWrappedAnnotationAs(type());
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        parameter.addConstraint("value must be false");
+        parameter.addConstraint(new FalseContraint());
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }

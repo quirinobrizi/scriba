@@ -16,14 +16,14 @@
 
 package codesketch.scriba.analyser.domain.model;
 
-import org.apache.commons.lang3.StringUtils;
+import codesketch.scriba.analyser.domain.model.constraint.Constraint;
+import java.util.ArrayList;
+import java.util.List;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
+ * Abstraction for any element analyzed.
  * Created by quirino.brizi on 22/08/15.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -32,7 +32,7 @@ public abstract class ObjectElement {
     @JsonProperty private String name;
     @JsonProperty private String defaultValue;
     @JsonProperty private Boolean nullable;
-    @JsonProperty private List<String> constraints;
+    @JsonProperty private List<Constraint> constraints;
 
     protected ObjectElement(String name, String defaultValue, Boolean nullable) {
         this.name = name;
@@ -48,13 +48,11 @@ public abstract class ObjectElement {
 
     /**
      * Add a constraint if the provided is not blank.
-     * @param constraint the constrint to add
+     * @param constraint the constraint to add
      * @return this {@link ObjectElement}
      */
-    public ObjectElement addConstraint(String constraint) {
-        if(StringUtils.isNotBlank(constraint)) {
-            this.constraints.add(constraint);
-        }
+    public ObjectElement addConstraint(Constraint constraint) {
+        this.constraints.add(constraint);
         return this;
     }
 
@@ -70,7 +68,7 @@ public abstract class ObjectElement {
         return name;
     }
 
-    public List<String> getConstraints() {
+    public List<Constraint> getConstraints() {
         return constraints;
     }
 }

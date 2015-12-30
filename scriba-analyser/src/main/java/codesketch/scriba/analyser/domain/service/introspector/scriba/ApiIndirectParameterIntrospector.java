@@ -17,6 +17,7 @@
 package codesketch.scriba.analyser.domain.service.introspector.scriba;
 
 import codesketch.scriba.analyser.domain.model.Property;
+import codesketch.scriba.analyser.domain.model.constraint.RegexContraint;
 import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
 import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 import codesketch.scriba.analyser.domain.service.introspector.Introspector;
@@ -24,6 +25,9 @@ import codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper
 import codesketch.scriba.annotations.ApiIndirectParameter;
 import codesketch.scriba.annotations.ApiParameter;
 import com.google.inject.Singleton;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static codesketch.scriba.analyser.domain.service.introspector.IntrospectorHelper.getDefaultValueIfAny;
 
@@ -41,7 +45,7 @@ public class ApiIndirectParameterIntrospector implements Introspector {
         String parameterType = apiIndirectParameter.objectType().getName();
         String defaultValue = apiIndirectParameter.defaultValue();
         Property property = new Property(parameterType, apiIndirectParameter.value(), defaultValue, apiIndirectParameter.description());
-        property.addConstraint(apiIndirectParameter.constraint());
+        property.addConstraint(new RegexContraint(apiIndirectParameter.constraint(), new ArrayList<String>()));
         switch (type) {
             case COOKIE:
                 documentBuilder.putCookieParameter(descriptor.annotatedElement(), property);

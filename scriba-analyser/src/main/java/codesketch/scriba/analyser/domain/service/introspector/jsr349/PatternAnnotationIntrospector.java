@@ -15,23 +15,26 @@
  */
 package codesketch.scriba.analyser.domain.service.introspector.jsr349;
 
-import codesketch.scriba.analyser.domain.model.ObjectElement;
-import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
-import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
+import static codesketch.scriba.analyser.domain.model.Message.createMessageForBadRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Pattern.Flag;
 import javax.ws.rs.Consumes;
 
-import static codesketch.scriba.analyser.domain.model.Message.createMessageForBadRequest;
-import static org.apache.commons.lang3.StringUtils.join;
+import codesketch.scriba.analyser.domain.model.ObjectElement;
+import codesketch.scriba.analyser.domain.model.constraint.RegexContraint;
+import codesketch.scriba.analyser.domain.model.decorator.Descriptor;
+import codesketch.scriba.analyser.domain.model.document.DocumentBuilder;
 
 /**
- * Introspect {@link Consumes} annotation and populate the provided
- * {@link DocumentBuilder}.
+ * Introspect {@link Consumes} annotation and populate the provided {@link DocumentBuilder}.
  *
- * While populating the {@link DocumentBuilder} this introspector will take into
- * account that method level annotations will override the class level one.
+ * While populating the {@link DocumentBuilder} this introspector will take into account that method level annotations will
+ * override the class level one.
  *
  * @author quirino.brizi
  * @since 29 Jan 2015
@@ -43,25 +46,15 @@ public class PatternAnnotationIntrospector extends AbstractJSR349AnnotationIntro
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * eu.codesketch.rest.scriba.analyser.introspector.Introspector#instrospect
-     * (eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder,
-     * java.lang.Object, int)
+     * @see eu.codesketch.rest.scriba.analyser.introspector.Introspector#instrospect
+     * (eu.codesketch.rest.scriba.analyser.builder.DocumentBuilder, java.lang.Object, int)
      */
     @Override
     public void instrospect(DocumentBuilder documentBuilder, Descriptor descriptor) {
         Pattern annotation = descriptor.getWrappedAnnotationAs(type());
         Pattern pattern = descriptor.getWrappedAnnotationAs(Pattern.class);
         ObjectElement parameter = documentBuilder.getParameter(descriptor);
-        if (hasFlags(pattern)) {
-            parameter.addConstraint(
-                            String.format("value must match the specified regular expression %s with flags %s",
-                                            pattern.regexp(), join(pattern.flags(), ", ")));
-        } else {
-            parameter.addConstraint(
-                            String.format("value must match the specified regular expression %s",
-                                            pattern.regexp()));
-        }
+        parameter.addConstraint(new RegexContraint(pattern.regexp(), flags(pattern)));
         documentBuilder.addMessage(
                         createMessageForBadRequest(interpolate(annotation.message(), descriptor)));
     }
@@ -76,8 +69,14 @@ public class PatternAnnotationIntrospector extends AbstractJSR349AnnotationIntro
         return Pattern.class;
     }
 
-    private Boolean hasFlags(Pattern pattern) {
-        return pattern.flags().length > 0;
+    private List<String> flags(Pattern pattern) {
+        List<String> answer = new ArrayList<>();
+        if (pattern.flags().length > 0) {
+            for (Flag flag : pattern.flags()) {
+                answer.add(String.valueOf(flag.getValue()));
+            }
+        }
+        return answer;
     }
 
 }
