@@ -77,13 +77,16 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
         if (isPrimitiveOrWrapper(parameterType)) {
             payload.addParameter(element, new Property(parameterType.getName(), null));
         } else {
-            doInspectBody(documentBuilder, parameterType);
-            if (payload.getProperties().isEmpty()) {
-                LOGGER.debug("no decorators has been found inspect fields");
-                for (Field field : getFields(parameterType)) {
-                    payload.addParameter(element, extractProperty(field));
-                }
-            }
+        	LOGGER.info("request payload is a complex object inspectiong it...");
+        	List<Descriptor> descriptors = extractAllDescriptors(parameterType);
+        	Collections.sort(descriptors, descriptorsOrderComparator());
+        	for (Descriptor _descriptor : descriptors) {
+        		Field annotatedElement = _descriptor.annotatedElementAs(Field.class);
+        		if(null != annotatedElement) {
+        			payload.addParameter(annotatedElement, extractProperty(annotatedElement));
+        		}
+			}
+            doInspectBody(documentBuilder, parameterType, descriptors);
         }
     }
 
@@ -97,9 +100,9 @@ public class RequestPayloadAnnotationIntrospector implements Introspector {
         return RequestPayloadAnnotation.class;
     }
 
-    private void doInspectBody(DocumentBuilder documentBuilder, Class<?> body) {
-        List<Descriptor> descriptors = extractAllDescriptors(body);
-        Collections.sort(descriptors, descriptorsOrderComparator());
+    private void doInspectBody(DocumentBuilder documentBuilder, Class<?> body, List<Descriptor> descriptors) {
+//        List<Descriptor> descriptors = extractAllDescriptors(body);
+//        Collections.sort(descriptors, descriptorsOrderComparator());
         for (Descriptor descriptor : descriptors) {
             descriptor.setResponseInspected(FALSE);
             introspect(this.introspectorManager, documentBuilder, descriptor);

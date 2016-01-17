@@ -155,7 +155,7 @@ public class DocumentBuilder implements Cloneable {
         return true;
 
     }
-
+    
     public ObjectElement getParameter(Descriptor descriptor) {
         AnnotatedElement element = descriptor.annotatedElement();
         Property answer = this.pathParameters.get(element);
