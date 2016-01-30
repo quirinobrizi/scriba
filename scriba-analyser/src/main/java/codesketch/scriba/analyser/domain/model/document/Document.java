@@ -58,6 +58,11 @@ public class Document {
     private Name name;
     private Path path;
     private Description description;
+    
+    /**
+     * The scriba specification version being used.
+     */
+    @JsonProperty private String scriba = "1.0";
     @JsonProperty private List<String> consumes;
     @JsonProperty private List<String> produces;
     @JsonProperty private Map<String, List<Property>> parameters;

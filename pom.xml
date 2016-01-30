@@ -71,7 +71,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/quirinobrizi/scriba.git</connection>
-		<url>https://bitbucket.org/codesketch/whiteboard</url>
+		<url>https://github.com/quirinobrizi/scriba</url>
 		<developerConnection>scm:git:https://github.com/quirinobrizi/scriba.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
