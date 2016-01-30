@@ -18,7 +18,7 @@
 	<parent>
 		<groupId>codesketch.scriba</groupId>
 		<artifactId>scriba</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.6-SNAPSHOT</version>
 	</parent>
 	<artifactId>scriba-analyser</artifactId>
 	<name>Scriba Analyser</name>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>codesketch.scriba</groupId>
 			<artifactId>scriba-annotations</artifactId>
-			<version>0.0.5</version>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
